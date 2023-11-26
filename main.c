@@ -6,11 +6,14 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2023/11/26 14:53:21 by kogitsu          ###   ########.fr       */
+/*   Updated: 2023/11/26 14:58:00 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
+
 int	main(int argc, char **argv, char **envp)
 {
+    printf("Hello minishell.");
 	return (0);
 }
