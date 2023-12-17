@@ -6,19 +6,15 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2023/12/10 13:46:19 by kogitsu          ###   ########.fr       */
+/*   Updated: 2023/12/17 15:21:42 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <signal.h>
+#include "lexer.h"
 
 void	mainloop(char *line)
 {
+	t_list *tokens;
 	while (1)
 	{
 		line = readline("minishell > ");
@@ -28,6 +24,9 @@ void	mainloop(char *line)
 			break;
 		}
 		add_history(line);
+		tokens = tokenize(line);
+		// for (int i = 0; tokens[i] != NULL ; i++)
+		// 	printf("tokens %s\n",tokens[i]);
 		free(line);
 	}
 }
