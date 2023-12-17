@@ -6,7 +6,7 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/10 15:21:27 by kogitsu           #+#    #+#             */
-/*   Updated: 2023/12/17 16:22:44 by kogitsu          ###   ########.fr       */
+/*   Updated: 2023/12/17 18:05:03 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ t_list *split_delimiters(char *line, char delimiter)
     i = 0;
     tmp = ft_split(line, delimiter);
     delim_str = char_to_string(delimiter);
-    printf("delim_str %s\n", delim_str);
     while (tmp[i] != NULL)
     {
         i++;
@@ -85,11 +84,11 @@ t_list *split_delimiters(char *line, char delimiter)
     // tokens_list->content = NULL;
     // free(tokens_list);
     
-    while (tokens_list != NULL)
-    {
-      printf("tokens_list %s\n", ((t_token *)(tokens_list)->content)->str);
-      tokens_list = tokens_list->next;
-    }
+    // while (tokens_list != NULL)
+    // {
+    //   printf("tokens_list %s\n", ((t_token *)(tokens_list)->content)->str);
+    //   tokens_list = tokens_list->next;
+    // }
     return (tokens_list);
 }
 
@@ -116,13 +115,51 @@ t_list *tokenize(char *line)
     t_list *tokens_list;
     int i;
     int list_size;
-
-		char ***tmp;
-		int *sizes;
+    t_list *tmp_list;
+    t_list *tmp;
+    t_list *tmp_of_tmp_list;
 
     i = 0;
     tokens_list = split_delimiters(line, '|');
-		list_size = ft_lstsize(tokens_list);
+		// list_size = ft_lstsize(tokens_list);
+    tmp_list = NULL;
+    while (tokens_list->next != NULL)
+    {
+      tmp_list = split_delimiters(((t_token *)(tokens_list)->content)->str, '<');
+      while (tmp_list->next != NULL)
+      {
+        printf("1.tmp_list %s\n", ((t_token *)(tmp_list)->content)->str);
+        tmp_list = tmp_list->next;
+      }
+      ft_lstlast(tmp_list)->next = tokens_list->next;
+      tokens_list = tokens_list->next;
+      i++;
+    }
+    tokens_list = tmp;
+    tmp_list = NULL;
+    while (tokens_list->next != NULL)
+    {
+      if (tmp_list == NULL)
+      {
+        tmp_list = split_delimiters(((t_token *)(tokens_list)->content)->str, '>');
+        tmp = tmp_list;
+      }
+      else
+        tmp_list = split_delimiters(((t_token *)(tokens_list)->content)->str, '>');
+      while (tmp_list->next != NULL)
+      {
+        printf("2.tmp_list %s\n", ((t_token *)(tmp_list)->content)->str);
+        tmp_list = tmp_list->next;
+      }
+      ft_lstlast(tmp_list)->next = tokens_list->next;
+      tokens_list = tokens_list->next;
+    }
+    tokens_list = tmp;
+    while (tokens_list != NULL)
+    {
+      printf("tokens_list %s\n", ((t_token *)(tokens_list)->content)->str);
+      tokens_list = tokens_list->next;
+    }
 		// 再分割したあとの全体のtoken_sizeと再分割した配列(tmp)を取得
 		// tmp = (char ***) malloc(sizeof(char **) * (tokens_size + 1));
 		// sizes = (int *) malloc(sizeof(int) * (tokens_size + 1));
