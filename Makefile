@@ -1,9 +1,9 @@
 CC		:= cc
-CFLAGS	:= -Wall -Wextra -Werror
+# CFLAGS	:= -Wall -Wextra -Werror
 LDLIBS = -lreadline
 NAME	:= minishell
 RM		:= rm -f
-SRCS	:= srcs/main.c
+SRCS	:= srcs/main.c srcs/lexer/lexer.c
 OBJS	:= $(SRCS:.c=.o)
 MAKE	:= make
 SRCS_DIR	:= srcs
@@ -15,8 +15,11 @@ INC := -I$(INC_DIR) -I$(LIBFT_DIR)
 
 all:	$(NAME)
 $(NAME):	$(OBJS)
-	$(MAKE) -C $(LIBFT_DIR)
+	$(MAKE) bonus -C $(LIBFT_DIR)
 	$(CC) $(CFLAGS) $(INC) $(LIBFT_NAME) $(OBJS) -o $(NAME) $(LDLIBS)
+
+%.o: %.c
+	$(CC) ${CFLAGS} ${INC} -c $< -o $@
 
 clean:
 	$(MAKE) clean -C $(LIBFT_DIR)

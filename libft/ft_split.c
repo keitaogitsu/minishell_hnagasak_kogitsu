@@ -6,7 +6,7 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 15:11:28 by kogitsu           #+#    #+#             */
-/*   Updated: 2023/02/16 16:46:05 by kogitsu          ###   ########.fr       */
+/*   Updated: 2023/12/10 15:55:26 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,13 @@ char	**ft_split(char const *s, char c)
 	return (rec(s, c, 0));
 }
 
+// #include <stdio.h>
+
 // int main(void)
 // {
 // 	char * * tab;
 
-// 	tab = ft_split("tripouille", 0);
-// 	printf("%s\n", tab[0]);
+// 	tab = ft_split("trip ouil le", ' ');
+// 	for (int i=0; i<3; i++)
+// 		printf("%s\n", tab[i]);
 // }
