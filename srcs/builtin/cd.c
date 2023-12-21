@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 19:55:27 by hnagasak          #+#    #+#             */
-/*   Updated: 2023/12/17 05:59:13 by hnagasak         ###   ########.fr       */
+/*   Updated: 2023/12/19 17:56:02 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	ft_pwd(void)
 {
 	char	*path;
 
-	printf("--- ft_pwd ---\n");
+	// printf("--- ft_pwd ---\n");
 	path = getcwd(NULL, 0);
 	printf("%s\n", path);
 	free(path);
