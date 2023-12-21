@@ -1,9 +1,12 @@
+BUILTIN := $(wildcard srcs/builtin/*.c)
+
 CC		:= cc
 # CFLAGS	:= -Wall -Wextra -Werror
 LDLIBS = -lreadline
 NAME	:= minishell
 RM		:= rm -f
-SRCS	:= srcs/main.c srcs/lexer/lexer.c
+SRCS	:= srcs/main.c srcs/lexer/lexer.c \ 
+$(BUILTIN)
 OBJS	:= $(SRCS:.c=.o)
 MAKE	:= make
 SRCS_DIR	:= srcs
@@ -12,6 +15,8 @@ LIBFT_DIR	:= libft
 LIBFT_NAME := libft/libft.a
 INC := -I$(INC_DIR) -I$(LIBFT_DIR)
 
+%.o: %.c
+	$(CC) ${CFLAGS} ${INC} -c $< -o $@
 
 all:	$(NAME)
 $(NAME):	$(OBJS)
