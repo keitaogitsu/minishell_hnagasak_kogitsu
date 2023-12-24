@@ -1,12 +1,17 @@
-BUILTIN := $(wildcard srcs/builtin/*.c)
+BUILTIN_DIR := srcs/builtin
+BUILTIN_FILES := cd.c echo.c exit.c
+BUILTIN_SRCS := $(addprefix $(BUILTIN_DIR)/, $(BUILTIN_FILES))
+
+UTILS_DIR := srcs/utils
+UTILS_FILES := list.c
+UTILS_SRCS := $(addprefix $(UTILS_DIR)/, $(UTILS_FILES))
 
 CC		:= cc
 # CFLAGS	:= -Wall -Wextra -Werror
 LDLIBS = -lreadline
 NAME	:= minishell
 RM		:= rm -f
-SRCS	:= srcs/main.c srcs/lexer/lexer.c \ 
-$(BUILTIN)
+SRCS	:= srcs/main.c srcs/lexer/lexer.c $(BUILTIN_SRCS) $(UTILS_SRCS)
 OBJS	:= $(SRCS:.c=.o)
 MAKE	:= make
 SRCS_DIR	:= srcs
