@@ -3,7 +3,7 @@ BUILTIN_FILES := cd.c echo.c exit.c
 BUILTIN_SRCS := $(addprefix $(BUILTIN_DIR)/, $(BUILTIN_FILES))
 
 UTILS_DIR := srcs/utils
-UTILS_FILES := list.c
+UTILS_FILES := list.c env.c
 UTILS_SRCS := $(addprefix $(UTILS_DIR)/, $(UTILS_FILES))
 
 CC		:= cc
