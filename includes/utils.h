@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 12:45:23 by hnagasak          #+#    #+#             */
-/*   Updated: 2023/12/29 09:52:04 by hnagasak         ###   ########.fr       */
+/*   Updated: 2023/12/29 10:15:20 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ typedef struct s_env
 t_dlist				*ft_dlstnew(void *content);
 void				ft_dlstadd_back(t_dlist **lst, t_dlist *new);
 
-// env.c
+// t_env.c
 t_dlist	**init_env(char **envp);
 t_env	*to_env(char *envp, int is_shell_var);
 
