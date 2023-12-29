@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 12:45:23 by hnagasak          #+#    #+#             */
-/*   Updated: 2023/12/27 01:54:50 by hnagasak         ###   ########.fr       */
+/*   Updated: 2023/12/29 09:52:04 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 # include "libft.h"
 # include <stdio.h>
+
+
+#define IS_SHELL_VAR 1
 
 typedef struct s_dlist
 {
@@ -35,6 +38,7 @@ void				ft_dlstadd_back(t_dlist **lst, t_dlist *new);
 
 // env.c
 t_dlist	**init_env(char **envp);
+t_env	*to_env(char *envp, int is_shell_var);
 
 // debug
 void				print_env(t_dlist *env_list);
