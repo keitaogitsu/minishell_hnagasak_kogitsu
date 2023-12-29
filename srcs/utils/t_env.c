@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2023/12/29 09:48:20 by hnagasak         ###   ########.fr       */
+/*   Updated: 2023/12/29 20:24:05 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ t_dlist	**init_env(char **envp)
 
 	i = 0;
 	printf("--- init_env ---\n");
-	env_list = malloc(sizeof(t_dlist *) * (count_envp(envp) + 1));
+	env_list = (t_dlist **)malloc(sizeof(t_dlist *));
 	while (envp[i])
 	{
 		// printf("envp[%d]: %s\n", i, envp[i]);
@@ -114,4 +114,16 @@ t_dlist	**init_env(char **envp)
 		i++;
 	}
 	return (env_list);
+}
+
+size_t	get_argc(char *argv[])
+{
+	size_t	i;
+
+	i = 0;
+	while (argv[i])
+		i++;
+
+	printf("get_argc:%zu\n",i);
+	return (i);
 }

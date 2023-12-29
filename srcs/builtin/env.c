@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 09:18:48 by hnagasak          #+#    #+#             */
-/*   Updated: 2023/12/29 09:24:39 by hnagasak         ###   ########.fr       */
+/*   Updated: 2023/12/29 19:43:16 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,12 @@
 // 	}
 // }
 
-void ft_env(t_dlist *env_list)
+void ft_env(t_dlist **env_list)
 {
 	t_env	*env;
 	t_dlist	*current;
 
-	current = env_list;
+	current = *env_list;
 	while (current)
 	{
 		// printf("## current:%p, %p\n", current, current->cont);

@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 18:44:53 by hnagasak          #+#    #+#             */
-/*   Updated: 2023/12/29 19:55:33 by hnagasak         ###   ########.fr       */
+/*   Updated: 2023/12/29 20:26:36 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,17 @@
 
 void	ft_unset(char *argv[], t_dlist **env_list)
 {
-	int i;
-	t_dlist *current;
-	t_env *env;
+	t_dlist	*current;
+	t_env	*env;
 
-	printf("--- ft_unset ---\n");
-
+	if (get_argc(argv) != 2)
+		return ;
 	current = *env_list;
 	while (current != NULL)
 	{
 		env = (t_env *)current->cont;
 		if (ft_strncmp(env->key, argv[1], ft_strlen(env->key)) == 0)
 		{
-			printf("key: %s value: %s\n", env->key, env->value);
-
 			if (current->prv != NULL)
 				current->prv->nxt = current->nxt;
 			if (current->nxt != NULL)
@@ -38,7 +35,6 @@ void	ft_unset(char *argv[], t_dlist **env_list)
 			free(current);
 			return ;
 		}
-		// printf("key: %s value: %s\n", env->key, env->value);
 		current = current->nxt;
 	}
 }
