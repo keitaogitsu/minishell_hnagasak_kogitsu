@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 19:55:27 by hnagasak          #+#    #+#             */
-/*   Updated: 2023/12/19 17:56:02 by hnagasak         ###   ########.fr       */
+/*   Updated: 2023/12/29 09:40:57 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 char	*replace_tilde(const char *str)
 {
+	// TODO: replace_tilde
 	const char	*replacement = "/Users/hiroya/";
 
 	if (str[0] != '~')
@@ -33,15 +34,5 @@ void	ft_cd(char *argv[])
 	if (chdir(path))
 		printf("minishell: cd: %s:%s\n", argv[1], strerror(errno));
 	// printf("pwd:%s\n", getcwd(NULL, 0));
-	free(path);
-}
-
-void	ft_pwd(void)
-{
-	char	*path;
-
-	// printf("--- ft_pwd ---\n");
-	path = getcwd(NULL, 0);
-	printf("%s\n", path);
 	free(path);
 }
