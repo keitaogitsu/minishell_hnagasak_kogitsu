@@ -1,5 +1,5 @@
 BUILTIN_DIR := srcs/builtin
-BUILTIN_FILES := pwd.c cd.c echo.c exit.c env.c export.c
+BUILTIN_FILES := pwd.c cd.c echo.c exit.c env.c export.c unset.c
 BUILTIN_SRCS := $(addprefix $(BUILTIN_DIR)/, $(BUILTIN_FILES))
 
 UTILS_DIR := srcs/utils
