@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2023/12/29 09:17:04 by hnagasak         ###   ########.fr       */
+/*   Updated: 2023/12/29 09:48:20 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,9 @@ t_env	*to_env(char *envp, int is_shell_var)
 	}
 	// if(ft_strncmp(tmp[0], "NVM_RC_VERSION", 14) == 0)
 	// 	printf("###NVM_RC_VERSION\n");
-		// printf("##2 %s: %p\n", tmp[0],tmp[1]);
+	// printf("##2 %s: %p\n", tmp[0],tmp[1]);
 	env->key = tmp[0];
-	if(tmp[1] != NULL)
+	if (tmp[1] != NULL)
 		env->value = tmp[1];
 	else
 		env->value = "";
@@ -72,6 +72,29 @@ size_t	count_envp(char **envp)
 	return (count);
 }
 
+/**
+ * @brief Initializes a double linked list for the environment variables.
+ *
+ * This function takes the environment variables provided by `envp`
+ * and initializes a double linked list, where each node represents
+ * an environment variable. The function allocates memory for the
+ * list and populates it with the environment variables.
+ *
+ * @param envp A null-terminated array of strings representing
+ *             the environment variables. Each string is in the
+ *             format 'KEY=VALUE'.
+ *
+ * @return Returns a pointer to the head of the double linked list
+ *         representing the environment variables. If memory allocation
+ *         fails, returns NULL.
+ *
+ * @note The function uses `malloc` for memory allocation and should
+ *       be accompanied by appropriate memory deallocation when the
+ *       list is no longer needed.
+ * @note This function prints an initialization message to the standard
+ *       output. It also contains commented out debugging prints that can
+ *       be enabled if needed.
+ */
 t_dlist	**init_env(char **envp)
 {
 	t_dlist	**env_list;
