@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2023/12/29 20:24:05 by hnagasak         ###   ########.fr       */
+/*   Updated: 2023/12/29 20:42:19 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,6 +124,6 @@ size_t	get_argc(char *argv[])
 	while (argv[i])
 		i++;
 
-	printf("get_argc:%zu\n",i);
+	// printf("get_argc:%zu\n",i);
 	return (i);
 }

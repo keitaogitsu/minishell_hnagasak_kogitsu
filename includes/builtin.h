@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 14:23:31 by hnagasak          #+#    #+#             */
-/*   Updated: 2023/12/29 18:50:03 by hnagasak         ###   ########.fr       */
+/*   Updated: 2023/12/29 20:39:57 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	ft_echo(char *argv[]);
 void	ft_cd(char *argv[]);
 void	ft_pwd(void);
 void	ft_exit(char *argv[]);
-void	ft_env(t_dlist **env_list);
+void	ft_env(char **argv, t_dlist **env_list);
 void	ft_export(char *argv[], t_dlist **env_list);
 void	ft_unset(char *argv[], t_dlist **env_list);
 

@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 09:18:48 by hnagasak          #+#    #+#             */
-/*   Updated: 2023/12/29 19:43:16 by hnagasak         ###   ########.fr       */
+/*   Updated: 2023/12/29 20:43:18 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,23 @@
 // 	}
 // }
 
-void ft_env(t_dlist **env_list)
+void	ft_env(char **argv, t_dlist **env_list)
 {
-	t_env	*env;
-	t_dlist	*current;
+	t_env *env;
+	t_dlist *current;
+
+	if (get_argc(argv) != 1)
+	{
+		printf("Too many arguments\n");
+		return ;
+	}
 
 	current = *env_list;
 	while (current)
 	{
 		// printf("## current:%p, %p\n", current, current->cont);
 		env = current->cont;
-		printf("%s=%s\n", env->key,env->value);
+		printf("%s=%s\n", env->key, env->value);
 		// printf("is_shell_var: %d\n", env->is_shell_var);
 		current = current->nxt;
 	}
