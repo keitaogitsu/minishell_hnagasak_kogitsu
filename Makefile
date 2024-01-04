@@ -3,7 +3,10 @@ CC		:= cc
 LDLIBS = -lreadline
 NAME	:= minishell
 RM		:= rm -f
-SRCS	:= srcs/main.c srcs/lexer/lexer.c
+SRCS	:= srcs/main.c \
+			srcs/lexer/lexer.c \
+			srcs/lexer/lexer_utils.c \
+			srcs/lexer/token_processing.c 
 OBJS	:= $(SRCS:.c=.o)
 MAKE	:= make
 SRCS_DIR	:= srcs

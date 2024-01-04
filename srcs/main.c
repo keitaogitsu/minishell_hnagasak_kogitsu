@@ -6,15 +6,25 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2023/12/17 15:21:42 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/01/04 13:35:06 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
 
+void	print_tokens(t_token *tokens)
+{
+
+	while (tokens != NULL)
+	{
+		printf("token: %s\n", tokens->str);
+		tokens = tokens->next;
+	}
+}
+
 void	mainloop(char *line)
 {
-	t_list *tokens;
+	t_token *tokens;
 	while (1)
 	{
 		line = readline("minishell > ");
@@ -25,8 +35,7 @@ void	mainloop(char *line)
 		}
 		add_history(line);
 		tokens = tokenize(line);
-		// for (int i = 0; tokens[i] != NULL ; i++)
-		// 	printf("tokens %s\n",tokens[i]);
+		print_tokens(tokens);
 		free(line);
 	}
 }
