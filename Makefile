@@ -1,3 +1,8 @@
+
+EXEC_DIR := srcs/exec
+EXEC_FILES := execmd.c
+EXEC_SRCS := $(addprefix $(EXEC_DIR)/, $(EXEC_FILES))
+
 BUILTIN_DIR := srcs/builtin
 BUILTIN_FILES := pwd.c cd.c echo.c exit.c env.c export.c unset.c
 BUILTIN_SRCS := $(addprefix $(BUILTIN_DIR)/, $(BUILTIN_FILES))
@@ -11,7 +16,7 @@ CC		:= cc
 LDLIBS = -lreadline
 NAME	:= minishell
 RM		:= rm -f
-SRCS	:= srcs/main.c srcs/lexer/lexer.c $(BUILTIN_SRCS) $(UTILS_SRCS)
+SRCS	:= srcs/main.c srcs/lexer/lexer.c $(BUILTIN_SRCS) $(UTILS_SRCS) $(EXEC_SRCS)
 OBJS	:= $(SRCS:.c=.o)
 MAKE	:= make
 SRCS_DIR	:= srcs
