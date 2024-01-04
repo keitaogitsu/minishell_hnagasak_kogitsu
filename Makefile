@@ -4,7 +4,7 @@ EXEC_FILES := execmd.c
 EXEC_SRCS := $(addprefix $(EXEC_DIR)/, $(EXEC_FILES))
 
 BUILTIN_DIR := srcs/builtin
-BUILTIN_FILES := pwd.c cd.c echo.c exit.c env.c export.c unset.c
+BUILTIN_FILES := pwd.c cd.c echo.c exit.c env.c export.c unset.c test.c
 BUILTIN_SRCS := $(addprefix $(BUILTIN_DIR)/, $(BUILTIN_FILES))
 
 UTILS_DIR := srcs/utils
