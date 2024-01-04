@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/02 16:01:02 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/01/04 17:04:17 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "libft.h"
 # include "utils.h"
+# include "builtin.h"
 
 typedef enum e_redir_type
 {
@@ -34,7 +35,7 @@ typedef struct s_redir
 typedef struct s_cmd
 {
 	char			**argv;
-	t_dlist			*envp;
+	t_dlist			**envp;
 	char			*path;
 	t_redir_type	*input;
 	t_redir_type	*output;

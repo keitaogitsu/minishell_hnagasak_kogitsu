@@ -11,12 +11,16 @@ UTILS_DIR := srcs/utils
 UTILS_FILES := list.c t_env.c
 UTILS_SRCS := $(addprefix $(UTILS_DIR)/, $(UTILS_FILES))
 
+LEXER_DIR := srcs/lexer
+LEXER_FILES := lexer.c lexer_utils.c token_processing.c quote_process.c
+LEXER_SRCS := $(addprefix $(LEXER_DIR)/, $(LEXER_FILES))
+
 CC		:= cc
 # CFLAGS	:= -Wall -Wextra -Werror
 LDLIBS = -lreadline
 NAME	:= minishell
 RM		:= rm -f
-SRCS	:= srcs/main.c srcs/lexer/lexer.c $(BUILTIN_SRCS) $(UTILS_SRCS) $(EXEC_SRCS)
+SRCS	:= srcs/main.c $(BUILTIN_SRCS) $(UTILS_SRCS) $(EXEC_SRCS) $(LEXER_SRCS)
 OBJS	:= $(SRCS:.c=.o)
 MAKE	:= make
 SRCS_DIR	:= srcs

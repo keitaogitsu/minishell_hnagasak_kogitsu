@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/02 18:07:24 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/01/04 17:02:36 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,9 @@ int	ft_execmd(t_cmd *cmd, t_dlist **env_list)
 		// if (cmd->output == REDIR_HEREDOC)
 		// 	dup2(cmd->output_fd, STDOUT_FILENO);
 		// コマンド実行
-		if (execve(cmd->path, cmd->argv, env_list) == -1)
-			perror("execve");
-		exit(EXIT_FAILURE);
+		// if (execve(cmd->path, cmd->argv, env_list) == -1)
+		// 	perror("execve");
+		// exit(EXIT_FAILURE);
 	}
 	else if (pid > 0)
 	{
@@ -85,7 +85,7 @@ int	ft_execmd(t_cmd *cmd, t_dlist **env_list)
 	return (0);
 }
 
-void	exec_cmd_list(t_list **cmd_list, t_dlist **env_list)
+void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
 {
 	t_dlist *current;
 	t_cmd *cmd;
