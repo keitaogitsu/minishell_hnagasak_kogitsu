@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/04 17:02:36 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/01/04 18:17:26 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	exec_builtin(char **argv, t_dlist **env_list)
 	if (ft_strncmp(argv[0], "echo", 4) == 0)
 		ft_echo(argv);
 	else if (ft_strncmp(argv[0], "cd", 2) == 0)
-		ft_cd(argv);
+		ft_cd(argv, env_list);
 	else if (ft_strncmp(argv[0], "pwd", 3) == 0)
 		ft_pwd();
 	else if (ft_strncmp(argv[0], "exit", 4) == 0)

@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 14:23:31 by hnagasak          #+#    #+#             */
-/*   Updated: 2023/12/29 20:39:57 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/01/04 18:24:52 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,15 @@
 
 // builtin
 void	ft_echo(char *argv[]);
-void	ft_cd(char *argv[]);
+void	ft_cd(char **argv, t_dlist **env_list);
 void	ft_pwd(void);
 void	ft_exit(char *argv[]);
 void	ft_env(char **argv, t_dlist **env_list);
 void	ft_export(char *argv[], t_dlist **env_list);
 void	ft_unset(char *argv[], t_dlist **env_list);
 
-// libft
-// int		ft_strncmp(const char *s1, const char *s2, size_t n);
-// char	**ft_split(char const *s, char c);
-// char	*ft_strjoin(char const *s1, char const *s2);
+// test
+void	test_is_builtin(char **argv, t_dlist **env_list);
+void	test_builtin(char **argv, t_dlist **env_list);
 
 #endif
