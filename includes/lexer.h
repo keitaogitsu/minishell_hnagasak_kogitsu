@@ -6,7 +6,7 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 21:14:05 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/01/04 14:01:57 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/01/04 15:24:05 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,5 +74,8 @@ t_token_type	get_type(char c);
 void	general_state_process(t_tokenizer *toker, char *line, t_token_type type);
 t_token	*token_init(size_t len);
 void print_tokenizer(t_tokenizer *tokenizer);
+void	quote_state_process(t_tokenizer *toker, char *line, t_token_type type);
+void	dquote_state_process(t_tokenizer *toker, char *line, t_token_type type);
+void	complete_current_token(t_tokenizer *toker, t_token_type type);
 
 #endif

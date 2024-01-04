@@ -6,7 +6,7 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 18:18:42 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/01/04 14:06:35 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/01/04 15:24:53 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,13 @@ t_token	*tokenize(char *line)
 		printf("get_type(%c):%d\n",line[tokenizer.line_i],type);
 		if (tokenizer.state == STATE_GENERAL)
 			general_state_process(&tokenizer, line, type);
-		// else if (tokenizer.state == STATE_IN_DQUOTE)
-		// 	dquote_state_process(&tokenizer, line, type);
-		// else if (tokenizer.state == STATE_IN_QUOTE)
-		// 	quote_state_process(&tokenizer, line, type);
+		else if (tokenizer.state == STATE_IN_DQUOTE)
+			dquote_state_process(&tokenizer, line, type);
+		else if (tokenizer.state == STATE_IN_QUOTE)
+			quote_state_process(&tokenizer, line, type);
 		print_tokenizer(&tokenizer);
 		tokenizer.line_i++;
 	}
+	complete_current_token(&tokenizer, type);
 	return (tokenizer.tokens_head);
 }

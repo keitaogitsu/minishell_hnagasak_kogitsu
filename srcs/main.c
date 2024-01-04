@@ -6,7 +6,7 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/04 13:35:06 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/01/04 15:13:14 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	print_tokens(t_token *tokens)
 
 	while (tokens != NULL)
 	{
-		printf("token: %s\n", tokens->str);
+		printf("token: %s type:%d\n", tokens->str, tokens->type);
 		tokens = tokens->next;
 	}
 }

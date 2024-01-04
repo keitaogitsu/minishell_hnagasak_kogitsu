@@ -6,7 +6,8 @@ RM		:= rm -f
 SRCS	:= srcs/main.c \
 			srcs/lexer/lexer.c \
 			srcs/lexer/lexer_utils.c \
-			srcs/lexer/token_processing.c 
+			srcs/lexer/token_processing.c \
+			srcs/lexer/quote_process.c
 OBJS	:= $(SRCS:.c=.o)
 MAKE	:= make
 SRCS_DIR	:= srcs
