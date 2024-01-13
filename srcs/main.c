@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/04 17:56:05 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/01/13 15:09:20 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "exec.h"
 #include "lexer.h"
 #include "utils.h"
+#include "debug.h"
+#include "parser.h"
 #include <errno.h>
 #include <stdio.h>
 
@@ -41,6 +43,30 @@
 // 	}
 // }
 
+void print_cmd_list(t_dlist **cmd_list)
+{
+    t_dlist *current;
+    t_cmd    *cmd;
+    int        i;
+
+    current = *cmd_list;
+    printf("--- print_cmd_list ---\n");
+    while (current)
+    {
+        
+        cmd = current->cont;
+        i = 0;
+        printf("%s: ", cmd->argv[0]);
+        while (cmd->argv[i] != NULL)
+        {
+            printf("%s ",cmd->argv[i]);
+            i++;
+        }
+        printf("\n");
+        current = current->nxt;
+    }
+}
+
 void	print_tokens(t_token *tokens)
 {
 	while (tokens != NULL)
@@ -63,11 +89,13 @@ void	mainloop(char *line, t_dlist **env_list)
 			free(line);
 			break ;
 		}
-		test_builtin(ft_split(line, ' '), env_list);
+		// test_builtin(ft_split(line, ' '), env_list);
 		// cmd_list = gen_cmd_list(ft_split(line,"|"),env_list);
 		add_history(line);
-		// tokens = tokenize(line);
-		// print_tokens(tokens);
+		tokens = tokenize(line);
+		print_tokens(tokens);
+		cmd_list = create_cmd_list(tokens);
+		print_cmd_list(cmd_list);
 		free(line);
 	}
 }

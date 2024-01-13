@@ -19,12 +19,16 @@ DEBUG_DIR := srcs/debug
 DEBUG_FILES := print.c
 DEBUG_SRCS := $(addprefix $(DEBUG_DIR)/, $(DEBUG_FILES))
 
+PARSER_DIR := srcs/parser
+PARSER_FILES := parser.c
+PARSER_SRCS := $(addprefix $(PARSER_DIR)/, $(PARSER_FILES))
+
 CC		:= cc
 # CFLAGS	:= -Wall -Wextra -Werror
 LDLIBS = -lreadline
 NAME	:= minishell
 RM		:= rm -f
-SRCS	:= srcs/main.c $(BUILTIN_SRCS) $(UTILS_SRCS) $(EXEC_SRCS) $(LEXER_SRCS) $(DEBUG_SRCS)
+SRCS	:= srcs/main.c $(BUILTIN_SRCS) $(UTILS_SRCS) $(EXEC_SRCS) $(LEXER_SRCS) $(DEBUG_SRCS) $(PARSER_SRCS)
 OBJS	:= $(SRCS:.c=.o)
 MAKE	:= make
 SRCS_DIR	:= srcs

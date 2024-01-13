@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   t_env.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2023/12/29 20:42:19 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/01/13 15:04:56 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,9 +108,10 @@ t_dlist	**init_env(char **envp)
 	{
 		// printf("envp[%d]: %s\n", i, envp[i]);
 		if (i == 0)
-			ft_dlstnew(to_env(envp[i], 0));
+			*env_list = ft_dlstnew(to_env(envp[i], 0));
 		else
 			ft_dlstadd_back(env_list, ft_dlstnew(to_env(envp[i], 0)));
+		// printf("#envp[%d]: %s\n", i, envp[i]);
 		i++;
 	}
 	return (env_list);

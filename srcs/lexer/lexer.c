@@ -6,7 +6,7 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 18:18:42 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/01/04 15:24:53 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/01/13 15:07:39 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 t_token	*token_init(size_t len)
 {
 	t_token	*token;
-	
+
 	token = (t_token *)malloc(sizeof(t_token));
 	if (!token){
 		// error_exit(NULL);
@@ -55,6 +55,7 @@ t_token	*tokenize(char *line)
 {
 	t_tokenizer		tokenizer;
 	t_token_type	type;
+
 	if (!line)
 		return (NULL);
 	tokenizer_init(&tokenizer, line);
@@ -62,16 +63,15 @@ t_token	*tokenize(char *line)
 	while (line[tokenizer.line_i] != '\0')
 	{
 		type = get_type(line[tokenizer.line_i]);
-		printf("get_type(%c):%d\n",line[tokenizer.line_i],type);
 		if (tokenizer.state == STATE_GENERAL)
 			general_state_process(&tokenizer, line, type);
 		else if (tokenizer.state == STATE_IN_DQUOTE)
 			dquote_state_process(&tokenizer, line, type);
 		else if (tokenizer.state == STATE_IN_QUOTE)
 			quote_state_process(&tokenizer, line, type);
-		print_tokenizer(&tokenizer);
 		tokenizer.line_i++;
 	}
-	complete_current_token(&tokenizer, type);
+	if (tokenizer.token_str_i > 0)
+		complete_current_token(&tokenizer, type);
 	return (tokenizer.tokens_head);
 }
