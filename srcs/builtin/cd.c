@@ -6,13 +6,13 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 19:55:27 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/04 18:27:33 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/01/07 09:25:37 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 
-char *get_env_value(char *key, t_dlist **env_list)
+char	*get_env_value(char *key, t_dlist **env_list)
 {
 	t_dlist	*current;
 	t_env	*env;
@@ -30,11 +30,12 @@ char *get_env_value(char *key, t_dlist **env_list)
 
 char	*replace_tilde(const char *str, t_dlist **env_list)
 {
-	// TODO: replace_tilde
-	char *home = get_env_value("HOME", env_list);
-	// const char	*replacement = "/Users/hiroya/";
+	char		*home;
 	const char	*replacement = home;
 
+	// TODO: replace_tilde
+	home = get_env_value("HOME", env_list);
+	// const char	*replacement = "/Users/hiroya/";
 	if (str[0] != '~')
 		return (strdup(str));
 	return (ft_strjoin(replacement, str + 1));
