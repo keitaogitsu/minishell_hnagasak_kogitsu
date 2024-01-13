@@ -15,12 +15,16 @@ LEXER_DIR := srcs/lexer
 LEXER_FILES := lexer.c lexer_utils.c token_processing.c quote_process.c
 LEXER_SRCS := $(addprefix $(LEXER_DIR)/, $(LEXER_FILES))
 
+DEBUG_DIR := srcs/debug
+DEBUG_FILES := print.c
+DEBUG_SRCS := $(addprefix $(DEBUG_DIR)/, $(DEBUG_FILES))
+
 CC		:= cc
 # CFLAGS	:= -Wall -Wextra -Werror
 LDLIBS = -lreadline
 NAME	:= minishell
 RM		:= rm -f
-SRCS	:= srcs/main.c $(BUILTIN_SRCS) $(UTILS_SRCS) $(EXEC_SRCS) $(LEXER_SRCS)
+SRCS	:= srcs/main.c $(BUILTIN_SRCS) $(UTILS_SRCS) $(EXEC_SRCS) $(LEXER_SRCS) $(DEBUG_SRCS)
 OBJS	:= $(SRCS:.c=.o)
 MAKE	:= make
 SRCS_DIR	:= srcs
