@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 12:45:23 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/04 17:32:31 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/01/10 02:19:43 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 typedef struct s_dlist
 {
 	void			*cont;
+	size_t			i;
 	struct s_dlist	*nxt;
 	struct s_dlist	*prv;
 }					t_dlist;

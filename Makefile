@@ -1,6 +1,6 @@
 
 EXEC_DIR := srcs/exec
-EXEC_FILES := execmd.c
+EXEC_FILES := execmd.c exec_test.c
 EXEC_SRCS := $(addprefix $(EXEC_DIR)/, $(EXEC_FILES))
 
 BUILTIN_DIR := srcs/builtin

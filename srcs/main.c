@@ -6,7 +6,7 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/13 15:09:20 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/01/17 21:39:12 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,63 +18,6 @@
 #include "parser.h"
 #include <errno.h>
 #include <stdio.h>
-
-// generate t_dlist of t_cmd for test
-// t_dlist	**gen_cmd_list(char **argv, t_dlist **envlst)
-// {
-// 	int		i;
-// 	int		n;
-// 	t_dlist **cmd_list;
-// 	t_cmd	*cmd;
-// 	char	**str_cmds;
-
-// 	str_cmds = ft_split("echo Hello ,echo World", ',');
-// 	cmd_list = (t_dlist**) malloc(sizeof(t_dlist *));
-// 	n = 1;
-// 	i = 0;
-// 	while (i < n)
-// 	{
-// 		cmd = (t_cmd *)malloc(sizeof(t_cmd));
-// 		cmd->argv = str_cmds[i];
-// 		cmd->envp = *envlst;
-// 		*cmd_list = (t_dlist *) malloc(sizeof(t_dlist));
-// 		(*cmd_list)->content = cmd;
-// 		(*cmd_list)->next = NULL;
-// 	}
-// }
-
-void print_cmd_list(t_dlist **cmd_list)
-{
-    t_dlist *current;
-    t_cmd    *cmd;
-    int        i;
-
-    current = *cmd_list;
-    printf("--- print_cmd_list ---\n");
-    while (current)
-    {
-        
-        cmd = current->cont;
-        i = 0;
-        printf("%s: ", cmd->argv[0]);
-        while (cmd->argv[i] != NULL)
-        {
-            printf("%s ",cmd->argv[i]);
-            i++;
-        }
-        printf("\n");
-        current = current->nxt;
-    }
-}
-
-void	print_tokens(t_token *tokens)
-{
-	while (tokens != NULL)
-	{
-		printf("token: %s type:%d\n", tokens->str, tokens->type);
-		tokens = tokens->next;
-	}
-}
 
 void	mainloop(char *line, t_dlist **env_list)
 {
@@ -94,7 +37,7 @@ void	mainloop(char *line, t_dlist **env_list)
 		add_history(line);
 		tokens = tokenize(line);
 		print_tokens(tokens);
-		cmd_list = create_cmd_list(tokens);
+		cmd_list = create_cmd_list(tokens, env_list);
 		print_cmd_list(cmd_list);
 		free(line);
 	}
@@ -104,6 +47,8 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_dlist	**env_list;
 	char	*line;
+
+	printf("--- main %d---\n",dup(STDIN_FILENO));
 
 	line = NULL;
 	env_list = init_env(envp);
