@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/13 16:31:28 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/01/17 18:56:55 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,5 +46,10 @@ typedef struct s_cmd
 
 int					is_builtin_cmd(t_cmd *cmd);
 void				exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list);
+
+// test
+t_dlist	**test_cmd_list(char **str_cmds, t_dlist **envlst);
+void print_arr_str(char **arr_str);
+void print_cmd_list(t_dlist **cmd_list);
 
 #endif
