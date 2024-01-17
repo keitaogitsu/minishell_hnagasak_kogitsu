@@ -1,0 +1,8 @@
+*.o
+minishell
+libft.a
+
+.vscode
+docs
+Doxyfile
+*.swp
