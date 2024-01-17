@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/04 18:17:26 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/01/17 15:13:56 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,11 +85,222 @@ int	ft_execmd(t_cmd *cmd, t_dlist **env_list)
 	return (0);
 }
 
+// void	_dup_stdin(int i, int infile, int pipefd[2])
+// {
+// 	if (i == 0)
+// 	{
+// 		dup2(infile, STDIN_FILENO);
+// 	}
+// 	else
+// 	{
+// 		dup2(pipefd[0], STDIN_FILENO);
+// 		close(pipefd[0]);
+// 		close(pipefd[1]);
+// 	}
+// }
+
+int	file_open(char *file, int flag, int mode)
+{
+	int	fd;
+
+	fd = open(file, flag, mode);
+	if (fd == -1)
+	{
+		printf("%s: %s\n", file, strerror(errno));
+		exit(EXIT_FAILURE);
+	}
+	return (fd);
+}
+
+int	get_dupin_fd(t_cmd *cmd)
+{
+	int		fd;
+	t_dlist	*current;
+	t_dlist	*last;
+	t_redir	*rdr;
+
+	last = cmd->input;
+	while (last->nxt != NULL)
+		last = last->nxt;
+	rdr = (t_redir *)last->cont;
+	if (rdr->type == REDIR_INPUT)
+		return (file_open(rdr->file, O_RDONLY, 0));
+	else if (rdr->type == REDIR_HEREDOC)
+		return (STDIN_FILENO);
+	else
+		printf("error: get_dupin_fd\n");
+	exit(EXIT_FAILURE);
+}
+
+int	get_dupout_fd(t_cmd *cmd)
+{
+	int		fd;
+	t_dlist	*current;
+	t_dlist	*last;
+	t_redir	*rdr;
+
+	last = cmd->output;
+	while (last->nxt != NULL)
+		last = last->nxt;
+	rdr = (t_redir *)last->cont;
+	if (rdr->type == REDIR_OUTPUT)
+		return (file_open(rdr->file, O_WRONLY | O_CREAT | O_TRUNC,
+				S_IRUSR | S_IWUSR));
+	else if (rdr->type == REDIR_APPEND)
+		return (file_open(rdr->file, O_WRONLY | O_CREAT | O_APPEND,
+				S_IRUSR | S_IWUSR));
+	else
+		printf("error: get_dupout_fd\n");
+	exit(EXIT_FAILURE);
+}
+
+// 前コマンドのパイプ出力を標準入力にする
+void	pipout2stdin(t_dlist *cmdlst)
+{
+	t_cmd	*cmd;
+
+	cmd = (t_cmd *)cmdlst->cont;
+	dup2(cmd->pipe[0], STDIN_FILENO);
+	close(cmd->pipe[0]);
+	close(cmd->pipe[1]);
+}
+
+// コマンドのパイプ入力を標準出力にする
+void	pipin2stdout(t_dlist *cmdlst)
+{
+	t_cmd	*cmd;
+
+	cmd = (t_cmd *)cmdlst->cont;
+	dup2(cmd->pipe[1], STDOUT_FILENO);
+	close(cmd->pipe[0]);
+	close(cmd->pipe[1]);
+}
+
+void	dup_stdin(t_dlist *current)
+{
+	t_cmd	*cmd;
+
+	cmd = (t_cmd *)current->cont;
+	if (current->i == 0 && cmd->input == NULL)
+	{
+		// 前コマンドがない && 入力リダイレクトがない
+		// 何もしない
+	}
+	else if (current->i == 0 && cmd->input != NULL)
+	{
+		// 前コマンドがない && 入力リダイレクトがある
+		// 入力リダイレクトを実行
+		dup2(get_dupin_fd(cmd), STDIN_FILENO);
+	}
+	else if (current->i != 0 && cmd->input == NULL)
+	{
+		// 前コマンドがある && 入力リダイレクトがない
+		// 前コマンドのパイプ出力を入力にする
+		// dup_pipout(current->prv);
+		pipout2stdin(current->prv);
+	}
+	else if (current->i != 0 && cmd->input != NULL)
+	{
+		// 前コマンドがある && 入力リダイレクトがある
+		// 入力リダイレクトを複製
+		dup2(get_dupin_fd(cmd), STDIN_FILENO);
+	}
+}
+
+void	dup_stdout(t_dlist *current)
+{
+	t_cmd	*cmd;
+
+	printf("--- dup_stdout ---\n");
+
+	cmd = (t_cmd *)current->cont;
+	if (current->nxt == NULL && cmd->output == NULL)
+	{
+		// 次コマンドがない && 出力リダイレクトがない
+		// 何もしない
+	}
+	else if (current->nxt == NULL && cmd->output != NULL)
+	{
+		// 次コマンドがない && 出力リダイレクトがある
+		// 出力リダイレクトを実行
+		dup2(get_dupout_fd(cmd), STDOUT_FILENO);
+	}
+	else if (current->nxt != NULL && cmd->output == NULL)
+	{
+		// 次コマンドがある && 出力リダイレクトがない
+		// 出力先をパイプ入力にする
+		// dup_pipout(current);
+		pipin2stdout(current);
+	}
+	else if (current->nxt != NULL && cmd->output != NULL)
+	{
+		// 次コマンドがある && 出力リダイレクトがある
+		// 出力リダイレクトを複製
+		dup2(get_dupout_fd(cmd), STDOUT_FILENO);
+	}
+}
+
+
+// set t_cmd->pipe
+void	set_pipe(t_dlist *current)
+{
+	t_cmd	*cmd;
+
+	printf("--- set_pipe ---\n");
+	cmd = (t_cmd *)current->cont;
+	if (cmd->pipe[0] != -1)
+		close(cmd->pipe[0]);
+	if (cmd->pipe[1] != -1)
+		close(cmd->pipe[1]);
+	if (current->nxt != NULL)
+	{
+		if (pipe(cmd->pipe) == -1)
+			perror("pipe error");
+	}
+}
+
+// store stdin and stdout
+void	store_stdio(t_dlist *current)
+{
+	t_cmd	*cmd;
+
+	printf("--- store_stdio ---\n");
+	cmd = (t_cmd *)current->cont;
+	printf("1.stdio[0]: %d,stdio[1]: %d\n", cmd->stdio[0],cmd->stdio[1]);
+	cmd->stdio[0] = dup(STDIN_FILENO);
+	cmd->stdio[1] = dup(STDOUT_FILENO);
+	if (cmd->stdio[0] == -1 || cmd->stdio[1] == -1)
+	{
+		perror("dup error");
+		printf("2.stdio[0]: %d,stdio[1]: %d\n", cmd->stdio[0],cmd->stdio[1]);
+		if (cmd->stdio[0] != -1)
+			if (close(cmd->stdio[0]) == -1)
+				perror("close error");
+		exit(EXIT_FAILURE);
+	}
+}
+
+void	restore_stdio(t_dlist *current)
+{
+	t_cmd	*cmd;
+	int		res[2];
+
+	cmd = (t_cmd *)current->cont;
+	res[0] = dup2(cmd->stdio[0], STDIN_FILENO);
+	res[1] = dup2(cmd->stdio[1], STDOUT_FILENO);
+	if (res[0] != -1 && res[1] != -1)
+	{
+		if (close(cmd->stdio[0]) == -1)
+			perror("close error");
+		if (close(cmd->stdio[1]) == -1)
+			perror("close error");
+	}
+}
+
 void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
 {
 	t_dlist *current;
 	t_cmd *cmd;
-	int status;
 
 	current = *cmd_list;
 	while (current != NULL)
@@ -97,7 +308,12 @@ void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
 		cmd = (t_cmd *)current->cont;
 		if (is_builtin_cmd(cmd))
 		{
+			set_pipe(current);
+			store_stdio(current);
+			dup_stdin(current);
+			dup_stdout(current);
 			exec_builtin(cmd->argv, cmd->envp);
+			restore_stdio(current);
 		}
 		else
 		{
@@ -105,6 +321,8 @@ void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
 			// 		pipe
 			// 		fork
 			// 		duplicate I/O
+			dup_stdin(current);
+			dup_stdout(current);
 			//		execv
 		}
 		current = current->nxt;
