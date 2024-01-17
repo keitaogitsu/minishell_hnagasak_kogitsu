@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execmd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/17 15:13:56 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/01/17 19:03:37 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -257,6 +257,9 @@ void	set_pipe(t_dlist *current)
 		if (pipe(cmd->pipe) == -1)
 			perror("pipe error");
 	}
+	else {
+		printf("unset pipe\n");
+	}
 }
 
 // store stdin and stdout
@@ -303,6 +306,7 @@ void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
 	t_cmd *cmd;
 
 	current = *cmd_list;
+	printf("--- exec_cmd_list ---\n");
 	while (current != NULL)
 	{
 		cmd = (t_cmd *)current->cont;
