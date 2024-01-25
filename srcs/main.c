@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/17 21:39:12 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/01/20 16:35:18 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,13 @@ void	mainloop(char *line, t_dlist **env_list)
 		add_history(line);
 		tokens = tokenize(line);
 		print_tokens(tokens);
-		cmd_list = create_cmd_list(tokens, env_list);
-		print_cmd_list(cmd_list);
-		free(line);
+		if(is_cmd_line(tokens))
+			printf("## is command line\n");
+		else
+			printf("## is NOT command line\n");
+		// cmd_list = create_cmd_list(tokens, env_list);
+		// print_cmd_list(cmd_list);
+		// free(line);
 	}
 }
 

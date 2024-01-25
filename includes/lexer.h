@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 21:14:05 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/01/04 16:50:31 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/01/20 16:31:10 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,5 +78,8 @@ void print_tokenizer(t_tokenizer *tokenizer);
 void	quote_state_process(t_tokenizer *toker, char *line, t_token_type type);
 void	dquote_state_process(t_tokenizer *toker, char *line, t_token_type type);
 void	complete_current_token(t_tokenizer *toker, t_token_type type);
+
+
+int	is_cmd_line(t_token *tkn_list);
 
 #endif

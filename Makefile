@@ -12,7 +12,7 @@ UTILS_FILES := list.c t_env.c
 UTILS_SRCS := $(addprefix $(UTILS_DIR)/, $(UTILS_FILES))
 
 LEXER_DIR := srcs/lexer
-LEXER_FILES := lexer.c lexer_utils.c token_processing.c quote_process.c
+LEXER_FILES := lexer.c lexer_utils.c token_processing.c quote_process.c validate_token.c
 LEXER_SRCS := $(addprefix $(LEXER_DIR)/, $(LEXER_FILES))
 
 DEBUG_DIR := srcs/debug
