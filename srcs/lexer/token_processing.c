@@ -6,7 +6,7 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 21:00:13 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/01/13 15:08:39 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/01/20 14:17:29 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	complete_current_token(t_tokenizer *toker, t_token_type type)
 	join_token(toker, toker->tmp_token);
 	toker->tmp_token = token_init(toker->str_len - toker->line_i);
 	toker->token_str_i = 0;
-	toker->is_quoted = FALSE;
+	printf("tokenizer.state = %d\n", toker->state);
 }
 
 void	general_state_process(t_tokenizer *toker, char *line, t_token_type type)
@@ -59,15 +59,9 @@ void	general_state_process(t_tokenizer *toker, char *line, t_token_type type)
 	{
 		esc_process(toker, line, type);
 		if (type == CHAR_QUOTE)
-		{
 			toker->state = STATE_IN_QUOTE;
-			toker->is_quoted = TRUE;
-		}
 		else if (type == CHAR_DQUOTE)
-		{
 			toker->state = STATE_IN_DQUOTE;
-			toker->is_quoted = TRUE;
-		}
 		else
 			toker->state = STATE_GENERAL;
 	}
@@ -76,7 +70,8 @@ void	general_state_process(t_tokenizer *toker, char *line, t_token_type type)
 		if (toker->token_str_i > 0)
 			complete_current_token(toker, CHAR_GENERAL);
 		toker->tmp_token->str[toker->token_str_i++] = line[toker->line_i];
-		if (line[toker->line_i + 1] == line[toker->line_i])
+		if ((type == CHAR_GREATER || type == CHAR_LESSER) && 
+			line[toker->line_i + 1] == line[toker->line_i])
 		{
 			toker->tmp_token->str[toker->token_str_i++] = line[toker->line_i++];
 			if (type == CHAR_GREATER)
@@ -89,7 +84,7 @@ void	general_state_process(t_tokenizer *toker, char *line, t_token_type type)
 	else if (type == CHAR_WHITESPACE || type == CHAR_TAB)
 	{
 		// 今作ってるtokenを終わらせる
-		if (toker->token_str_i > 0 || (toker->is_quoted))
+		if (toker->token_str_i > 0)
 			complete_current_token(toker, CHAR_GENERAL);
 	}
 }

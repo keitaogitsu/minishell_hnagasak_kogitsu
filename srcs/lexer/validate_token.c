@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   validate_token.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 15:51:26 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/25 20:04:03 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/01/25 21:50:59 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,14 +95,14 @@ int	has_redirection(t_token *tkn_list)
 	printf("=== has_redirection (%s)===\n", tkn_list->str);
 	if (tkn_list == NULL || tkn_list->next == NULL)
 		return (0);
-	if (is_redir_sign(tkn_list) && is_string(tkn_list->next))
+	if (is_redir_sign(tkn_list) && has_string(tkn_list->next))
 	{
-		printf("--- is_redirection (%s)--- True\n", tkn_list->str);
+		printf("--- has_redirection (%s)--- True\n", tkn_list->str);
 		return (1);
 	}
 	else
 	{
-		printf("--- is_redirection (%s)--- False\n", tkn_list->str);
+		printf("--- has_redirection (%s)--- False\n", tkn_list->str);
 		return (0);
 	}
 }
@@ -132,8 +132,12 @@ int	is_redirection(t_token *tkn_list)
 //     | string arguments
 int	is_arguments(t_token *tkn_list)
 {
+	if(tkn_list == NULL)
+		return (0);
+	if(tkn_list->type == CHAR_PIPE && tkn_list->next != NULL && tkn_list->next->type != CHAR_PIPE)
+		return is_arguments(tkn_list->next);
 	printf("=== is_arguments (%s)===\n", tkn_list->str);
-	if (is_redirection(tkn_list) && tkn_list->next->next == NULL)
+	if (is_redirection(tkn_list))
 	{
 		printf("--- is_arguments (%s)---1 True\n", tkn_list->str);
 		return (1);

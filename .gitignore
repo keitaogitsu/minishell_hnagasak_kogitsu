@@ -1,6 +1,7 @@
 *.o
 minishell
 libft.a
+bnf.md
 
 .vscode
 docs

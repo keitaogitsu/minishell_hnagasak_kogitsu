@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 20:48:51 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/01/04 17:06:41 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/01/20 13:36:12 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ void print_tokenizer(t_tokenizer *tokenizer)
 	printf("line_i:%zu\n",tokenizer->line_i);
 	printf("token_str_i:%zu\n",tokenizer->token_str_i);
 	printf("str_len:%zu\n",tokenizer->str_len);
-	printf("is_quoted:%d\n",tokenizer->is_quoted);
 	printf("tmp_token:%s\n",tokenizer->tmp_token->str);
 	if(tokenizer->tokens_head != NULL)
 		printf("tokens_head:%s\n",tokenizer->tokens_head->str);

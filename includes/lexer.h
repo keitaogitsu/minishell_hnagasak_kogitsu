@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 21:14:05 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/01/20 16:31:10 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/01/25 20:17:59 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,7 @@
 # include <stdlib.h>
 # include <string.h>
 
-#include "libft.h"
 
-typedef enum	e_bool
-{
-	FALSE,
-	TRUE,
-}	t_bool;
 
 typedef	enum	e_token_type
 {
@@ -64,7 +58,6 @@ typedef struct s_tokenizer
 	size_t		line_i;
 	size_t		token_str_i;
 	size_t		str_len;
-	t_bool		is_quoted;
 	t_token		*tmp_token;
 	t_token		*tokens_head;
 	t_token_state	state;

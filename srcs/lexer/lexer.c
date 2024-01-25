@@ -6,7 +6,7 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 18:18:42 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/01/13 15:07:39 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/01/20 14:03:08 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,15 @@ t_token	*token_init(size_t len)
 	t_token	*token;
 
 	token = (t_token *)malloc(sizeof(t_token));
-	if (!token){
+	if (!token)
+	{
 		// error_exit(NULL);
 		printf("malloc error\n");
 		exit(EXIT_FAILURE);
 	}
 	token->str = (char *)malloc(sizeof(char) * (len + 1));
-	if (!token->str){
+	if (!token->str)
+	{
 		// error_exit(NULL);
 		printf("malloc error\n");
 		exit(EXIT_FAILURE);
@@ -48,7 +50,6 @@ void	tokenizer_init(t_tokenizer *tokenizer, char *line)
 	tokenizer->line_i = 0;
 	tokenizer->token_str_i = 0;
 	tokenizer->str_len = line_len;
-	tokenizer->is_quoted = FALSE;
 }
 
 t_token	*tokenize(char *line)
@@ -73,5 +74,11 @@ t_token	*tokenize(char *line)
 	}
 	if (tokenizer.token_str_i > 0)
 		complete_current_token(&tokenizer, type);
+	if (tokenizer.state != STATE_GENERAL)
+		{
+		// error_exit(NULL);
+		printf("error\n");
+		exit(EXIT_FAILURE);
+	}
 	return (tokenizer.tokens_head);
 }
