@@ -6,9 +6,11 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 18:18:42 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/01/20 14:03:08 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/01/27 14:11:10 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+// #include "debug.h"
 
 #include "lexer.h"
 
@@ -77,6 +79,7 @@ t_token	*tokenize(char *line)
 	if (tokenizer.state != STATE_GENERAL)
 		{
 		// error_exit(NULL);
+		// print_tokens(tokenizer.tokens_head);
 		printf("error\n");
 		exit(EXIT_FAILURE);
 	}

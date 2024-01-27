@@ -23,12 +23,16 @@ PARSER_DIR := srcs/parser
 PARSER_FILES := parser.c
 PARSER_SRCS := $(addprefix $(PARSER_DIR)/, $(PARSER_FILES))
 
+EXPANDER_DIR := srcs/expander
+EXPANDER_FILES := expander.c
+EXPANDER_SRCS := $(addprefix $(EXPANDER_DIR)/, $(EXPANDER_FILES))
+
 CC		:= cc
 # CFLAGS	:= -Wall -Wextra -Werror
 LDLIBS = -lreadline
 NAME	:= minishell
 RM		:= rm -f
-SRCS	:= srcs/main.c $(BUILTIN_SRCS) $(UTILS_SRCS) $(EXEC_SRCS) $(LEXER_SRCS) $(DEBUG_SRCS) $(PARSER_SRCS)
+SRCS	:= srcs/main.c $(BUILTIN_SRCS) $(UTILS_SRCS) $(EXEC_SRCS) $(LEXER_SRCS) $(DEBUG_SRCS) $(PARSER_SRCS) $(EXPANDER_SRCS)
 OBJS	:= $(SRCS:.c=.o)
 MAKE	:= make
 SRCS_DIR	:= srcs
