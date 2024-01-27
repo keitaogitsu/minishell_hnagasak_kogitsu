@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/01/27 17:48:52 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/01/27 19:55:08 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,20 @@
 char    *find_env(char *char_position, t_dlist **env_list)
 {
     char *start;
-    size_t env_len;
+    size_t key_len;
     
     if (*char_position == '$')
     {
         char_position++;
         start = char_position;
-        while (*char_position != '\0' && *char_position != ' ' && *char_position != '$')
+        while (*char_position != '\"' && *char_position != ' ' && *char_position != '$')
             char_position++;
-        env_len = char_position - start;
+        key_len = char_position - start;
+
         while (*env_list != NULL)
         {
-            if (ft_strncmp(((t_env *)(*env_list)->cont)->key, start, env_len) == 0)
+            printf("key:%s, start:%s len:%zu\n",((t_env *)(*env_list)->cont)->key,start, key_len);
+            if (ft_strncmp(((t_env *)(*env_list)->cont)->key, start, key_len) == 0)
                 return (((t_env *)(*env_list)->cont)->value);
             *env_list = (*env_list)->nxt;
         }
@@ -83,26 +85,32 @@ char    *expand_env_var(char *str, char *env_value)
     if (new_str == NULL)
         return (NULL);
     new_str_head = new_str;
+    // $直前まで元の文字列をコピー
     while (*str != '$')
     {
         *new_str = *str;
         new_str++;
         str++;
     }
-    while (*str != '\0' && *str != ' ' && *str != '$')
+    // 元の文字列を環境変数の次まで進める
+    str++; // $をスキップ
+    while (*str != '\"' && *str != ' ' && *str != '$')
         str++;
+    // 環境変数部分のコピー
     while (*env_value != '\0')
     {
         *new_str = *env_value;
         new_str++;
         env_value++;
     }
+    // 元の文字列の残りをコピー
     while (*str != '\0')
     {
         *new_str = *str;
         new_str++;
         str++;
     }
+    *new_str = '\0';
     return (new_str_head);
 }
 
