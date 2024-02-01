@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/01/27 19:55:08 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/01 23:33:56 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@
 //     return (new);
 // }
 
-char    *find_env(char *char_position, t_dlist **env_list)
+char    *find_env(char *char_position, t_dlist *env_list)
 {
     char *start;
     size_t key_len;
@@ -56,16 +56,16 @@ char    *find_env(char *char_position, t_dlist **env_list)
     {
         char_position++;
         start = char_position;
-        while (*char_position != '\"' && *char_position != ' ' && *char_position != '$')
+        while (*char_position != '\"' && *char_position != '\'' && *char_position != ' ' && *char_position != '$')
             char_position++;
         key_len = char_position - start;
 
-        while (*env_list != NULL)
+        while (env_list != NULL)
         {
-            printf("key:%s, start:%s len:%zu\n",((t_env *)(*env_list)->cont)->key,start, key_len);
-            if (ft_strncmp(((t_env *)(*env_list)->cont)->key, start, key_len) == 0)
-                return (((t_env *)(*env_list)->cont)->value);
-            *env_list = (*env_list)->nxt;
+            printf("key:%s, start:%s len:%zu\n",((t_env *)env_list->cont)->key, start, key_len);
+            if (ft_strncmp(((t_env *)env_list->cont)->key, start, key_len) == 0)
+                return (((t_env *)(env_list)->cont)->value);
+            env_list = (env_list)->nxt;
         }
         return ("");
     }
@@ -94,7 +94,7 @@ char    *expand_env_var(char *str, char *env_value)
     }
     // 元の文字列を環境変数の次まで進める
     str++; // $をスキップ
-    while (*str != '\"' && *str != ' ' && *str != '$')
+    while (*str != '\"' && *str != '\'' && *str != ' ' && *str != '$')
         str++;
     // 環境変数部分のコピー
     while (*env_value != '\0')
@@ -114,23 +114,69 @@ char    *expand_env_var(char *str, char *env_value)
     return (new_str_head);
 }
 
+typedef enum e_expandable_state
+{
+    NOT_IN_QUOTE,
+    IN_QUOTE,
+		IN_DQUOTE
+} t_expandable_state;
+
+// void   change_state(char *char_position, t_expandable_state *state)
+// {
+//     if (*char_position == '\'' && state == NOT_IN_QUOTE)
+//         {
+//             state = IN_QUOTE;
+//             *char_position++;
+//         }    
+//         else if (*char_position == '\'' && state == IN_QUOTE)
+//         {
+//             state = NOT_IN_QUOTE;
+//             *char_position++;
+//         }    
+//         else if (*char_position == '\"' && state == NOT_IN_QUOTE)
+//         {
+//             state = IN_DQUOTE;
+//             *char_position++;
+//         }    
+//         else if (*char_position == '\"' && state == IN_DQUOTE)
+//         {
+//             state = NOT_IN_QUOTE;
+//             *char_position++;
+//         } 
+// }
+
 t_token *expand_env(t_token *tokens, t_dlist **env_list)
 {
     t_token *current;
     char *str_current;
     char *new_str;
     char *env_value;
+    size_t state;
 
+    state = NOT_IN_QUOTE;
     current = tokens;
     while (current != NULL)
     {
-        if (current->type == CHAR_DQUOTE)
+        // if (current->type == CHAR_DQUOTE
+        // || (current->type == CHAR_GENERAL && ft_strchr(current->str, '\"') != ft_strrchr(current->str, '\"')))
+        // {
+        str_current = current->str;
+        while (*str_current != '\0')
         {
-            str_current = current->str + 1;
-            printf("42tokyo %s : %s\n", current->str, str_current);
-            while (*str_current != CHAR_DQUOTE)
+            // printf("42tokyo %s : %s\n", current->str, str_current);
+            // while (*str_current != CHAR_DQUOTE)
+            if (*str_current == '\'' && state == NOT_IN_QUOTE)
+                state = IN_QUOTE;  
+            else if (*str_current == '\'' && state == IN_QUOTE)
+                state = NOT_IN_QUOTE;
+            else if (*str_current == '\"' && state == NOT_IN_QUOTE)
+                state = IN_DQUOTE;
+            else if (*str_current == '\"' && state == IN_DQUOTE)
+                state = NOT_IN_QUOTE;
+						printf("str:%c state:%zu\n", *str_current, state);
+            if(state != IN_QUOTE)
             {
-                env_value = find_env(str_current, env_list);
+                env_value = find_env(str_current, *env_list);
                 if (env_value != NULL)
                 {
                     printf("env_value: %s\n", env_value);
@@ -138,10 +184,12 @@ t_token *expand_env(t_token *tokens, t_dlist **env_list)
                     printf("new_str: %s\n", new_str);
                     free(current->str);
                     current->str = new_str;
-                    str_current = new_str;
+                    str_current = new_str; // TODO: str_currentを＄の前まで進める
                 }
-                str_current++;
+                // str_current++;
+                // }
             }
+            str_current++;
         }
         current = current->next;
     }

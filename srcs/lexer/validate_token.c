@@ -6,7 +6,7 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/20 15:51:26 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/25 21:50:59 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/01 22:56:15 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,16 @@ int	has_string(t_token *tkn_list)
 {
 	if (tkn_list == NULL)
 		return (0);
-	printf("=== has_string (%s)=== ", tkn_list->str);
-	if (tkn_list->type == CHAR_GENERAL)
+	// printf("=== has_string (%s)=== ", tkn_list->str);
+	if (tkn_list->type == CHAR_GENERAL || tkn_list->type == CHAR_QUOTE 
+	|| tkn_list->type == CHAR_DQUOTE)
 	{
-		printf("True\n");
+		// printf("True\n");
 		return (1);
 	}
 	else
 	{
-		printf("False\n");
+		// printf("False\n");
 		return (0);
 	}
 }
@@ -45,46 +46,46 @@ int	is_string(t_token *tkn_list)
 {
 	if (tkn_list == NULL)
 		return (0);
-	printf("=== is_string (%s)=== ", tkn_list->str);
+	// printf("=== is_string (%s)=== ", tkn_list->str);
 	if (has_string(tkn_list) && tkn_list->next == NULL)
 	{
-		printf("True\n");
+		// printf("True\n");
 		return (1);
 	}
 	else
 	{
-		printf("False\n");
+		// printf("False\n");
 		return (0);
 	}
 }
 
 int	is_pipe(t_token *tkn_list)
 {
-	printf("--- is_pipe (%s)--- ", tkn_list->str);
+	// printf("--- is_pipe (%s)--- ", tkn_list->str);
 	if (tkn_list->type == CHAR_PIPE)
 	{
-		printf("True\n");
+		// printf("True\n");
 		return (1);
 	}
 	else
 	{
-		printf("False\n");
+		// printf("False\n");
 		return (0);
 	}
 }
 
 int	is_redir_sign(t_token *tkn_list)
 {
-	printf("--- is_redir_sign (%s)--- ", tkn_list->str);
+	// printf("--- is_redir_sign (%s)--- ", tkn_list->str);
 	if (tkn_list->type == CHAR_GREATER || tkn_list->type == CHAR_LESSER
 		|| tkn_list->type == D_GREATER || tkn_list->type == D_LESSER)
 	{
-		printf("True\n");
+		// printf("True\n");
 		return (1);
 	}
 	else
 	{
-		printf("False\n");
+		// printf("False\n");
 		return (0);
 	}
 }
@@ -92,17 +93,17 @@ int	is_redir_sign(t_token *tkn_list)
 // 先頭2つのtokenがredir_signとstringであることを判定する
 int	has_redirection(t_token *tkn_list)
 {
-	printf("=== has_redirection (%s)===\n", tkn_list->str);
+	// printf("=== has_redirection (%s)===\n", tkn_list->str);
 	if (tkn_list == NULL || tkn_list->next == NULL)
 		return (0);
 	if (is_redir_sign(tkn_list) && has_string(tkn_list->next))
 	{
-		printf("--- has_redirection (%s)--- True\n", tkn_list->str);
+		// printf("--- has_redirection (%s)--- True\n", tkn_list->str);
 		return (1);
 	}
 	else
 	{
-		printf("--- has_redirection (%s)--- False\n", tkn_list->str);
+		// printf("--- has_redirection (%s)--- False\n", tkn_list->str);
 		return (0);
 	}
 }
@@ -112,15 +113,15 @@ int	is_redirection(t_token *tkn_list)
 {
 	if (tkn_list == NULL || tkn_list->next == NULL)
 		return (0);
-	printf("=== is_redirection (%s)===\n", tkn_list->str);
+	// printf("=== is_redirection (%s)===\n", tkn_list->str);
 	if (has_redirection(tkn_list) && tkn_list->next->next == NULL)
 	{
-		printf("--- is_redirection (%s)--- True\n", tkn_list->str);
+		// printf("--- is_redirection (%s)--- True\n", tkn_list->str);
 		return (1);
 	}
 	else
 	{
-		printf("--- is_redirection (%s)--- False\n", tkn_list->str);
+		// printf("--- is_redirection (%s)--- False\n", tkn_list->str);
 		return (0);
 	}
 }
@@ -136,66 +137,66 @@ int	is_arguments(t_token *tkn_list)
 		return (0);
 	if(tkn_list->type == CHAR_PIPE && tkn_list->next != NULL && tkn_list->next->type != CHAR_PIPE)
 		return is_arguments(tkn_list->next);
-	printf("=== is_arguments (%s)===\n", tkn_list->str);
+	// printf("=== is_arguments (%s)===\n", tkn_list->str);
 	if (is_redirection(tkn_list))
 	{
-		printf("--- is_arguments (%s)---1 True\n", tkn_list->str);
+		// printf("--- is_arguments (%s)---1 True\n", tkn_list->str);
 		return (1);
 	}
 	else if (has_redirection(tkn_list) && is_arguments(tkn_list->next->next))
 	{
-		printf("--- is_arguments (%s)---2 True\n", tkn_list->str);
+		// printf("--- is_arguments (%s)---2 True\n", tkn_list->str);
 		return (1);
 	}
 	else if (has_string(tkn_list) && tkn_list->next != NULL
 		&& is_arguments(tkn_list->next))
 	{
-		printf("--- is_arguments (%s)---3 True\n", tkn_list->str);
+		// printf("--- is_arguments (%s)---3 True\n", tkn_list->str);
 		return (1);
 	}
 	else if (is_string(tkn_list))
 	{
-		printf("--- is_arguments (%s)---4 True\n", tkn_list->str);
+		// printf("--- is_arguments (%s)---4 True\n", tkn_list->str);
 		return (1);
 	}
 	else
 	{
-		printf("--- is_arguments (%s)--- False\n", tkn_list->str);
+		// printf("--- is_arguments (%s)--- False\n", tkn_list->str);
 		return (0);
 	}
 }
 
 int	is_command(t_token *tkn_list)
 {
-	printf("=== is_command (%s)===\n", tkn_list->str);
+	// printf("=== is_command (%s)===\n", tkn_list->str);
 	if (is_arguments(tkn_list))
 	{
-		printf("--- is_command (%s)--- True\n", tkn_list->str);
+		// printf("--- is_command (%s)--- True\n", tkn_list->str);
 		return (1);
 	}
 	else
 	{
-		printf("--- is_command (%s)--- False\n", tkn_list->str);
+		// printf("--- is_command (%s)--- False\n", tkn_list->str);
 		return (0);
 	}
 }
 
 int	is_piped_commands(t_token *tkn_list)
 {
-	printf("=== is_piped_commands (%s)===\n", tkn_list->str);
+	// printf("=== is_piped_commands (%s)===\n", tkn_list->str);
 	if (is_command(tkn_list))
 	{
-		printf("--- is_piped_commands (%s)---1 True\n\n", tkn_list->str);
+		// printf("--- is_piped_commands (%s)---1 True\n\n", tkn_list->str);
 		return (1);
 	}
 	else if (is_command(tkn_list) && is_pipe(tkn_list->next)
 		&& is_piped_commands(tkn_list->next->next))
 	{
-		printf("--- is_piped_commands (%s)---2 True\n\n", tkn_list->str);
+		// printf("--- is_piped_commands (%s)---2 True\n\n", tkn_list->str);
 		return (1);
 	}
 	else
-		printf("--- is_piped_commands (%s)--- False\n\n", tkn_list->str);
+		// printf("--- is_piped_commands (%s)--- False\n\n", tkn_list->str);
 	return (0);
 }
 
@@ -204,7 +205,7 @@ int	is_piped_commands(t_token *tkn_list)
 // | sequencial_commands "\n"
 int	is_cmd_line(t_token *tkn_list)
 {
-	printf("--- is_cmd_line (%s)---\n", tkn_list->str);
+	// printf("--- is_cmd_line (%s)---\n", tkn_list->str);
 	if (is_piped_commands(tkn_list))
 		return (1);
 	else
