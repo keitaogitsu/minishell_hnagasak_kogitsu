@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execmd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/17 19:03:37 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/03 15:31:13 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -312,6 +312,8 @@ void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
 		cmd = (t_cmd *)current->cont;
 		if (is_builtin_cmd(cmd))
 		{
+			printf("argv[0]: %s ", cmd->argv[0]);
+			printf("argv[1]: %s/n", cmd->argv[1]);
 			set_pipe(current);
 			store_stdio(current);
 			dup_stdin(current);
