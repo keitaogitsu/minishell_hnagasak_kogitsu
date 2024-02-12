@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 18:44:53 by hnagasak          #+#    #+#             */
-/*   Updated: 2023/12/29 20:26:36 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/13 03:46:49 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ void	ft_unset(char *argv[], t_dlist **env_list)
 				current->prv->nxt = current->nxt;
 			if (current->nxt != NULL)
 				current->nxt->prv = current->prv;
+			if (current == *env_list)
+				*env_list = current->nxt;
 			free(env->key);
 			free(env->value);
 			free(env);

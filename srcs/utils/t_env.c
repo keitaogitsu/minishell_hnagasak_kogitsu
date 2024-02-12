@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   t_env.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/17 20:44:06 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/13 05:52:18 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,4 +127,32 @@ size_t	get_argc(char *argv[])
 
 	// printf("get_argc:%zu\n",i);
 	return (i);
+}
+
+// convert the list of env to array
+// char **list2arr(t_dlist **env_list)
+char **envlist2arr(t_dlist **env_list)
+{
+	char	**envp;
+	t_dlist	*current;
+	t_env *env;
+	size_t	i;
+
+	fprintf(stderr, "--- envlist2arr ---\n");
+	i = 0;
+	current = *env_list;
+	envp = (char **)malloc(sizeof(char *) * (ft_dlstsize(env_list) + 1));
+	if (!envp)
+		return (NULL);
+	while (current != NULL)
+	{
+		env = (t_env *)current->cont;
+		envp[i] = ft_strjoin(env->key, "=");
+		if (env->value != NULL)
+			envp[i] = ft_strjoin(envp[i], env->value);
+		current = current->nxt;
+		i++;
+	}
+	envp[i] = NULL;
+	return (envp);
 }

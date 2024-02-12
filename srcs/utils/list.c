@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   list.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 12:40:45 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/17 20:37:44 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/13 05:54:41 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@ t_dlist	*ft_dlstnew(void *content)
 void	ft_dlstadd_back(t_dlist **lst, t_dlist *new)
 {
 	t_dlist	*last;
-	
-	// printf("--- ft_dlstadd_back ---\n");
 
 	if (lst == NULL || new == NULL)
 		return ;
@@ -77,4 +75,19 @@ void	set_lstidx(t_dlist **lst)
 		current = current->nxt;
 		i++;
 	}
+}
+
+size_t	ft_dlstsize(t_dlist **lst)
+{
+	size_t	i;
+	t_dlist	*current;
+
+	current = *lst;
+	i = 0;
+	while (current != NULL)
+	{
+		current = current->nxt;
+		i++;
+	}
+	return (i);
 }
