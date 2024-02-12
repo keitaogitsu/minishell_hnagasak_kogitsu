@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 17:27:01 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/11 05:50:45 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/11 18:25:49 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,10 @@ void	print_tokens(t_token *tokens)
 	char *str_type;
 	while (tokens != NULL)
 	{
-		str_type = tokentype2str(tokens->type);
+		// str_type = tokentype2str(tokens->type);
 		// printf("token: %s type:%d\n", tokens->str, tokens->type);
-		printf("token: %s type:%s\n", tokens->str, str_type);
+		// printf("[print_tokens]token: %s type:%s\n", tokens->str, str_type);
+		printf("[print_tokens]token: %s \n", tokens->str);
 		tokens = tokens->next;
 	}
 }

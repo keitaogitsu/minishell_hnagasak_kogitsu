@@ -6,7 +6,7 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 21:00:13 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/08 20:57:43 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/11 17:38:57 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ void	join_token(t_tokenizer *toker, t_token *new)
 		while (current->next != NULL)
 			current = current->next;
 		current->next = new;
+		new->prev = current;
 	}
 }
 
