@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/15 06:43:51 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/15 06:56:56 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,42 +90,9 @@ void	mainloop(char *line, t_dlist **env_list)
 		// コマンド実行
 		// exec_cmd_list(cmd_list, env_list);
 		// print_cmd_list(cmd_list);
-		// ここまで使ったt_token：tokensはfreeする
 		free_tokens(tokens);
-		// free(line);
 		break;
 	}
-}
-
-void print_envlist(t_dlist **env_list)
-{
-	t_env *env;
-	t_dlist *current;
-
-	current = *env_list;
-	printf("--- print_env ----\n");
-	while (current)
-	{
-		env = (t_env *) current->cont;
-		printf("%s=%s , is_shell_var = %d\n", env->key, env->value,
-			env->is_shell_var);
-		t_dlist *prev = current->prv;
-		t_dlist *next = current->nxt;
-		if(prev)
-		{
-			env = (t_env *) prev->cont;
-			printf("prev: %s=%s , is_shell_var = %d\n", env->key, env->value,
-				env->is_shell_var);
-		}
-		if(next)
-		{
-			env = (t_env *) next->cont;
-			printf("next: %s=%s , is_shell_var = %d\n", env->key, env->value,
-				env->is_shell_var);
-		}
-		current = current->nxt;
-	}
-	printf("--- end print_env ----\n");
 }
 
 int	main(int argc, char **argv, char **envp)
