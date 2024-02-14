@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/11 18:27:59 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/14 13:18:33 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,6 @@ void	mainloop(char *line, t_dlist **env_list)
 			free(line);
 			break ;
 		}
-		// test_builtin(ft_split(line, ' '), env_list);
-		// cmd_list = gen_cmd_list(ft_split(line,"|"),env_list);
 		add_history(line);
 		tokens = tokenize(line);
 		free(line);
@@ -86,21 +84,18 @@ void	mainloop(char *line, t_dlist **env_list)
 			printf("## is command line\n");
 		else
 			printf("## is NOT command line\n");
-		// 変数展開
 		tokens = expand_env(tokens, env_list);
-		printf("## after expand_env\n");
-		printf("toknes_adress:%s\n", tokens->str);
 		print_tokens(tokens);
 		
 		cmd_list = create_cmd_list(tokens, env_list);
 		// ここまで使ったt_token：tokensはfreeする
-		free_tokens(tokens);
-		free_envlist(env_list);
+		// free_tokens(tokens);
+		// free_envlist(env_list);
 		// コマンド実行
-		// exec_cmd_list(cmd_list, env_list);
+		exec_cmd_list(cmd_list, env_list);
 		// print_cmd_list(cmd_list);
 		// free(line);
-		break;
+		// break;
 	}
 }
 
