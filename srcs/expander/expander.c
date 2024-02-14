@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/11 19:55:09 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/15 06:37:06 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,10 @@ void    insert_between_tokens(t_token *expanded_tokens, t_token *current, t_toke
 		while (expanded_tokens->next != NULL)
 			expanded_tokens = expanded_tokens->next;
 		expanded_tokens->next = current->next;
-        token_next_expand->prev = expanded_tokens;
-        *new_tokens_head = expanded_tokens;
-        printf("[insert_between_tokens]1. new_tokens_head->str:%s\n", (*new_tokens_head)->str);
+    if(token_next_expand != NULL)
+			token_next_expand->prev = expanded_tokens;
+    *new_tokens_head = expanded_tokens;
+    printf("[insert_between_tokens]1. new_tokens_head->str:%s\n", (*new_tokens_head)->str);
 	}
 	else
 	{
@@ -225,6 +226,7 @@ t_token *expand_env(t_token *tokens, t_dlist **env_list)
             str_current++;
         }
         *new_str = '\0';
+				free(current->str);
         current->str = new_expanded_str_head;
 		printf("new_expanded_str_head:%s\n", new_expanded_str_head);
         // expanded_tokens = tokenize(current->str);
