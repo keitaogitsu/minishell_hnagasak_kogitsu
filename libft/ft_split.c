@@ -6,11 +6,17 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 15:11:28 by kogitsu           #+#    #+#             */
-/*   Updated: 2023/12/10 15:55:26 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/08 22:14:20 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+
+// rec("a    bb   ccc dddd",' ', 0) -> "a","bb","ccc","ddd",NULL
+// rec("   bb   ccc dddd",' ', 1) -> NULL,"bb","ccc","ddd",NULL
+// rec("   ccc dddd",' ', 2) -> NULL,NULL,"ccc","ddd",NULL
+// rec(" dddd",' ', 3) -> NULL,NULL,NULL,"dddd",NULL
+// rec("",' ', 4) -> NULL,NULL,NULL,NULL,NULL
 
 static char	**end_processing(char **container, int i)
 {

@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/13 05:52:18 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/14 12:47:02 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ t_dlist	**init_env(char **envp)
 	i = 0;
 	printf("--- init_env ---\n");
 	env_list = (t_dlist **)malloc(sizeof(t_dlist *));
-	while (envp[i])
+	while (envp[i] && i < 50)
 	{
 		// printf("envp[%d]: %s\n", i, envp[i]);
 		if (i == 0)

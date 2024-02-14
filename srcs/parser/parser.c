@@ -6,7 +6,7 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/13 14:20:30 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/01/20 13:58:08 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/03 15:33:55 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,15 @@ t_dlist	**create_cmd_list(t_token *tokens, t_dlist **env_list)
 		// printf("cmd:%p\n",cmd);
 		cmd->argv = (char **) malloc(sizeof(char *) * (get_argv_len(tokens) + 1) );
 		cmd->envp = env_list;
+		cmd->stdio[0] = -1;
+		cmd->stdio[1] = -1;
+		cmd->pipe[0] = -1;
+		cmd->pipe[1] = -1;
+		
 		while (tokens != NULL && tokens->type != CHAR_PIPE)
 		{
 			// printf("2.tokens->str: %s\n", tokens->str);
-			if (tokens->type == CHAR_GENERAL)
+			if (tokens->type == CHAR_GENERAL || tokens->type == CHAR_QUOTE || tokens->type == CHAR_DQUOTE)
 			{
 				// printf("3.tokens->str: %s\n", tokens->str);
 				cmd->argv[i] = tokens->str;
