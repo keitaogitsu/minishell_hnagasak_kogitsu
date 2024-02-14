@@ -3,61 +3,94 @@
 /*                                                        :::      ::::::::   */
 /*   t_env.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/11 15:34:56 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/15 04:26:22 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 
+void	get_key_value(char *envp, char **key, char **value)
+{
+	char	*delimiter;
+
+	delimiter = ft_strchr(envp, '=');
+	if (delimiter == NULL)
+	{
+		*key = NULL;
+		*value = NULL;
+		return ;
+	}
+	*key = ft_substr(envp, 0, delimiter - envp);
+	*value = ft_strdup(delimiter + 1);
+}
+
 /**
  * @brief Create a new t_env object from a given string.
- *
- * This function takes an environment variable represented as a string (envp),
- * splits it into key and value using '=' as a delimiter, and then creates a
- * new t_env object with these key and value. The object also stores whether
- * it is a shell variable or not, based on the is_shell_var parameter.
- *
-
-	* @param envp A string representing the environment variable in the format "KEY=VALUE".
-
-	* @param is_shell_var An integer indicating if the variable is a shell variable (non-zero value)
- *         or not (zero value).
-
-	* @return t_env* A pointer to the newly created t_env object. Returns NULL if the allocation fails.
+ * @param envp environment variable in string format "KEY=VALUE"
+ * @param is_shell_var if the variable is a shell variable (non-zero value)
+ * @return t_env* A pointer to created t_env object
  */
+// t_env	*to_env(char *envp, int is_shell_var)
+// {
+// 	t_env	*env;
+// 	char	**tmp;
+
+// 	// tmp = ft_split(envp, '=');
+// 	// printf("##1 %s: %p\n", tmp[0],tmp[1]);
+// 	if (!tmp || !tmp[0])
+// 	{
+// 		free(tmp);
+// 		return (NULL);
+// 	}
+// 	env = malloc(sizeof(t_env));
+// 	if (!env)
+// 	{
+// 		free(tmp[0]);
+// 		free(tmp[1]);
+// 		free(tmp);
+// 		return (NULL);
+// 	}
+// 	// if(ft_strncmp(tmp[0], "NVM_RC_VERSION", 14) == 0)
+// 	// 	printf("###NVM_RC_VERSION\n");
+// 	// printf("##2 %s: %p\n", tmp[0],tmp[1]);
+// 	env->key = tmp[0];
+// 	if (tmp[1] != NULL)
+// 		env->value = tmp[1];
+// 	else
+// 		env->value = ft_strdup("");
+// 	env->is_shell_var = is_shell_var;
+// 	free(tmp);
+// 	return (env);
+// }
 t_env	*to_env(char *envp, int is_shell_var)
 {
 	t_env	*env;
-	char	**tmp;
+	char	*key;
+	char	*value;
 
-	tmp = ft_split(envp, '=');
-	// printf("##1 %s: %p\n", tmp[0],tmp[1]);
-	if (!tmp || !tmp[0])
-	{
-		free(tmp);
+	get_key_value(envp, &key, &value);
+	if (key == NULL)
 		return (NULL);
-	}
+	
 	env = malloc(sizeof(t_env));
 	if (!env)
 	{
-		free(tmp[0]);
-		free(tmp[1]);
-		free(tmp);
+		free(key);
+		free(value);
 		return (NULL);
 	}
 	// if(ft_strncmp(tmp[0], "NVM_RC_VERSION", 14) == 0)
 	// 	printf("###NVM_RC_VERSION\n");
 	// printf("##2 %s: %p\n", tmp[0],tmp[1]);
-	env->key = tmp[0];
-	if (tmp[1] != NULL)
-		env->value = tmp[1];
+	env->key = key;
+	if (value != NULL)
+		env->value = value;
 	else
-		env->value = "";
+		env->value = ft_strdup("");
 	env->is_shell_var = is_shell_var;
-	free(tmp);
 	return (env);
 }
 
@@ -124,7 +157,6 @@ size_t	get_argc(char *argv[])
 	i = 0;
 	while (argv[i])
 		i++;
-
 	// printf("get_argc:%zu\n",i);
 	return (i);
 }
