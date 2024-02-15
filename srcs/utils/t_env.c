@@ -6,13 +6,14 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/15 04:26:22 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/15 06:53:27 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 
-void	get_key_value(char *envp, char **key, char **value)
+// TODO: 先頭が=の場合にどうするか？
+static void	get_key_value(char *envp, char **key, char **value)
 {
 	char	*delimiter;
 
@@ -33,38 +34,6 @@ void	get_key_value(char *envp, char **key, char **value)
  * @param is_shell_var if the variable is a shell variable (non-zero value)
  * @return t_env* A pointer to created t_env object
  */
-// t_env	*to_env(char *envp, int is_shell_var)
-// {
-// 	t_env	*env;
-// 	char	**tmp;
-
-// 	// tmp = ft_split(envp, '=');
-// 	// printf("##1 %s: %p\n", tmp[0],tmp[1]);
-// 	if (!tmp || !tmp[0])
-// 	{
-// 		free(tmp);
-// 		return (NULL);
-// 	}
-// 	env = malloc(sizeof(t_env));
-// 	if (!env)
-// 	{
-// 		free(tmp[0]);
-// 		free(tmp[1]);
-// 		free(tmp);
-// 		return (NULL);
-// 	}
-// 	// if(ft_strncmp(tmp[0], "NVM_RC_VERSION", 14) == 0)
-// 	// 	printf("###NVM_RC_VERSION\n");
-// 	// printf("##2 %s: %p\n", tmp[0],tmp[1]);
-// 	env->key = tmp[0];
-// 	if (tmp[1] != NULL)
-// 		env->value = tmp[1];
-// 	else
-// 		env->value = ft_strdup("");
-// 	env->is_shell_var = is_shell_var;
-// 	free(tmp);
-// 	return (env);
-// }
 t_env	*to_env(char *envp, int is_shell_var)
 {
 	t_env	*env;
@@ -82,9 +51,6 @@ t_env	*to_env(char *envp, int is_shell_var)
 		free(value);
 		return (NULL);
 	}
-	// if(ft_strncmp(tmp[0], "NVM_RC_VERSION", 14) == 0)
-	// 	printf("###NVM_RC_VERSION\n");
-	// printf("##2 %s: %p\n", tmp[0],tmp[1]);
 	env->key = key;
 	if (value != NULL)
 		env->value = value;
