@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 18:18:42 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/15 07:34:24 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/15 13:32:06 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ t_token	*token_init(size_t len)
 {
 	t_token	*token;
 
-	printf("### token_init ###\n");
 	token = (t_token *)malloc(sizeof(t_token));
 	if (!token)
 	{
