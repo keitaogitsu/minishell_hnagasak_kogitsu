@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 14:23:31 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/07 13:15:25 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/15 06:56:52 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,6 @@
 
 void	print_env(t_dlist *env_list);
 void	print_tokens(t_token *tokens);
+void	print_envlist(t_dlist **env_list);
 
 #endif

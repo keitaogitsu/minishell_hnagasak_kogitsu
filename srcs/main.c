@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/14 13:18:33 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/16 07:45:47 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,19 +44,17 @@ void free_envlist(t_dlist **envlist)
 	current = *envlist;
 	while (current != NULL)
 	{
-		printf("---free_envlist---\n");
 		tmp = current;
 		env = (t_env *)tmp->cont;
-		printf("env->key:%s\n", env->key);
-		printf("env->value:%s\n", env->value);
+		printf("---free_envlist [%s]---\n",env->key);
+		// printf("env->key:%s\n", env->key);
+		// printf("env->value:%s\n", env->value);
 		free(env->key);
 		env->key = NULL;
 		free(env->value);
 		env->value = NULL;
 		free(env);
 		env = NULL;
-		// free(tmp->prv);
-		// tmp->prv = NULL;
 		current = current->nxt;
 		free(tmp);
 		tmp = NULL;
@@ -88,46 +86,12 @@ void	mainloop(char *line, t_dlist **env_list)
 		print_tokens(tokens);
 		
 		cmd_list = create_cmd_list(tokens, env_list);
-		// ここまで使ったt_token：tokensはfreeする
-		// free_tokens(tokens);
-		// free_envlist(env_list);
 		// コマンド実行
 		exec_cmd_list(cmd_list, env_list);
 		// print_cmd_list(cmd_list);
-		// free(line);
-		// break;
+		free_tokens(tokens);
+		break;
 	}
-}
-
-void print_envlist(t_dlist **env_list)
-{
-	t_env *env;
-	t_dlist *current;
-
-	current = *env_list;
-	printf("--- print_env ----\n");
-	while (current)
-	{
-		env = (t_env *) current->cont;
-		printf("%s=%s , is_shell_var = %d\n", env->key, env->value,
-			env->is_shell_var);
-		t_dlist *prev = current->prv;
-		t_dlist *next = current->nxt;
-		if(prev)
-		{
-			env = (t_env *) prev->cont;
-			printf("prev: %s=%s , is_shell_var = %d\n", env->key, env->value,
-				env->is_shell_var);
-		}
-		if(next)
-		{
-			env = (t_env *) next->cont;
-			printf("next: %s=%s , is_shell_var = %d\n", env->key, env->value,
-				env->is_shell_var);
-		}
-		current = current->nxt;
-	}
-	printf("--- end print_env ----\n");
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -141,5 +105,6 @@ int	main(int argc, char **argv, char **envp)
 	env_list = init_env(envp);
 	// print_envlist(env_list);
 	mainloop(line, env_list);
+	free_envlist(env_list);
 	return (0);
 }
