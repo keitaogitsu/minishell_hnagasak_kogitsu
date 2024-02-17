@@ -20,7 +20,7 @@ DEBUG_FILES := print.c
 DEBUG_SRCS := $(addprefix $(DEBUG_DIR)/, $(DEBUG_FILES))
 
 PARSER_DIR := srcs/parser
-PARSER_FILES := parser.c
+PARSER_FILES := parser.c parser_utils.c
 PARSER_SRCS := $(addprefix $(PARSER_DIR)/, $(PARSER_FILES))
 
 EXPANDER_DIR := srcs/expander
