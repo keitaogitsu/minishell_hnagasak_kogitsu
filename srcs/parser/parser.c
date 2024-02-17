@@ -6,35 +6,40 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/13 14:20:30 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/14 13:01:40 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/17 15:52:31 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
 
-size_t	get_argv_len(t_token *token)
+void	process_redir(t_token **tokens, t_cmd *cmd, t_redir *redir, 
+						t_redir_type redir_type)
 {
-	size_t	len;
-
-	len = 0;
-	while (token != NULL && token->type != CHAR_PIPE)
-	{
-		printf("str:%s\n", token->str);
-		len++;
-		token = token->next;
-	}
-	printf("len:%zu\n", len);
-	return (len);
+	
+	*tokens = (*tokens)->next;
+	redir = crt_redir((*tokens)->str, redir_type);
+	cmd_output_join(cmd, redir);
 }
 
-t_redir	*crt_redir(char *file, t_redir_type type)
+void	create_cmd(t_token **tokens, t_cmd *cmd, t_redir *redir, size_t *i)
 {
-	t_redir	*redir;
-
-	redir = malloc(sizeof(t_redir));
-	redir->file = file;
-	redir->type = type;
-	return (redir);
+	t_token *token;
+	
+	token = *tokens;
+	if (token->type == CHAR_GENERAL || token->type == CHAR_QUOTE 
+	|| token->type == CHAR_DQUOTE)
+	{
+		cmd->argv[*i] = token->str;
+		*i = *i + 1;
+	}
+	else if (token->type == CHAR_GREATER)
+		process_redir(tokens, cmd, redir, REDIR_OUTPUT);
+	else if (token->type == CHAR_LESSER)
+		process_redir(tokens, cmd, redir, REDIR_INPUT);
+	else if (token->type == D_GREATER)
+		process_redir(tokens, cmd, redir, REDIR_APPEND);
+	else if (token->type == D_LESSER)
+		process_redir(tokens, cmd, redir, REDIR_HEREDOC);
 }
 
 t_dlist	**create_cmd_list(t_token *tokens, t_dlist **env_list)
@@ -47,80 +52,19 @@ t_dlist	**create_cmd_list(t_token *tokens, t_dlist **env_list)
 	cmd_list = (t_dlist **)malloc(sizeof(t_dlist *));
 	while (tokens != NULL)
 	{
-		// printf("1.tokens->str: %s\n", tokens->str);
 		i = 0;
-		cmd = (t_cmd *)malloc(sizeof(t_cmd));
-		// printf("cmd:%p\n",cmd);
-		cmd->argv = (char **)malloc(sizeof(char *) * (get_argv_len(tokens)
-					+ 1));
-		cmd->envp = env_list;
-		cmd->stdio[0] = -1;
-		cmd->stdio[1] = -1;
-		cmd->pipe[0] = -1;
-		cmd->pipe[1] = -1;
-		
+		cmd = cmd_init(tokens, env_list);
 		while (tokens != NULL && tokens->type != CHAR_PIPE)
 		{
-			// printf("2.tokens->str: %s\n", tokens->str);
-			if (tokens->type == CHAR_GENERAL || tokens->type == CHAR_QUOTE || tokens->type == CHAR_DQUOTE)
-			{
-				// printf("3.tokens->str: %s\n", tokens->str);
-				cmd->argv[i] = tokens->str;
-				// printf("cmd->argv[%zu]: %s\n", i,cmd->argv[i]);
-				i++;
-			}
-			else if (tokens->type == CHAR_GREATER)
-			{ // 出力リダイレクトの場合
-				tokens = tokens->next;
-				redir = crt_redir(tokens->str, REDIR_OUTPUT);
-				if (cmd->output == NULL)
-					cmd->output = ft_dlstnew(redir);
-				else
-					ft_dlstadd_back(&cmd->output, ft_dlstnew(redir));
-			}
-			else if (tokens->type == CHAR_LESSER)
-			{ // 入力リダイレクトの場合
-				tokens = tokens->next;
-				// printf("5.tokens->str: %s\n", tokens->str);
-				redir = crt_redir(tokens->str, REDIR_INPUT);
-				if (cmd->input == NULL)
-					cmd->input = ft_dlstnew(redir);
-				else
-					ft_dlstadd_back(&cmd->input, ft_dlstnew(redir));
-			}
-			else if (tokens->type == D_GREATER)
-			{ // 追記リダイレクトの場合
-				tokens = tokens->next;
-				redir = crt_redir(tokens->str, REDIR_APPEND);
-				if (cmd->output == NULL)
-					cmd->output = ft_dlstnew(redir);
-				else
-					ft_dlstadd_back(&cmd->output, ft_dlstnew(redir));
-			}
-			else if (tokens->type == D_LESSER)
-			{ // ヒアドキュメントの場合
-				tokens = tokens->next;
-				redir = crt_redir(tokens->str, REDIR_HEREDOC);
-				if (cmd->input == NULL)
-					cmd->input = ft_dlstnew(redir);
-				else
-					ft_dlstadd_back(&cmd->input, ft_dlstnew(redir));
-			}
+			create_cmd(&tokens, cmd, redir, &i);
 			tokens = tokens->next;
 		}
-		
-		if (*cmd_list == NULL) // １つ目のコマンドの場合
-		{
+		if (*cmd_list == NULL)
 			*cmd_list = ft_dlstnew(cmd);
-		}
-		else // 2つ目以降のコマンドの場合
-		{
+		else
 			ft_dlstadd_back(cmd_list, ft_dlstnew(cmd));
-			// printf("end\n");
-		}
 		if (tokens != NULL)
 			tokens = tokens->next;
-		// printf("tokens->next\n");
 	}
 	return (cmd_list);
 }

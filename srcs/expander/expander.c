@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/16 07:38:02 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/17 13:53:26 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,16 @@ char	*find_env_value(char *char_position, t_dlist *env_list)
 			&& *char_position != ' ' && *char_position != '$'
 			&& *char_position != '\0')
 			char_position++;
-		key_len = char_position - start;
+		// key_len = char_position - start;
 		while (env_list != NULL)
 		{
 			env = (t_env *)env_list->cont;
-			// printf("key:%s, start:%s len:%zu\n", env->key,start, key_len);
-			if (ft_strncmp(env->key, start, key_len) == 0)
+            key_len = ft_strlen(env->key);
+			printf("key:%s, start:%s len:%zu\n", env->key,start, key_len);
+			if (ft_strncmp(env->key, start, key_len) == 0 && 
+            (*char_position == '\"' || *char_position == '\''
+			|| *char_position == ' ' || *char_position == '$'
+			|| *char_position == '\0'))
 				return (((t_env *)(env_list)->cont)->value);
 			env_list = (env_list)->nxt;
 		}
@@ -99,12 +103,14 @@ char	*replace_1st_env_var(char *str, char *env_value)
 void	insert_between_tokens(t_token *expanded_tokens, t_token *current,
 		t_token **new_tokens_head)
 {
+    t_token    *expanded_last;
+    expanded_last = expanded_tokens;
 	if (current->next != NULL)
 	{
 		current->next->prev = expanded_tokens;
-		while (expanded_tokens->next != NULL)
-			expanded_tokens = expanded_tokens->next;
-		expanded_tokens->next = current->next;
+		while (expanded_last->next != NULL)
+			expanded_last = expanded_last->next;
+		expanded_last->next = current->next;
 	}
 	if (current->prev != NULL)
 	{
