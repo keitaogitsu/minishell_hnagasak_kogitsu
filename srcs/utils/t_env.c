@@ -6,11 +6,13 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/16 07:44:04 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/18 16:46:51 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "utils.h"
+#include "debug.h"
 
 // TODO: 先頭が=の場合にどうするか？
 static void	get_key_value(char *envp, char **key, char **value)
@@ -127,8 +129,6 @@ size_t	get_argc(char *argv[])
 	return (i);
 }
 
-// convert the list of env to array
-// char **list2arr(t_dlist **env_list)
 char **envlist2arr(t_dlist **env_list)
 {
 	char	**envp;
@@ -153,4 +153,31 @@ char **envlist2arr(t_dlist **env_list)
 	}
 	envp[i] = NULL;
 	return (envp);
+}
+
+void free_envlist(t_dlist **envlist)
+{
+	t_dlist	*tmp;
+	t_dlist	*current;
+	t_env *env;
+
+	current = *envlist;
+	while (current != NULL)
+	{
+		tmp = current;
+		env = (t_env *)tmp->cont;
+		ft_debug("---free_envlist [%s]---\n",env->key);
+		// ft_debug("env->key:%s\n", env->key);
+		// ft_debug("env->value:%s\n", env->value);
+		free(env->key);
+		env->key = NULL;
+		free(env->value);
+		env->value = NULL;
+		free(env);
+		env = NULL;
+		current = current->nxt;
+		free(tmp);
+		tmp = NULL;
+	}
+	free(envlist);
 }

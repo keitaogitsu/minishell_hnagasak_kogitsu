@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/04 22:12:06 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/18 16:39:02 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "builtin.h"
 # include "libft.h"
 # include "utils.h"
+# include "debug.h"
 # include <fcntl.h>
 
 typedef enum e_redir_type

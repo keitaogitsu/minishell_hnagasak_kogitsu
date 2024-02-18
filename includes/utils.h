@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 12:45:23 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/13 05:53:29 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/18 16:46:44 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define UTILS_H
 
 # include "libft.h"
+# include <stdarg.h>
 # include <stdio.h>
 
 # define IS_SHELL_VAR 1
@@ -43,5 +44,6 @@ t_dlist				**init_env(char **envp);
 t_env				*to_env(char *envp, int is_shell_var);
 size_t				get_argc(char *argv[]);
 char				**envlist2arr(t_dlist **env_list);
+void				free_envlist(t_dlist **envlist);
 
 #endif

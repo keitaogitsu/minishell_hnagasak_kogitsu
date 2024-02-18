@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 17:27:01 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/15 06:56:29 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/18 16:21:45 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,24 +14,22 @@
 
 void	print_env(t_dlist *env_list)
 {
-	t_env *env;
-	t_dlist *current;
+	t_env	*env;
+	t_dlist	*current;
 
 	current = env_list;
-	printf("--- print_env ----\n");
+	ft_debug("--- print_env ----\n");
 	while (current)
 	{
-		// printf("## current:%p, %p\n", current, current->cont);
 		env = current->cont;
-		printf("%s=%s , is_shell_var = %d\n", env->key, env->value,
-			env->is_shell_var);
-		// printf("is_shell_var: %d\n", env->is_shell_var);
+		ft_debug("%s=%s ,", env->key, env->value);
+		ft_debug("is_shell_var = %d\n", env->is_shell_var);
 		current = current->nxt;
 	}
 	printf("--- end print_env ----\n");
 }
 
-char *tokentype2str(t_token_type type)
+char	*tokentype2str(t_token_type type)
 {
 	if (type == CHAR_GENERAL)
 		return ("CHAR_GENERAL");
@@ -71,7 +69,8 @@ char *tokentype2str(t_token_type type)
  */
 void	print_tokens(t_token *tokens)
 {
-	char *str_type;
+	char	*str_type;
+
 	while (tokens != NULL)
 	{
 		// str_type = tokentype2str(tokens->type);
@@ -82,33 +81,48 @@ void	print_tokens(t_token *tokens)
 	}
 }
 
-void print_envlist(t_dlist **env_list)
+void	print_envlist(t_dlist **env_list)
 {
-	t_env *env;
-	t_dlist *current;
+	t_env	*env;
+	t_dlist	*current;
+	t_dlist	*prev;
+	t_dlist	*next;
 
 	current = *env_list;
 	printf("--- print_env ----\n");
 	while (current)
 	{
-		env = (t_env *) current->cont;
-		printf("%s=%s , is_shell_var = %d\n", env->key, env->value,
+		env = (t_env *)current->cont;
+		ft_debug("%s=%s , is_shell_var = %d\n", env->key, env->value,
 			env->is_shell_var);
-		t_dlist *prev = current->prv;
-		t_dlist *next = current->nxt;
-		if(prev)
+		prev = current->prv;
+		next = current->nxt;
+		if (prev)
 		{
-			env = (t_env *) prev->cont;
-			printf("prev: %s=%s , is_shell_var = %d\n", env->key, env->value,
+			env = (t_env *)prev->cont;
+			ft_debug("prev: %s=%s , is_shell_var = %d\n", env->key, env->value,
 				env->is_shell_var);
 		}
-		if(next)
+		if (next)
 		{
-			env = (t_env *) next->cont;
-			printf("next: %s=%s , is_shell_var = %d\n", env->key, env->value,
+			env = (t_env *)next->cont;
+			ft_debug("next: %s=%s , is_shell_var = %d\n", env->key, env->value,
 				env->is_shell_var);
 		}
 		current = current->nxt;
 	}
 	printf("--- end print_env ----\n");
+}
+
+void	ft_debug(const char *format, ...)
+{
+	va_list	args;
+
+	if (DEBUG)
+	{
+		va_start(args, format);
+		// vprintf(format, args);
+		vfprintf(stderr, format, args);
+		va_end(args);
+	}
 }

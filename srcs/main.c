@@ -6,17 +6,17 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/17 15:52:54 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/18 16:46:15 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
-#include "exec.h"
-#include "lexer.h"
-#include "utils.h"
 #include "debug.h"
-#include "parser.h"
+#include "exec.h"
 #include "expander.h"
+#include "lexer.h"
+#include "parser.h"
+#include "utils.h"
 #include <errno.h>
 #include <stdio.h>
 
@@ -33,33 +33,6 @@ void	free_tokens(t_token *tokens)
 		free(tmp);
 		tmp = NULL;
 	}
-}
-
-void free_envlist(t_dlist **envlist)
-{
-	t_dlist	*tmp;
-	t_dlist	*current;
-	t_env *env;
-
-	current = *envlist;
-	while (current != NULL)
-	{
-		tmp = current;
-		env = (t_env *)tmp->cont;
-		printf("---free_envlist [%s]---\n",env->key);
-		// printf("env->key:%s\n", env->key);
-		// printf("env->value:%s\n", env->value);
-		free(env->key);
-		env->key = NULL;
-		free(env->value);
-		env->value = NULL;
-		free(env);
-		env = NULL;
-		current = current->nxt;
-		free(tmp);
-		tmp = NULL;
-	}
-	free(envlist);
 }
 
 void	free_redir(t_dlist *redir_list)
@@ -117,47 +90,6 @@ void	free_cmdlist(t_dlist **cmd_list)
 	}
 }
 
-// void print_redir_list(t_dlist *redir_list)
-// {
-// 	t_dlist	*current;
-// 	t_redir	*redir;
-
-// 	current = redir_list;
-// 	while(current != NULL)
-// 	{
-// 		redir = (t_redir *)current->cont;
-// 		printf("redir[%s]  ", current->i);
-// 		printf("redir->file:%s ", redir->file);
-// 		printf("redir->type:%d\n", redir->type);
-// 		redir_list = redir_list->nxt;
-// 	}
-// }
-
-// void print_cmd_list(t_dlist **cmd_list)
-// {
-// 	t_dlist	*current;
-// 	t_cmd	*cmd;	
-	
-// 	current = *cmd_list;
-// 	while(current != NULL)
-// 	{
-// 		cmd = (t_cmd *)current->cont;
-// 		printf("cmd->path:%s\n", cmd->path);
-// 		printf("cmd->argc:%zu\n", get_argc(cmd->argv));
-// 		size_t i = 0;
-// 		while(i < get_argc(cmd->argv))
-// 		{
-// 			printf("cmd->argv[%zu]:%s\n", i, cmd->argv[i]);
-// 			i++;
-// 		}
-// 		printf("cmd->input:\n");
-// 		print_redir_list(cmd->input);
-// 		printf("cmd->output:\n");
-// 		print_redir_list(cmd->output);
-// 		current = current->nxt;
-// 	}
-// }
-
 void	mainloop(char *line, t_dlist **env_list)
 {
 	t_token	*tokens;
@@ -174,10 +106,11 @@ void	mainloop(char *line, t_dlist **env_list)
 		add_history(line);
 		tokens = tokenize(line);
 		free(line);
-		if(is_cmd_line(tokens))
+		if (is_cmd_line(tokens))
 			printf("## is command line\n");
 		else
 			printf("## is NOT command line\n");
+		ft_debug("DEBUG: %d\n", DEBUG);
 		tokens = expand_env(tokens, env_list);
 		printf("\n----- in mainloop -----\n");
 		print_tokens(tokens);
@@ -198,8 +131,7 @@ int	main(int argc, char **argv, char **envp)
 	t_dlist	**env_list;
 	char	*line;
 
-	printf("--- main %d---\n",dup(STDIN_FILENO));
-
+	printf("--- main %d---\n", dup(STDIN_FILENO));
 	line = NULL;
 	env_list = init_env(envp);
 	// print_envlist(env_list);
