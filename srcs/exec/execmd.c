@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/18 16:24:14 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/18 18:01:28 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,7 @@ int	ft_execmd(t_cmd *cmd, t_dlist **env_list)
 	ft_debug("cmd->path:%s\n", cmd->path);
 	if (execve(cmd->path, cmd->argv, env) == -1)
 	{
-		perror("execve");
+		perror("ft_execve");
 		exit(EXIT_FAILURE);
 	}
 	return (0);
@@ -285,7 +285,7 @@ void	dup_stdin(t_dlist *current)
 	t_cmd	*cmd;
 
 	cmd = (t_cmd *)current->cont;
-	fprintf(stderr, "--- dup_stdin [%s]---\n", cmd->argv[0]);
+	ft_debug("--- dup_stdin [%s]---\n", cmd->argv[0]);
 	if (current->i == 0 && cmd->input == NULL)
 	{
 		// 前コマンドがない && 入力リダイレクトがない
@@ -386,7 +386,7 @@ void	store_stdio(t_dlist *current)
 	}
 	else
 	{
-		printf("stdio[0]: %d,stdio[1]: %d\n", cmd->stdio[0], cmd->stdio[1]);
+		ft_debug("stdio[0]: %d,stdio[1]: %d\n", cmd->stdio[0], cmd->stdio[1]);
 	}
 }
 
@@ -430,13 +430,11 @@ void	set_fork_if_needed(t_dlist *current)
 	cmd = (t_cmd *)current->cont;
 	if (!is_builtin_cmd(cmd) || current->nxt != NULL)
 	{
-		// printf("is_builtin_cmd:%d\n",is_builtin_cmd(cmd));
-		// printf("current->nxt:%p\n",current->nxt);
-		printf("  should fork\n");
+		ft_debug("  should fork\n");
 		cmd->pid = fork();
 	}
 	else
-		printf("  no fork\n");
+		ft_debug("  No fork\n");
 }
 
 // 組み込みコマンドまたは外部コマンドを実行する
@@ -463,7 +461,7 @@ void	wait_children(t_dlist **cmd_list)
 	{
 		cmd = (t_cmd *)current->cont;
 		waitpid(cmd->pid, NULL, 0);
-		fprintf(stderr, "waitpid %d\n", cmd->pid);
+		ft_debug("waitpid %d\n", cmd->pid);
 		current = current->nxt;
 	}
 }
@@ -473,7 +471,7 @@ void	exec_single_builtin(t_dlist *current, t_dlist **env_list)
 	t_cmd	*cmd;
 
 	cmd = (t_cmd *)current->cont;
-	fprintf(stderr, "--- exec_single_builtin [%s]---\n", cmd->argv[0]);
+	ft_debug("--- exec_single_builtin [%s]---\n", cmd->argv[0]);
 	store_stdio(current);
 	dup_stdin(current);
 	dup_stdout(current);
@@ -487,7 +485,7 @@ void	close_parent_pipe(t_dlist *current)
 	t_cmd	*prv_cmd;
 
 	cmd = (t_cmd *)current->cont;
-	fprintf(stderr, "--- close_parent_pipe [%s]---\n", cmd->argv[0]);
+	ft_debug("--- close_parent_pipe [%s]---\n", cmd->argv[0]);
 	if (current->nxt != NULL)
 	{
 		cmd->pipe[1] = ft_close(cmd->pipe[1]);
@@ -506,7 +504,7 @@ void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
 	int has_next_cmd;
 	int is_builtin;
 
-	fprintf(stderr, "--- exec_cmd_list ---\n");
+	ft_debug("--- exec_cmd_list ---\n");
 	current = *cmd_list;
 
 	is_builtin = is_builtin_cmd((t_cmd *)current->cont);
@@ -519,7 +517,6 @@ void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
 		while (current != NULL)
 		{
 			cmd = (t_cmd *)current->cont;
-			printf("########## %s ##########\n", cmd->argv[0]);
 			set_pipe_if_needed(current);
 			cmd->pid = fork();
 			if (cmd->pid == 0)

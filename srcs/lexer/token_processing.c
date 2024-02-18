@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_processing.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 21:00:13 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/11 17:38:57 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/18 17:45:31 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ void	complete_current_token(t_tokenizer *toker, t_token_type type)
 	join_token(toker, toker->tmp_token);
 	toker->tmp_token = token_init(toker->str_len - toker->line_i);
 	toker->token_str_i = 0;
-	printf("tokenizer.state = %d\n", toker->state);
 }
 
 void	general_state_process(t_tokenizer *toker, char *line, t_token_type type)

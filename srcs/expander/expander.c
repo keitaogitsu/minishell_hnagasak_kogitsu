@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/17 13:53:26 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/18 17:47:50 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char	*find_env_value(char *char_position, t_dlist *env_list)
 		{
 			env = (t_env *)env_list->cont;
             key_len = ft_strlen(env->key);
-			printf("key:%s, start:%s len:%zu\n", env->key,start, key_len);
+			ft_debug("key:%s, start:%s len:%zu\n", env->key,start, key_len);
 			if (ft_strncmp(env->key, start, key_len) == 0 && 
             (*char_position == '\"' || *char_position == '\''
 			|| *char_position == ' ' || *char_position == '$'
@@ -132,7 +132,7 @@ static t_token	*trim_quotes(t_token *token)
 	char	*rmvd_str_head;
 	size_t	state;
 
-	printf("--- trim_quotes %s ---\n", token->str);
+	ft_debug("--- trim_quotes %s ---\n", token->str);
 	quote_removed_str = (char *)malloc(sizeof(char) * (ft_strlen(token->str)
 				+ 1));
 	rmvd_str_head = quote_removed_str;
@@ -181,7 +181,7 @@ char	*replace_env_var(char *str, t_dlist **env_list)
 	char	*str_head;
 	int		is_replaced_str;
 
-	printf("--- replace_env_var %s ---\n", str);
+	ft_debug("--- replace_env_var %s ---\n", str);
 	is_replaced_str = 0;
 	state = NOT_IN_QUOTE;
 	str_head = str;
@@ -234,19 +234,19 @@ t_token	*expand_env(t_token *tokens, t_dlist **env_list)
 	current = tokens;
 	while (current != NULL)
 	{
-		printf("[expand_env] current->str:%s\n", current->str);
+		ft_debug("[expand_env] current->str:%s\n", current->str);
 		// 環境変数の置換
 		current->str = replace_env_var(current->str, env_list);
-		printf("[expand_env] current->str(replaced):%s\n", current->str);
+		ft_debug("[expand_env] current->str(replaced):%s\n", current->str);
 		// 置換後の文字列が引用符で囲まれていない場合、空白区切りでトークン化
 		expanded_tokens = tokenize(current->str);
-		printf("[expand_env] expanded_tokens->str:%s\n", expanded_tokens->str);
+		ft_debug("[expand_env] expanded_tokens->str:%s\n", expanded_tokens->str);
 		print_tokens(expanded_tokens);
 		// トークン化した文字列を元のトークンリストの間に挿入
 		insert_between_tokens(expanded_tokens, current, &new_tokens_head);
 		// 引用符を削除する
 		current = trim_quotes(expanded_tokens);
-		printf("[expand_env] current->str(trimed):%s\n", current->str);
+		ft_debug("[expand_env] current->str(trimed):%s\n", current->str);
 		current = current->next;
 	}
 	return (new_tokens_head);

@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/18 16:46:51 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/18 17:58:03 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,16 +103,14 @@ t_dlist	**init_env(char **envp)
 	int		i;
 
 	i = 0;
-	printf("--- init_env ---\n");
+	ft_debug("--- init_env ---\n");
 	env_list = (t_dlist **)malloc(sizeof(t_dlist *));
 	while (envp[i] && i < 50)
 	{
-		// printf("envp[%d]: %s\n", i, envp[i]);
 		if (i == 0)
 			*env_list = ft_dlstnew(to_env(envp[i], 0));
 		else
 			ft_dlstadd_back(env_list, ft_dlstnew(to_env(envp[i], 0)));
-		// printf("#envp[%d]: %s\n", i, envp[i]);
 		i++;
 	}
 	return (env_list);
@@ -125,7 +123,6 @@ size_t	get_argc(char *argv[])
 	i = 0;
 	while (argv[i])
 		i++;
-	// printf("get_argc:%zu\n",i);
 	return (i);
 }
 
@@ -136,7 +133,7 @@ char **envlist2arr(t_dlist **env_list)
 	t_env *env;
 	size_t	i;
 
-	fprintf(stderr, "--- envlist2arr ---\n");
+	ft_debug("--- envlist2arr ---\n");
 	i = 0;
 	current = *env_list;
 	envp = (char **)malloc(sizeof(char *) * (ft_dlstsize(env_list) + 1));

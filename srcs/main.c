@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/18 16:46:15 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/18 17:48:18 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,21 +107,19 @@ void	mainloop(char *line, t_dlist **env_list)
 		tokens = tokenize(line);
 		free(line);
 		if (is_cmd_line(tokens))
-			printf("## is command line\n");
+			ft_debug("## is command line\n");
 		else
-			printf("## is NOT command line\n");
+			ft_debug("## is NOT command line\n");
 		ft_debug("DEBUG: %d\n", DEBUG);
 		tokens = expand_env(tokens, env_list);
-		printf("\n----- in mainloop -----\n");
 		print_tokens(tokens);
-		printf("\n------- end in mainloop --------\n");
 		cmd_list = create_cmd_list(tokens, env_list);
 		print_cmd_list(cmd_list);
 		// コマンド実行
 		exec_cmd_list(cmd_list, env_list);
 		// print_cmd_list(cmd_list);
 		free_tokens(tokens);
-		// free_cmdlist(cmd_list);
+		// free_cmdlist(cmd_list); // sefaultするので一旦コメントアウト
 		// break ;
 	}
 }
@@ -131,10 +129,8 @@ int	main(int argc, char **argv, char **envp)
 	t_dlist	**env_list;
 	char	*line;
 
-	printf("--- main %d---\n", dup(STDIN_FILENO));
 	line = NULL;
 	env_list = init_env(envp);
-	// print_envlist(env_list);
 	mainloop(line, env_list);
 	free_envlist(env_list);
 	return (0);

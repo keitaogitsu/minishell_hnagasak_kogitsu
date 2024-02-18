@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_test.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 18:37:10 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/17 21:20:41 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/18 17:49:12 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,10 @@ t_dlist	**test_cmd_list(char **str_cmds, t_dlist **envlst)
 }
 
 void print_arr_str(char **arr_str){
-	printf("--- print arr_str ---\n");
+	ft_debug("--- print arr_str ---\n");
 	while(*arr_str != NULL)
 	{
-		printf("arr_str: (%s)\n", *arr_str);
+		ft_debug("arr_str: (%s)\n", *arr_str);
 		arr_str++;
 	}
 }
@@ -58,31 +58,31 @@ void print_cmd_list(t_dlist **cmd_list)
 	int		i;
 
 	current = *cmd_list;
-	printf("--- print_cmd_list ---\n");
+	ft_debug("--- print_cmd_list ---\n");
 	while (current)
 	{
 		
 		cmd = current->cont;
 		i = 0;
-		printf("%s: ", cmd->argv[0]);
+		ft_debug("%s: ", cmd->argv[0]);
 		while (cmd->argv[i] != NULL)
 		{
-			printf("%s ",cmd->argv[i]);
+			ft_debug("%s ",cmd->argv[i]);
 			i++;
 		}
-		printf("\n");
+		ft_debug("\n");
 		t_dlist *lst = cmd->input;
 		while(lst != NULL )
 		{
 			t_redir *redir = (t_redir *)lst->cont;
-			printf("input> file:%s type:%d\n",redir->file,redir->type);
+			ft_debug("input> file:%s type:%d\n",redir->file,redir->type);
 			lst = lst->nxt;
 		}
 		lst = cmd->output;
 		while (lst != NULL)
 		{
 			t_redir *redir = (t_redir *)lst->cont;
-			printf("output> file:%s type:%d\n",redir->file,redir->type);
+			printf("ft_debug> file:%s type:%d\n",redir->file,redir->type);
 			lst = lst->nxt;
 		}
 		current = current->nxt;
