@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/18 17:47:50 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/20 08:43:15 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char	*find_env_value(char *char_position, t_dlist *env_list)
 		{
 			env = (t_env *)env_list->cont;
             key_len = ft_strlen(env->key);
-			ft_debug("key:%s, start:%s len:%zu\n", env->key,start, key_len);
+			// ft_debug("key:%s, start:%s len:%zu\n", env->key,start, key_len);
 			if (ft_strncmp(env->key, start, key_len) == 0 && 
             (*char_position == '\"' || *char_position == '\''
 			|| *char_position == ' ' || *char_position == '$'

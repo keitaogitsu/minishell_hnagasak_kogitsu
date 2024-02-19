@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 20:48:51 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/01/20 13:36:12 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/20 06:09:33 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
+#include "debug.h"
 
 t_token_type	get_type(char c)
 {
@@ -28,14 +29,14 @@ t_token_type	get_type(char c)
 
 void print_tokenizer(t_tokenizer *tokenizer)
 {
-	printf("--- print_tokenizer ---\n");
-	printf("line_i:%zu\n",tokenizer->line_i);
-	printf("token_str_i:%zu\n",tokenizer->token_str_i);
-	printf("str_len:%zu\n",tokenizer->str_len);
-	printf("tmp_token:%s\n",tokenizer->tmp_token->str);
+	ft_debug("--- print_tokenizer ---\n");
+	ft_debug("line_i:%zu\n",tokenizer->line_i);
+	ft_debug("token_str_i:%zu\n",tokenizer->token_str_i);
+	ft_debug("str_len:%zu\n",tokenizer->str_len);
+	ft_debug("tmp_token:%s\n",tokenizer->tmp_token->str);
 	if(tokenizer->tokens_head != NULL)
-		printf("tokens_head:%s\n",tokenizer->tokens_head->str);
+		ft_debug("tokens_head:%s\n",tokenizer->tokens_head->str);
 	else
-		printf("tokens_head: NULL\n");
-	printf("state:%d\n",tokenizer->state);
+		ft_debug("tokens_head: NULL\n");
+	ft_debug("state:%d\n",tokenizer->state);
 }

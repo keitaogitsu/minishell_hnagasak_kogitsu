@@ -6,12 +6,13 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 18:18:42 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/15 13:32:06 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/20 06:09:54 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // #include "debug.h"
 
+#include "debug.h"
 #include "lexer.h"
 
 char	*ft_malloc(size_t size)
@@ -77,11 +78,18 @@ t_token	*tokenize(char *line)
 	if (!line)
 		return (NULL);
 	tokenizer_init(&tokenizer, line);
+	if (*line == '\0')
+	{
+		ft_debug("line is empty\n");
+		complete_current_token(&tokenizer, CHAR_GENERAL);
+		free(tokenizer.tmp_token->str);
+		free(tokenizer.tmp_token);
+		return (tokenizer.tokens_head);
+	}
 	// print_tokenizer(&tokenizer);
 	while (line[tokenizer.line_i] != '\0')
 	{
 		type = get_type(line[tokenizer.line_i]);
-		// printf("[tokenize]line_i:%c type:%d\n",line[tokenizer.line_i],type);
 		if (tokenizer.state == STATE_GENERAL)
 			general_state_process(&tokenizer, line, type);
 		else if (tokenizer.state == STATE_IN_DQUOTE)
@@ -98,8 +106,9 @@ t_token	*tokenize(char *line)
 	{ // QUOTE か DQUOTEが閉じられていない場合
 		// error_exit(NULL);
 		// print_tokens(tokenizer.tokens_head);
-		printf("unclosed quote\n");
-		exit(EXIT_FAILURE);
+		ft_errmsg("unclosed quote\n");
+		return (NULL);
+		// exit(EXIT_FAILURE);
 	}
 	return (tokenizer.tokens_head);
 }

@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 18:37:10 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/18 17:49:12 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/20 06:40:50 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,14 +75,14 @@ void print_cmd_list(t_dlist **cmd_list)
 		while(lst != NULL )
 		{
 			t_redir *redir = (t_redir *)lst->cont;
-			ft_debug("input> file:%s type:%d\n",redir->file,redir->type);
+			ft_debug("input > file:%s type:%d\n",redir->file,redir->type);
 			lst = lst->nxt;
 		}
 		lst = cmd->output;
 		while (lst != NULL)
 		{
 			t_redir *redir = (t_redir *)lst->cont;
-			printf("ft_debug> file:%s type:%d\n",redir->file,redir->type);
+			ft_debug("output > file:%s type:%d\n",redir->file,redir->type);
 			lst = lst->nxt;
 		}
 		current = current->nxt;

@@ -3,26 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 09:18:48 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/03 15:38:25 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/20 07:01:52 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
-
-// void	ft_env(char *argv[])
-// {
-// 	int i;
-
-// 	i = 0;
-// 	while (argv[i])
-// 	{
-// 		printf("%s\n", argv[i]);
-// 		i++;
-// 	}
-// }
 
 void	ft_env(char **argv, t_dlist **env_list)
 {
@@ -31,17 +19,15 @@ void	ft_env(char **argv, t_dlist **env_list)
 
 	if (get_argc(argv) != 1)
 	{
-		printf("Too many arguments\n");
+		ft_errmsg("Too many arguments\n");
 		return ;
 	}
 
 	current = *env_list;
 	while (current)
 	{
-		// printf("## current:%p, %p\n", current, current->cont);
 		env = current->cont;
-		printf("[%s=%s]\n", env->key, env->value);
-		// printf("is_shell_var: %d\n", env->is_shell_var);
+		printf("%s=%s\n", env->key, env->value);
 		current = current->nxt;
 	}
 }

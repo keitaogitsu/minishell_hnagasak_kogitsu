@@ -6,13 +6,12 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/18 17:58:03 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/20 08:33:00 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#include "utils.h"
 #include "debug.h"
+#include "utils.h"
 
 // TODO: 先頭が=の場合にどうするか？
 static void	get_key_value(char *envp, char **key, char **value)
@@ -30,6 +29,35 @@ static void	get_key_value(char *envp, char **key, char **value)
 	*value = ft_strdup(delimiter + 1);
 }
 
+void	update_env_value(t_dlist **env_list, char *envp)
+{
+	t_dlist	*current;
+	t_env	*env;
+	char	*key;
+	char	*value;
+
+	current = *env_list;
+	get_key_value(envp, &key, &value);
+	if (key == NULL)
+		return ;
+	while (current)
+	{
+		env = (t_env *)current->cont;
+		if (ft_strncmp(env->key, key, ft_strlen(key)) == 0)
+		{
+			free(env->value);
+			if (value != NULL)
+				env->value = value;
+			else
+				env->value = ft_strdup("");
+			free(key);
+			return ;
+		}
+		current = current->nxt;
+	}
+	free(key);
+}
+
 /**
  * @brief Create a new t_env object from a given string.
  * @param envp environment variable in string format "KEY=VALUE"
@@ -45,7 +73,6 @@ t_env	*to_env(char *envp, int is_shell_var)
 	get_key_value(envp, &key, &value);
 	if (key == NULL)
 		return (NULL);
-	
 	env = malloc(sizeof(t_env));
 	if (!env)
 	{
@@ -126,11 +153,11 @@ size_t	get_argc(char *argv[])
 	return (i);
 }
 
-char **envlist2arr(t_dlist **env_list)
+char	**envlist2arr(t_dlist **env_list)
 {
 	char	**envp;
 	t_dlist	*current;
-	t_env *env;
+	t_env	*env;
 	size_t	i;
 
 	ft_debug("--- envlist2arr ---\n");
@@ -152,10 +179,10 @@ char **envlist2arr(t_dlist **env_list)
 	return (envp);
 }
 
-void free_envlist(t_dlist **envlist)
+void	free_envlist(t_dlist **envlist)
 {
-	t_dlist	*tmp;
-	t_dlist	*current;
+	t_dlist *tmp;
+	t_dlist *current;
 	t_env *env;
 
 	current = *envlist;
@@ -163,7 +190,7 @@ void free_envlist(t_dlist **envlist)
 	{
 		tmp = current;
 		env = (t_env *)tmp->cont;
-		ft_debug("---free_envlist [%s]---\n",env->key);
+		ft_debug("---free_envlist [%s]---\n", env->key);
 		// ft_debug("env->key:%s\n", env->key);
 		// ft_debug("env->value:%s\n", env->value);
 		free(env->key);

@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 12:40:45 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/13 05:54:41 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/19 21:08:11 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,4 +90,12 @@ size_t	ft_dlstsize(t_dlist **lst)
 		i++;
 	}
 	return (i);
+}
+
+void ft_errmsg(char *msg)
+{
+		// ft_putstr_fd("Error: ", STDERR_FILENO);
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(msg, STDERR_FILENO);
+		// ft_putstr_fd("\n", STDERR_FILENO);
 }

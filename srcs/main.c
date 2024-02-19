@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/18 17:48:18 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/20 08:39:31 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,29 +98,32 @@ void	mainloop(char *line, t_dlist **env_list)
 	while (1)
 	{
 		line = readline("minishell > ");
-		if (line == NULL || strlen(line) == 0)
+		if (line == NULL  || strlen(line) == 0)
 		{
 			free(line);
-			break ;
+			if(line == NULL)
+				break ;
+			else
+				continue;
 		}
 		add_history(line);
 		tokens = tokenize(line);
 		free(line);
-		if (is_cmd_line(tokens))
-			ft_debug("## is command line\n");
-		else
-			ft_debug("## is NOT command line\n");
+		if (!is_cmd_line(tokens))
+		{
+			ft_errmsg("syntax error\n");
+			continue;
+		}
+			
 		ft_debug("DEBUG: %d\n", DEBUG);
 		tokens = expand_env(tokens, env_list);
 		print_tokens(tokens);
 		cmd_list = create_cmd_list(tokens, env_list);
 		print_cmd_list(cmd_list);
-		// コマンド実行
 		exec_cmd_list(cmd_list, env_list);
-		// print_cmd_list(cmd_list);
 		free_tokens(tokens);
 		// free_cmdlist(cmd_list); // sefaultするので一旦コメントアウト
-		// break ;
+		// break ; // 動作確認のため一回だけ実行する
 	}
 }
 
