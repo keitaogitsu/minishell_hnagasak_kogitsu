@@ -1,0 +1,5 @@
+echo Hello World
+echo $PWD
+echo $VAR
+echo "$VAR"
+echo '"$VAR"'
