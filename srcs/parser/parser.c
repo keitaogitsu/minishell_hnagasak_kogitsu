@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/13 14:20:30 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/17 15:52:31 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/22 20:59:38 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	process_redir(t_token **tokens, t_cmd *cmd, t_redir *redir,
 {
 	
 	*tokens = (*tokens)->next;
-	redir = crt_redir((*tokens)->str, redir_type);
+	redir = crt_redir(ft_strdup((*tokens)->str), redir_type);
 	cmd_output_join(cmd, redir);
 }
 
@@ -29,7 +29,7 @@ void	create_cmd(t_token **tokens, t_cmd *cmd, t_redir *redir, size_t *i)
 	if (token->type == CHAR_GENERAL || token->type == CHAR_QUOTE 
 	|| token->type == CHAR_DQUOTE)
 	{
-		cmd->argv[*i] = token->str;
+		cmd->argv[*i] =ft_strdup(token->str);
 		*i = *i + 1;
 	}
 	else if (token->type == CHAR_GREATER)

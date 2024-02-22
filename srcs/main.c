@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/20 08:39:31 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/22 21:33:23 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,8 @@ void	free_cmdlist(t_dlist **cmd_list)
 	size_t	argc;
 	size_t	i;
 
+	ft_debug("--- free_cmdlist ----\n");
+
 	current = *cmd_list;
 	while (current != NULL)
 	{
@@ -69,8 +71,10 @@ void	free_cmdlist(t_dlist **cmd_list)
 		cmd = (t_cmd *)tmp->cont;
 		argc = get_argc(cmd->argv);
 		i = 0;
+		ft_debug("--- free_cmdlist 1----\n");
 		while (i < argc)
 		{
+			ft_debug("--- free_cmdlist argv[%zu]:%s----\n",i,cmd->argv[i]);
 			free(cmd->argv[i]);
 			cmd->argv[i] = NULL;
 			i++;
@@ -80,6 +84,7 @@ void	free_cmdlist(t_dlist **cmd_list)
 		if (cmd->path != NULL)
 			free(cmd->path);
 		cmd->path = NULL;
+		ft_debug("--- free_cmdlist 3----\n");
 		free_redir(cmd->input);
 		free_redir(cmd->output);
 		free(cmd);
@@ -88,6 +93,7 @@ void	free_cmdlist(t_dlist **cmd_list)
 		free(tmp);
 		tmp = NULL;
 	}
+	free(cmd_list);
 }
 
 void	mainloop(char *line, t_dlist **env_list)
@@ -121,8 +127,10 @@ void	mainloop(char *line, t_dlist **env_list)
 		cmd_list = create_cmd_list(tokens, env_list);
 		print_cmd_list(cmd_list);
 		exec_cmd_list(cmd_list, env_list);
+		print_cmd_list(cmd_list);
 		free_tokens(tokens);
-		// free_cmdlist(cmd_list); // sefaultするので一旦コメントアウト
+		print_cmd_list(cmd_list);
+		free_cmdlist(cmd_list); // sefaultするので一旦コメントアウト
 		// break ; // 動作確認のため一回だけ実行する
 	}
 }
