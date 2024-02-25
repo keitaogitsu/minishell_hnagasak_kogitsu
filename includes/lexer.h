@@ -6,7 +6,7 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 21:14:05 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/11 19:37:01 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/25 14:36:51 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 # define LEXER_H
 
 # include "libft.h"
+# include <stdio.h>
 # include <readline/history.h>
 # include <readline/readline.h>
-# include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
 

@@ -39,7 +39,8 @@ SRCS_DIR	:= srcs
 INC_DIR	:= includes
 LIBFT_DIR	:= libft
 LIBFT_NAME := libft/libft.a
-INC := -I$(INC_DIR) -I$(LIBFT_DIR)
+RL_DIR = $(shell brew --prefix readline)
+INC := -I$(INC_DIR) -I$(LIBFT_DIR) -I$(RL_DIR)/include
 
 %.o: %.c
 	$(CC) ${CFLAGS} ${INC} -c $< -o $@
@@ -47,10 +48,8 @@ INC := -I$(INC_DIR) -I$(LIBFT_DIR)
 all:	$(NAME)
 $(NAME):	$(OBJS)
 	$(MAKE) bonus -C $(LIBFT_DIR)
-	$(CC) $(CFLAGS) $(INC) $(LIBFT_NAME) $(OBJS) -o $(NAME) $(LDLIBS)
-
-%.o: %.c
-	$(CC) ${CFLAGS} ${INC} -c $< -o $@
+	$(CC) $(CFLAGS) $(INC) $(LIBFT_NAME) -L$(RL_DIR)/lib $(OBJS) -o $(NAME) $(LDLIBS)
+	echo > ~/.inputrc set echo-control-characters off
 
 clean:
 	$(MAKE) clean -C $(LIBFT_DIR)

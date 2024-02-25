@@ -6,7 +6,7 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/22 21:33:23 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/25 16:51:32 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include "utils.h"
 #include <errno.h>
 #include <stdio.h>
+#include <signal.h>
 
 void	free_tokens(t_token *tokens)
 {
@@ -108,7 +109,11 @@ void	mainloop(char *line, t_dlist **env_list)
 		{
 			free(line);
 			if(line == NULL)
-				break ;
+			{
+				printf("\033[A\033[2K\rminishell > exit\n");
+				free(line);
+				break;
+			}
 			else
 				continue;
 		}
@@ -135,11 +140,29 @@ void	mainloop(char *line, t_dlist **env_list)
 	}
 }
 
+void	signal_handler(int signum)
+{
+	(void)signum;
+	ft_putstr_fd("\n", STDOUT_FILENO);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_dlist	**env_list;
 	char	*line;
+	// struct sigaction	sa;
 
+	// sigemptyset(&sa.sa_mask);
+    // sa.sa_handler = signal_handler;
+    // sa.sa_flags = 0;
+    // sigaction(SIGINT, &sa, NULL);
+	(void)argc;
+	(void)argv;
+	signal(SIGINT, signal_handler);
+	signal(SIGQUIT, SIG_IGN);
 	line = NULL;
 	env_list = init_env(envp);
 	mainloop(line, env_list);

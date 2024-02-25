@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_processing.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 21:00:13 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/18 17:45:31 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/25 16:37:15 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@ void	esc_process(t_tokenizer *toker, char *line, t_token_type type)
 	if (type == CHAR_ESCAPE && (line[toker->line_i + 1] != '\0' && 
 	line[toker->line_i + 1] != '\'' && line[toker->line_i + 1] != '\"'))
 	{
-		// toker->tmp_token->str[toker->token_str_i++] = line[toker->line_i++];
-		printf("42tokyo\n");
 		toker->line_i++;
 		toker->tmp_token->str[toker->token_str_i++] = line[toker->line_i];
 	}
