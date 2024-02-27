@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/25 16:51:32 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/28 04:24:38 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@
 #include "parser.h"
 #include "utils.h"
 #include <errno.h>
-#include <stdio.h>
 #include <signal.h>
+#include <stdio.h>
 
 void	free_tokens(t_token *tokens)
 {
@@ -64,7 +64,6 @@ void	free_cmdlist(t_dlist **cmd_list)
 	size_t	i;
 
 	ft_debug("--- free_cmdlist ----\n");
-
 	current = *cmd_list;
 	while (current != NULL)
 	{
@@ -75,7 +74,7 @@ void	free_cmdlist(t_dlist **cmd_list)
 		ft_debug("--- free_cmdlist 1----\n");
 		while (i < argc)
 		{
-			ft_debug("--- free_cmdlist argv[%zu]:%s----\n",i,cmd->argv[i]);
+			ft_debug("--- free_cmdlist argv[%zu]:%s----\n", i, cmd->argv[i]);
 			free(cmd->argv[i]);
 			cmd->argv[i] = NULL;
 			i++;
@@ -105,17 +104,17 @@ void	mainloop(char *line, t_dlist **env_list)
 	while (1)
 	{
 		line = readline("minishell > ");
-		if (line == NULL  || strlen(line) == 0)
+		if (line == NULL || strlen(line) == 0)
 		{
 			free(line);
-			if(line == NULL)
+			if (line == NULL)
 			{
 				printf("\033[A\033[2K\rminishell > exit\n");
 				free(line);
-				break;
+				break ;
 			}
 			else
-				continue;
+				continue ;
 		}
 		add_history(line);
 		tokens = tokenize(line);
@@ -123,9 +122,8 @@ void	mainloop(char *line, t_dlist **env_list)
 		if (!is_cmd_line(tokens))
 		{
 			ft_errmsg("syntax error\n");
-			continue;
+			continue ;
 		}
-			
 		ft_debug("DEBUG: %d\n", DEBUG);
 		tokens = expand_env(tokens, env_list);
 		print_tokens(tokens);
@@ -136,7 +134,7 @@ void	mainloop(char *line, t_dlist **env_list)
 		free_tokens(tokens);
 		print_cmd_list(cmd_list);
 		free_cmdlist(cmd_list); // sefaultするので一旦コメントアウト
-		// break ; // 動作確認のため一回だけ実行する
+								// break ;                  // 動作確認のため一回だけ実行する
 	}
 }
 
@@ -153,12 +151,12 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_dlist	**env_list;
 	char	*line;
-	// struct sigaction	sa;
 
+	// struct sigaction	sa;
 	// sigemptyset(&sa.sa_mask);
-    // sa.sa_handler = signal_handler;
-    // sa.sa_flags = 0;
-    // sigaction(SIGINT, &sa, NULL);
+	// sa.sa_handler = signal_handler;
+	// sa.sa_flags = 0;
+	// sigaction(SIGINT, &sa, NULL);
 	(void)argc;
 	(void)argv;
 	signal(SIGINT, signal_handler);
