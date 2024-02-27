@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/28 04:24:38 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 06:16:46 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ void	free_cmdlist(t_dlist **cmd_list)
 	size_t	argc;
 	size_t	i;
 
-	ft_debug("--- free_cmdlist ----\n");
 	current = *cmd_list;
 	while (current != NULL)
 	{
@@ -71,10 +70,8 @@ void	free_cmdlist(t_dlist **cmd_list)
 		cmd = (t_cmd *)tmp->cont;
 		argc = get_argc(cmd->argv);
 		i = 0;
-		ft_debug("--- free_cmdlist 1----\n");
 		while (i < argc)
 		{
-			ft_debug("--- free_cmdlist argv[%zu]:%s----\n", i, cmd->argv[i]);
 			free(cmd->argv[i]);
 			cmd->argv[i] = NULL;
 			i++;
@@ -84,7 +81,6 @@ void	free_cmdlist(t_dlist **cmd_list)
 		if (cmd->path != NULL)
 			free(cmd->path);
 		cmd->path = NULL;
-		ft_debug("--- free_cmdlist 3----\n");
 		free_redir(cmd->input);
 		free_redir(cmd->output);
 		free(cmd);
@@ -119,20 +115,23 @@ void	mainloop(char *line, t_dlist **env_list)
 		add_history(line);
 		tokens = tokenize(line);
 		free(line);
+		ft_debug("--- after tokenize ---\n");
+		print_tokens(tokens);
 		if (!is_cmd_line(tokens))
 		{
 			ft_errmsg("syntax error\n");
 			continue ;
 		}
-		ft_debug("DEBUG: %d\n", DEBUG);
 		tokens = expand_env(tokens, env_list);
+		ft_debug("--- after expand_env ---\n");
 		print_tokens(tokens);
 		cmd_list = create_cmd_list(tokens, env_list);
+		ft_debug("--- after create_cmd_list ---\n");
 		print_cmd_list(cmd_list);
 		exec_cmd_list(cmd_list, env_list);
-		print_cmd_list(cmd_list);
+		// print_cmd_list(cmd_list);
 		free_tokens(tokens);
-		print_cmd_list(cmd_list);
+		// print_cmd_list(cmd_list);
 		free_cmdlist(cmd_list); // sefaultするので一旦コメントアウト
 								// break ;                  // 動作確認のため一回だけ実行する
 	}

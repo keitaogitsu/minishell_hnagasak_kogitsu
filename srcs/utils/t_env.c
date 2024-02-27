@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/28 00:37:00 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 06:37:33 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,7 @@ size_t	get_argc(char *argv[])
 	return (i);
 }
 
+// convert env_list to char**
 char	**envlist2arr(t_dlist **env_list)
 {
 	char	**envp;
@@ -159,7 +160,6 @@ char	**envlist2arr(t_dlist **env_list)
 	t_env	*env;
 	size_t	i;
 
-	ft_debug("--- envlist2arr ---\n");
 	i = 0;
 	current = *env_list;
 	envp = (char **)malloc(sizeof(char *) * (ft_dlstsize(env_list) + 1));
@@ -184,14 +184,13 @@ void	free_envlist(t_dlist **envlist)
 	t_dlist *current;
 	t_env *env;
 
+	ft_debug("--- free_envlist ---\n");
+
 	current = *envlist;
 	while (current != NULL)
 	{
 		tmp = current;
 		env = (t_env *)tmp->cont;
-		ft_debug("---free_envlist [%s]---\n", env->key);
-		// ft_debug("env->key:%s\n", env->key);
-		// ft_debug("env->value:%s\n", env->value);
 		free(env->key);
 		env->key = NULL;
 		free(env->value);

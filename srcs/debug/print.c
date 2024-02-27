@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 17:27:01 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/28 00:49:06 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 08:03:30 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	print_tokens(t_token *tokens)
 	while (tokens != NULL)
 	{
 		str_type = tokentype2str(tokens->type);
-		ft_debug("[print_tokens]token: %s type:%s\n", tokens->str, str_type);
+		ft_debug("[print_tokens] token:%s type:%s\n", tokens->str, str_type);
 		tokens = tokens->next;
 	}
 }

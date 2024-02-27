@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/28 04:25:38 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 08:16:44 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 int	delete_file(const char *filepath)
 {
+	ft_debug("--- delete_file [%s]---\n", filepath);
 	if (unlink(filepath) == 0)
 	{
 		ft_debug("'%s' が正常に削除されました。\n", filepath);
@@ -40,7 +41,7 @@ int	ft_close(int fd)
 		}
 		else
 		{
-			ft_debug("close fd:%d\n", fd);
+			ft_debug("    close fd:%d\n", fd);
 			return (-1);
 		}
 	}
@@ -52,13 +53,13 @@ void	ft_pipe(int fd[2])
 	if (pipe(fd) == -1)
 		perror("pipe error");
 	else
-		ft_debug("  set pipe[0]:%d pipe[1]:%d\n", fd[0], fd[1]);
+		ft_debug("[set_pipe] fd(%d,%d)\n", fd[0], fd[1]);
 }
 
 // void	exec_builtin(char **argv, t_dlist **env_list)
 void	exec_builtin(t_cmd *cmd, t_dlist **env_list)
 {
-	ft_debug("--- exec_builtin [%s]---\n", cmd->argv[0]);
+	ft_debug("[exec_builtin] %s\n", cmd->argv[0]);
 	if (ft_strncmp(cmd->argv[0], "echo", 4) == 0)
 		ft_echo(cmd->argv);
 	else if (ft_strncmp(cmd->argv[0], "cd", 2) == 0)
@@ -80,7 +81,7 @@ int	is_builtin_cmd(t_cmd *cmd)
 {
 	char	*cmd_name;
 
-	ft_debug("--- is_builtin_cmd [%s]---\n", cmd->argv[0]);
+	// ft_debug("--- is_builtin_cmd [%s]---\n", cmd->argv[0]);
 	cmd_name = cmd->argv[0];
 	if (ft_strncmp(cmd_name, "echo", 5) == 0)
 		return (1);
@@ -196,12 +197,11 @@ int	exec_externalcmd(t_cmd *cmd, t_dlist **env_list)
 	char	**env;
 	char	**paths;
 
-	ft_debug("--- exec_externalcmd [%s]---\n", cmd->argv[0]);
+	ft_debug("[exec_externalcmd]: %s\n", cmd->argv[0]);
 	env = envlist2arr(env_list);
 	paths = get_paths(env_list);
 	cmd->path = find_cmd_path(paths, cmd->argv[0]);
 	free_strarr(paths);
-	ft_debug("cmd->path:%s\n", cmd->path);
 	if (cmd->path == NULL)
 		exit(EXIT_FAILURE);
 	if (execve(cmd->path, cmd->argv, env) == -1)
@@ -294,34 +294,24 @@ void	dup_stdin(t_dlist *current)
 	int		fd;
 
 	cmd = (t_cmd *)current->cont;
-	ft_debug("--- dup_stdin [%s]---\n", cmd->argv[0]);
-	if (current->i == 0 && cmd->input == NULL)
+	if (current->prv == NULL && cmd->input == NULL)
+		ft_debug("[dup_stdin]  %s: Not dup stdin\n", cmd->argv[0]);
+	else if (current->prv == NULL && cmd->input != NULL)
 	{
-		// 前コマンドがない && 入力リダイレクトがない
-		// 標準入力のまま、何もしない
-		ft_debug("  Not dup stdin\n");
-	}
-	else if (current->i == 0 && cmd->input != NULL)
-	{
-		// 前コマンドがない && 入力リダイレクトがある
-		// 入力リダイレクトを入力にする
 		fd = get_dupin_fd(cmd);
-		ft_debug("  dup input redirection: %d\n", fd);
 		dup2(fd, STDIN_FILENO);
+		ft_debug("[dup_stdin]  %s: dup input redir (%d)\n", cmd->argv[0], fd);
 	}
-	else if (current->i != 0 && cmd->input == NULL)
+	else if (current->prv != NULL && cmd->input == NULL)
 	{
-		// 前コマンドがある && 入力リダイレクトがない
-		// 前コマンドの出力を入力にする
-		ft_debug("  dup pipout2stdin\n");
 		pipout2stdin(current->prv);
+		ft_debug("[dup_stdin]  %s: dup pipout2stdin\n", cmd->argv[0]);
 	}
-	else if (current->i != 0 && cmd->input != NULL)
+	else if (current->prv != NULL && cmd->input != NULL)
 	{
-		// 前コマンドがある && 入力リダイレクトがある
-		// 入力リダイレクトを入力にする
-		ft_debug("  dup input redirection\n");
-		dup2(get_dupin_fd(cmd), STDIN_FILENO);
+		fd = get_dupin_fd(cmd);
+		dup2(fd, STDIN_FILENO);
+		ft_debug("[dup_stdin]  %s: dup input redir (%d)\n", cmd->argv[0], fd);
 	}
 }
 
@@ -344,35 +334,30 @@ void	dup_stdin(t_dlist *current)
 void	dup_stdout(t_dlist *current)
 {
 	t_cmd	*cmd;
+	int		fd;
 
 	cmd = (t_cmd *)current->cont;
-	ft_debug("--- dup_stdout [%s]---\n", cmd->argv[0]);
+	// ft_debug("--- dup_stdout [%s]---\n", cmd->argv[0]);
 	if (current->nxt == NULL && cmd->output == NULL)
 	{
-		// 次コマンドがない && 出力リダイレクトがない
-		// 標準出力のまま、何もしない
-		ft_debug("  Not dup stdout\n");
+		ft_debug("[dup_stdout] %s: Not dup stdout\n", cmd->argv[0]);
 	}
 	else if (current->nxt == NULL && cmd->output != NULL)
 	{
-		// 次コマンドがない && 出力リダイレクトがある
-		// 出力リダイレクトに出力する
-		ft_debug("  dup output redirection 1\n");
-		dup2(get_dupout_fd(cmd), STDOUT_FILENO);
+		fd = get_dupout_fd(cmd);
+		dup2(fd, STDOUT_FILENO);
+		ft_debug("[dup_stdout] %s: dup output redir (%d)\n", cmd->argv[0], fd);
 	}
 	else if (current->nxt != NULL && cmd->output == NULL)
 	{
-		// 次コマンドがある && 出力リダイレクトがない
-		// パイプの書き込み側に出力する
-		ft_debug("  dup pipin2stdout\n");
 		pipin2stdout(current);
+		ft_debug("[dup_stdout] %s: dup pipin2stdout\n", cmd->argv[0]);
 	}
 	else if (current->nxt != NULL && cmd->output != NULL)
 	{
-		// 次コマンドがある && 出力リダイレクトがある
-		// 出力リダイレクトに出力する
-		ft_debug("  dup output redirection 2\n");
-		dup2(get_dupout_fd(cmd), STDOUT_FILENO);
+		fd = get_dupout_fd(cmd);
+		dup2(fd, STDOUT_FILENO);
+		ft_debug("[dup_stdout] %s: dup output redir (%d)\n", cmd->argv[0], fd);
 	}
 }
 
@@ -381,14 +366,13 @@ void	set_pipe_if_needed(t_dlist *current)
 {
 	t_cmd	*cmd;
 
-	ft_debug("--- set_pipe_if_needed ---\n");
 	cmd = (t_cmd *)current->cont;
 	cmd->pipe[0] = ft_close(cmd->pipe[0]); // 初期化
 	cmd->pipe[1] = ft_close(cmd->pipe[1]); // 初期化
 	if (current->nxt != NULL)
 		ft_pipe(cmd->pipe);
 	else
-		ft_debug("  unset pipe\n");
+		ft_debug("[set_pipe] unset pipe\n");
 }
 
 // 標準入出力を保存しておく
@@ -396,23 +380,19 @@ void	store_stdio(t_dlist *current)
 {
 	t_cmd	*cmd;
 
-	ft_debug("--- store_stdio ---\n");
+	// ft_debug("--- store_stdio ---\n");
 	cmd = (t_cmd *)current->cont;
 	cmd->stdio[0] = dup(STDIN_FILENO);
 	cmd->stdio[1] = dup(STDOUT_FILENO);
 	if (cmd->stdio[0] == -1 || cmd->stdio[1] == -1)
 	{
-		perror("dup error");
-		ft_debug("stdio[0]: %d,stdio[1]: %d\n", cmd->stdio[0], cmd->stdio[1]);
-		if (cmd->stdio[0] != -1)
-			// if (close(cmd->stdio[0]) == -1)
-			// 	perror("close error");
-			exit(EXIT_FAILURE);
+		perror("[store_stdio] dup error");
+		ft_debug("[store_stdio] stdio(%d,%d)\n", cmd->stdio[0], cmd->stdio[1]);
+		ft_close(cmd->stdio[0]);
+		ft_close(cmd->stdio[1]);
 	}
 	else
-	{
-		ft_debug("stdio[0]: %d,stdio[1]: %d\n", cmd->stdio[0], cmd->stdio[1]);
-	}
+		ft_debug("[store_stdio] stdio(%d,%d)\n", cmd->stdio[0], cmd->stdio[1]);
 }
 
 void	restore_stdio(t_dlist *current)
@@ -420,12 +400,12 @@ void	restore_stdio(t_dlist *current)
 	t_cmd	*cmd;
 	int		res[2];
 
-	ft_debug("--- restore_stdio ---\n");
 	cmd = (t_cmd *)current->cont;
+	ft_debug("[restore_stdio] (%d,%d)\n", cmd->stdio[0], cmd->stdio[1]);
 	res[0] = dup2(cmd->stdio[0], STDIN_FILENO);
 	res[1] = dup2(cmd->stdio[1], STDOUT_FILENO);
 	if (res[0] != -1 && res[1] != -1)
-	{ // 復元できたら複製していた標準入出力を閉じる
+	{
 		ft_close(cmd->stdio[0]);
 		ft_close(cmd->stdio[1]);
 	}
@@ -465,14 +445,15 @@ void	set_fork_if_needed(t_dlist *current)
 // 組み込みコマンドまたは外部コマンドを実行する
 void	exec_cmd(t_cmd *cmd, t_dlist **env_list)
 {
-	ft_debug("--- exec_cmd ---\n");
 	if (is_builtin_cmd(cmd))
 	{
 		exec_builtin(cmd, cmd->envp);
 		exit(EXIT_SUCCESS);
 	}
 	else
+	{
 		exec_externalcmd(cmd, env_list);
+	}
 }
 
 /**
@@ -485,7 +466,6 @@ void	delete_tmp_files(t_cmd *cmd)
 	t_redir	*redir;
 
 	current = cmd->input;
-	ft_debug("--- delete_tmp_files ---\n");
 	while (current != NULL)
 	{
 		redir = (t_redir *)current->cont;
@@ -506,7 +486,7 @@ void	wait_children(t_dlist **cmd_list)
 	{
 		cmd = (t_cmd *)current->cont;
 		waitpid(cmd->pid, NULL, 0);
-		ft_debug("waitpid %d\n", cmd->pid);
+		ft_debug("[waitpid] %d: %d.%s\n", cmd->pid, current->i, cmd->argv[0]);
 		delete_tmp_files(cmd);
 		current = current->nxt;
 	}
@@ -664,7 +644,7 @@ void	exec_single_builtin(t_dlist *current, t_dlist **env_list)
 	t_cmd	*cmd;
 
 	cmd = (t_cmd *)current->cont;
-	ft_debug("--- exec_single_builtin [%s]---\n", cmd->argv[0]);
+	ft_debug("--- exec_single_builtin %s ---\n", cmd->argv[0]);
 	create_tmp_files(cmd, current->i);
 	store_stdio(current);
 	dup_stdin(current);
@@ -681,14 +661,15 @@ void	close_parent_pipe(t_dlist *current)
 	t_cmd	*prv_cmd;
 
 	cmd = (t_cmd *)current->cont;
-	ft_debug("--- close_parent_pipe [%s]---\n", cmd->argv[0]);
 	if (current->nxt != NULL)
 	{
+		ft_debug("[close_parent_pipe] close %d\n", cmd->pipe[1]);
 		cmd->pipe[1] = ft_close(cmd->pipe[1]);
 	}
 	if (current->prv != NULL)
 	{
 		prv_cmd = (t_cmd *)current->prv->cont;
+		ft_debug("[close_parent_pipe] close %d\n", prv_cmd->pipe[0]);
 		prv_cmd->pipe[0] = ft_close(prv_cmd->pipe[0]);
 	}
 }
@@ -700,9 +681,7 @@ void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
 	int has_next_cmd;
 	int is_builtin;
 
-	ft_debug("--- exec_cmd_list ---\n");
 	current = *cmd_list;
-
 	is_builtin = is_builtin_cmd((t_cmd *)current->cont);
 	has_next_cmd = (current->nxt != NULL);
 
@@ -713,11 +692,14 @@ void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
 		while (current != NULL)
 		{
 			cmd = (t_cmd *)current->cont;
+			// ft_debug("[exec_cmd_list] %s\n", cmd->argv[0]);
+			ft_debug("\n--- exec_cmd[%d]: %s ---\n", current->i, cmd->argv[0]);
 			set_pipe_if_needed(current);
 			create_tmp_files(cmd, current->i);
 			cmd->pid = fork();
 			if (cmd->pid == 0)
 			{
+				ft_debug("[child process] close pipin fd:%d\n", cmd->pipe[0]);
 				ft_close(cmd->pipe[0]);
 				dup_stdin(current);
 				input_heredocs(cmd, env_list);

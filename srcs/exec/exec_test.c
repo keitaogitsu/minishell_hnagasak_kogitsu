@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 18:37:10 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/28 00:44:49 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 08:06:07 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,16 +58,15 @@ void print_cmd_list(t_dlist **cmd_list)
 	int		i;
 
 	current = *cmd_list;
-	ft_debug("--- print_cmd_list ---\n");
 	while (current)
 	{
 		
 		cmd = current->cont;
 		i = 0;
-		ft_debug("%s: ", cmd->argv[0]);
+		ft_debug("[print_cmd_list] argv: ");
 		while (cmd->argv[i] != NULL)
 		{
-			ft_debug("%s ",cmd->argv[i]);
+			ft_debug("%d:%s ",i,cmd->argv[i]);
 			i++;
 		}
 		ft_debug("\n");
