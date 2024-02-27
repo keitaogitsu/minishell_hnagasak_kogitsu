@@ -6,11 +6,25 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/18 18:01:28 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 00:21:09 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
+
+int	delete_file(const char *filepath)
+{
+	if (unlink(filepath) == 0)
+	{
+		ft_debug("'%s' が正常に削除されました。\n", filepath);
+		return (0); // 成功
+	}
+	else
+	{
+		perror("ファイルの削除に失敗しました");
+		return (-1); // エラー
+	}
+}
 
 // ファイルディスクリプタを閉じる。成功したら初期値(-1)を返す。
 // 失敗したら引数のfdをそのまま返す
@@ -283,6 +297,7 @@ void	pipin2stdout(t_dlist *cmdlst)
 void	dup_stdin(t_dlist *current)
 {
 	t_cmd	*cmd;
+	int		fd;
 
 	cmd = (t_cmd *)current->cont;
 	ft_debug("--- dup_stdin [%s]---\n", cmd->argv[0]);
@@ -296,8 +311,9 @@ void	dup_stdin(t_dlist *current)
 	{
 		// 前コマンドがない && 入力リダイレクトがある
 		// 入力リダイレクトを入力にする
-		ft_debug("  dup input redirection\n");
-		dup2(get_dupin_fd(cmd), STDIN_FILENO);
+		fd = get_dupin_fd(cmd);
+		ft_debug("  dup input redirection: %d\n", fd);
+		dup2(fd, STDIN_FILENO);
 	}
 	else if (current->i != 0 && cmd->input == NULL)
 	{
@@ -450,6 +466,27 @@ void	exec_cmd(t_cmd *cmd, t_dlist **env_list)
 		ft_execmd(cmd, env_list);
 }
 
+
+/**
+ * @brief deletes tmp files created by Heredoc redirections.
+ * @param cmd pointer to t_cmd, containing the input redirections.
+ */
+void	delete_tmp_files(t_cmd *cmd)
+{
+	t_dlist	*current;
+	t_redir	*redir;
+
+	current = cmd->input;
+	ft_debug("--- delete_tmp_files ---\n");
+	while (current != NULL)
+	{
+		redir = (t_redir *)current->cont;
+		if (redir->type == REDIR_HEREDOC)
+			delete_file(redir->file);
+		current = current->nxt;
+	}
+}
+
 // wait for all child processes to finish
 void	wait_children(t_dlist **cmd_list)
 {
@@ -462,6 +499,113 @@ void	wait_children(t_dlist **cmd_list)
 		cmd = (t_cmd *)current->cont;
 		waitpid(cmd->pid, NULL, 0);
 		ft_debug("waitpid %d\n", cmd->pid);
+		delete_tmp_files(cmd);
+		current = current->nxt;
+	}
+}
+
+void	ft_heredoc(t_redir *redir)
+{
+	char	*line;
+	int		fd;
+
+	ft_debug("----- ft_heredoc [%s]-----\n", redir->file);
+	// fd = open("tmp.txt", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+	fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+	if (fd == -1)
+	{
+		perror("file open error1");
+		exit(EXIT_FAILURE);
+	}
+
+	line = "";
+
+	if(line != NULL)
+	{
+		ft_debug("  LINE1:%s\n", line);
+	}
+		
+	while (line != NULL)
+	{
+		line = readline("> ");
+		if (line == NULL)
+			break ;
+		if (ft_strncmp(line, redir->delimiter, ft_strlen(redir->delimiter)) == 0)
+		{
+			ft_debug("  delimiter found\n");
+			break ;
+		}
+		write(fd, line, ft_strlen(line));
+		write(fd, "\n", 1);
+		free(line);
+	}
+	close(fd);
+	fd = open(redir->file, O_RDONLY);
+	if (fd == -1)
+	{
+		perror("file open error2");
+		exit(EXIT_FAILURE);
+	}
+	if(line != NULL)
+	{
+		ft_debug("  LINE2:%s\n", line);
+	}
+	dup2(fd, STDIN_FILENO);
+	close(fd);
+}
+
+void	input_heredocs(t_cmd *cmd)
+{
+	t_dlist	*current;
+	t_redir	*rdr;
+
+	current = cmd->input;
+	while (current != NULL)
+	{
+		rdr = (t_redir *)current->cont;
+		if (rdr->type == REDIR_HEREDOC)
+		{
+			ft_debug("### input_heredoc [%s]\n", rdr->file);
+			ft_heredoc(rdr);
+		}
+		current = current->nxt;
+	}
+}
+
+// tmpファイル名を生成する
+char *generate_tmpfile_name(size_t cmd_idx, size_t redir_idx)
+{
+	char *tmp;
+	char *file_name;
+	char *cmd_idx_str;
+	char *redir_idx_str;
+
+	ft_debug("----- generate_tmpfile_name -----\n");
+
+	cmd_idx_str = ft_itoa(cmd_idx);
+	redir_idx_str = ft_itoa(redir_idx);
+	file_name = ft_strjoin("tmp", cmd_idx_str);
+	tmp = ft_strjoin(file_name, "-");
+	free(file_name);
+	file_name = ft_strjoin(tmp, redir_idx_str);
+	free(tmp);
+	free(cmd_idx_str);
+	free(redir_idx_str);
+	ft_debug("  file_name: %s\n", file_name);
+	return (file_name);
+}
+
+void	create_tmp_files(t_cmd *cmd, size_t cmd_idx)
+{
+	t_dlist	*current;
+	t_redir	*redir;
+
+	current = cmd->input;
+	while (current != NULL)
+	{
+		redir = (t_redir *)current->cont;
+		if (redir->type == REDIR_HEREDOC)
+			redir->file = generate_tmpfile_name(cmd_idx, current->i);
 		current = current->nxt;
 	}
 }
@@ -472,10 +616,13 @@ void	exec_single_builtin(t_dlist *current, t_dlist **env_list)
 
 	cmd = (t_cmd *)current->cont;
 	ft_debug("--- exec_single_builtin [%s]---\n", cmd->argv[0]);
+	create_tmp_files(cmd, current->i);
 	store_stdio(current);
 	dup_stdin(current);
 	dup_stdout(current);
+	input_heredocs(cmd);
 	exec_builtin(cmd, cmd->envp);
+	delete_tmp_files(cmd);
 	restore_stdio(current);
 }
 
@@ -496,6 +643,10 @@ void	close_parent_pipe(t_dlist *current)
 		prv_cmd->pipe[0] = ft_close(prv_cmd->pipe[0]);
 	}
 }
+
+
+
+
 
 void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
 {
@@ -518,11 +669,13 @@ void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
 		{
 			cmd = (t_cmd *)current->cont;
 			set_pipe_if_needed(current);
+			create_tmp_files(cmd, current->i);
 			cmd->pid = fork();
 			if (cmd->pid == 0)
 			{
 				ft_close(cmd->pipe[0]);
 				dup_stdin(current);
+				input_heredocs(cmd);
 				dup_stdout(current);
 				exec_cmd(cmd, env_list);
 			}

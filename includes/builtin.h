@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 14:23:31 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/04 18:24:52 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/25 00:02:41 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,17 +24,11 @@
 # include <sys/errno.h>
 # include <unistd.h>
 
-// typedef struct s_var
-// {
-// 	const char		*key;
-// 	const char		*value;
-// 	int			is_shell_var;
-// 	struct s_var	*next;
-// }					t_var;
+#define ECHO_OPT_N 1
 
 // builtin
 void	ft_echo(char *argv[]);
-void	ft_cd(char **argv, t_dlist **env_list);
+void	ft_cd(char *argv[], t_dlist **env_list);
 void	ft_pwd(void);
 void	ft_exit(char *argv[]);
 void	ft_env(char **argv, t_dlist **env_list);
