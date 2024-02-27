@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/20 08:33:00 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 00:37:00 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,6 @@ size_t	count_envp(char **envp)
 t_dlist	**init_env(char **envp)
 {
 	t_dlist	**env_list;
-	t_env	*env;
 	int		i;
 
 	i = 0;

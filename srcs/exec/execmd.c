@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/28 00:21:09 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 01:00:53 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,7 @@ char	**get_paths(t_dlist **env_list)
 
 	// char	*tmp;
 	// int		i;
+	path = NULL;
 	current = *env_list;
 	// 環境変数PATHを探す
 	while (current != NULL)
@@ -162,16 +163,7 @@ char	**get_paths(t_dlist **env_list)
 		}
 		current = current->nxt;
 	}
-	// PATHを:で分割
 	paths = ft_split(path, ':');
-	// i = 0;
-	// while (paths[i] != NULL)
-	// {
-	// 	tmp = ft_strtrim(paths[i], " ");
-	// 	free(paths[i]);
-	// 	paths[i] = tmp;
-	// 	i++;
-	// }
 	free(path);
 	return (paths);
 }
@@ -228,10 +220,9 @@ int	file_open(char *file, int flag, int mode)
 	return (fd);
 }
 
+// 指定したコマンドの最後の入力リダイレクションのfdを返す。
 int	get_dupin_fd(t_cmd *cmd)
 {
-	int		fd;
-	t_dlist	*current;
 	t_dlist	*last;
 	t_redir	*rdr;
 
@@ -244,7 +235,7 @@ int	get_dupin_fd(t_cmd *cmd)
 	else if (rdr->type == REDIR_HEREDOC)
 		return (STDIN_FILENO);
 	else
-		printf("error: get_dupin_fd\n");
+		ft_errmsg("error: get_dupin_fd\n");
 	exit(EXIT_FAILURE);
 }
 
@@ -252,8 +243,6 @@ int	get_dupin_fd(t_cmd *cmd)
 // リダイレクションのタイプに応じて、ファイルを上書きまたは追記モードで開く。
 int	get_dupout_fd(t_cmd *cmd)
 {
-	int		fd;
-	t_dlist	*current;
 	t_dlist	*last;
 	t_redir	*rdr;
 
@@ -268,7 +257,7 @@ int	get_dupout_fd(t_cmd *cmd)
 		return (file_open(rdr->file, O_WRONLY | O_CREAT | O_APPEND,
 				S_IRUSR | S_IWUSR));
 	else
-		printf("error: get_dupout_fd\n");
+		ft_errmsg("error: get_dupout_fd\n");
 	exit(EXIT_FAILURE);
 }
 
@@ -331,7 +320,22 @@ void	dup_stdin(t_dlist *current)
 	}
 }
 
-// リダイレクトやパイプに応じて標準出力を書き換える
+/**
+ * Handles duplication of the standard output (stdout) for command execution.
+ * The following rules are applied:
+ * 1. If there is no next command and no output redirection,
+	stdout remains unchanged.
+ * 2. If there is no next command but there is output redirection,
+	stdout is redirected
+ *    to the specified file.
+ * 3. If there is a next command but no output redirection,
+	stdout is redirected to the
+ *    write end of a pipe for inter-command communication.
+ * 4. If there is both a next command and output redirection,
+	stdout is redirected
+ *    to the specified file, ignoring the pipe to the next command.
+	* @param current A pointer to the current command in the doubly linked list of commands.
+ */
 void	dup_stdout(t_dlist *current)
 {
 	t_cmd	*cmd;
@@ -466,7 +470,6 @@ void	exec_cmd(t_cmd *cmd, t_dlist **env_list)
 		ft_execmd(cmd, env_list);
 }
 
-
 /**
  * @brief deletes tmp files created by Heredoc redirections.
  * @param cmd pointer to t_cmd, containing the input redirections.
@@ -517,20 +520,18 @@ void	ft_heredoc(t_redir *redir)
 		perror("file open error1");
 		exit(EXIT_FAILURE);
 	}
-
 	line = "";
-
-	if(line != NULL)
+	if (line != NULL)
 	{
 		ft_debug("  LINE1:%s\n", line);
 	}
-		
 	while (line != NULL)
 	{
 		line = readline("> ");
 		if (line == NULL)
 			break ;
-		if (ft_strncmp(line, redir->delimiter, ft_strlen(redir->delimiter)) == 0)
+		if (ft_strncmp(line, redir->delimiter,
+				ft_strlen(redir->delimiter)) == 0)
 		{
 			ft_debug("  delimiter found\n");
 			break ;
@@ -546,7 +547,7 @@ void	ft_heredoc(t_redir *redir)
 		perror("file open error2");
 		exit(EXIT_FAILURE);
 	}
-	if(line != NULL)
+	if (line != NULL)
 	{
 		ft_debug("  LINE2:%s\n", line);
 	}
@@ -573,15 +574,14 @@ void	input_heredocs(t_cmd *cmd)
 }
 
 // tmpファイル名を生成する
-char *generate_tmpfile_name(size_t cmd_idx, size_t redir_idx)
+char	*generate_tmpfile_name(size_t cmd_idx, size_t redir_idx)
 {
-	char *tmp;
-	char *file_name;
-	char *cmd_idx_str;
-	char *redir_idx_str;
+	char	*tmp;
+	char	*file_name;
+	char	*cmd_idx_str;
+	char	*redir_idx_str;
 
 	ft_debug("----- generate_tmpfile_name -----\n");
-
 	cmd_idx_str = ft_itoa(cmd_idx);
 	redir_idx_str = ft_itoa(redir_idx);
 	file_name = ft_strjoin("tmp", cmd_idx_str);
@@ -621,7 +621,7 @@ void	exec_single_builtin(t_dlist *current, t_dlist **env_list)
 	dup_stdin(current);
 	dup_stdout(current);
 	input_heredocs(cmd);
-	exec_builtin(cmd, cmd->envp);
+	exec_builtin(cmd, env_list);
 	delete_tmp_files(cmd);
 	restore_stdio(current);
 }
@@ -643,10 +643,6 @@ void	close_parent_pipe(t_dlist *current)
 		prv_cmd->pipe[0] = ft_close(prv_cmd->pipe[0]);
 	}
 }
-
-
-
-
 
 void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
 {

@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/20 08:43:15 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 00:53:42 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,11 +221,6 @@ char	*replace_env_var(char *str, t_dlist **env_list)
 t_token	*expand_env(t_token *tokens, t_dlist **env_list)
 {
 	t_token	*current;
-	char	*str_current;
-	char	*new_str;
-	char	*env_value;
-	size_t	state;
-	int		is_replaced_env;
 	t_token	*expanded_tokens;
 	t_token	*new_tokens_head;
 

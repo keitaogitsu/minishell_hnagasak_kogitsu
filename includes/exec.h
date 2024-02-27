@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/25 00:12:57 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 00:44:44 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int					is_builtin_cmd(t_cmd *cmd);
 void				exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list);
 
 // test
-t_dlist				**test_cmd_list(char **str_cmds, t_dlist **envlst);
+// t_dlist				**test_cmd_list(char **str_cmds, t_dlist **envlst);
 void				print_arr_str(char **arr_str);
 void				print_cmd_list(t_dlist **cmd_list);
 

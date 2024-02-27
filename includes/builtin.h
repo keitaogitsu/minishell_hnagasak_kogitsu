@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 14:23:31 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/25 00:02:41 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 00:32:45 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	ft_export(char *argv[], t_dlist **env_list);
 void	ft_unset(char *argv[], t_dlist **env_list);
 
 // test
-void	test_is_builtin(char **argv, t_dlist **env_list);
-void	test_builtin(char **argv, t_dlist **env_list);
+// void	test_is_builtin(char **argv, t_dlist **env_list);
+// void	test_builtin(char **argv, t_dlist **env_list);
 
 #endif

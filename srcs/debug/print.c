@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 17:27:01 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/18 17:54:41 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 00:49:06 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,12 +60,8 @@ char	*tokentype2str(t_token_type type)
 }
 
 /**
- * @brief トークンリストを出力する関数。
- *
- * この関数は、与えられたトークンリストを順に走査し、各トークンの内容（文字列とタイプ）を
- * 標準出力に表示します。リストの末尾に達するまで、リストの各ノードに対してこの操作を繰り返します。
- *
- * @param tokens 出力するトークンのリスト。t_token型のポインタです。
+ * @brief print tokens->str and tokens->type of each token in tokens
+ * @param tokens pointer to the first token of the list 
  */
 void	print_tokens(t_token *tokens)
 {
@@ -73,10 +69,8 @@ void	print_tokens(t_token *tokens)
 
 	while (tokens != NULL)
 	{
-		// str_type = tokentype2str(tokens->type);
-		// ft_debug("token: %s type:%d\n", tokens->str, tokens->type);
-		// ft_debug("[print_tokens]token: %s type:%s\n", tokens->str, str_type);
-		ft_debug("[print_tokens]token: %s \n", tokens->str);
+		str_type = tokentype2str(tokens->type);
+		ft_debug("[print_tokens]token: %s type:%s\n", tokens->str, str_type);
 		tokens = tokens->next;
 	}
 }

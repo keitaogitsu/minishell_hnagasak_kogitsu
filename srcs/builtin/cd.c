@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 19:55:27 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/01/07 09:25:37 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 00:30:03 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,12 @@ char	*get_env_value(char *key, t_dlist **env_list)
 
 char	*replace_tilde(const char *str, t_dlist **env_list)
 {
-	char		*home;
-	const char	*replacement = home;
+	char	*home;
 
-	// TODO: replace_tilde
 	home = get_env_value("HOME", env_list);
-	// const char	*replacement = "/Users/hiroya/";
 	if (str[0] != '~')
 		return (strdup(str));
-	return (ft_strjoin(replacement, str + 1));
+	return (ft_strjoin(home, str + 1));
 }
 
 void	ft_cd(char *argv[], t_dlist **env_list)
