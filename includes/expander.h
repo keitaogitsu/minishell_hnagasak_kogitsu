@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:37 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/25 00:03:00 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 02:39:24 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,7 @@ typedef enum e_expandable_state
 
 t_token	*expand_env(t_token *tokens, t_dlist **env_list);
 char	*replace_env_var(char *str, t_dlist **env_list);
+char	*replace_1st_env_var(char *str, char *env_value);
+char	*find_env_value(char *char_position, t_dlist *env_list);
 
 #endif

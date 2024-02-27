@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/28 00:53:42 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 03:14:20 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,6 +229,11 @@ t_token	*expand_env(t_token *tokens, t_dlist **env_list)
 	current = tokens;
 	while (current != NULL)
 	{
+		if (current->prev != NULL && current->prev->type == D_LESSER)
+		{ // heredocのdelimiterは変数展開しない
+			current = current->next;
+			continue ;
+		}
 		ft_debug("[expand_env] current->str:%s\n", current->str);
 		// 環境変数の置換
 		current->str = replace_env_var(current->str, env_list);

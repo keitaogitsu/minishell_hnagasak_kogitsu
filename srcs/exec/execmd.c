@@ -6,11 +6,12 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/28 01:00:53 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 04:25:38 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
+#include "expander.h"
 
 int	delete_file(const char *filepath)
 {
@@ -137,7 +138,9 @@ char	*find_cmd_path(char *paths[], char *cmd)
 		free(cmd_path);
 		i++;
 	}
-	printf("%s: command not found\n", cmd);
+	ft_errmsg("minishell: ");
+	ft_errmsg(cmd);
+	ft_errmsg(": command not found\n");
 	return (NULL);
 }
 
@@ -188,17 +191,19 @@ void	free_strarr(char **arr)
 	free(arr);
 }
 
-int	ft_execmd(t_cmd *cmd, t_dlist **env_list)
+int	exec_externalcmd(t_cmd *cmd, t_dlist **env_list)
 {
 	char	**env;
 	char	**paths;
 
-	ft_debug("--- ft_execmd [%s]---\n", cmd->argv[0]);
+	ft_debug("--- exec_externalcmd [%s]---\n", cmd->argv[0]);
 	env = envlist2arr(env_list);
 	paths = get_paths(env_list);
 	cmd->path = find_cmd_path(paths, cmd->argv[0]);
 	free_strarr(paths);
 	ft_debug("cmd->path:%s\n", cmd->path);
+	if (cmd->path == NULL)
+		exit(EXIT_FAILURE);
 	if (execve(cmd->path, cmd->argv, env) == -1)
 	{
 		perror("ft_execve");
@@ -467,7 +472,7 @@ void	exec_cmd(t_cmd *cmd, t_dlist **env_list)
 		exit(EXIT_SUCCESS);
 	}
 	else
-		ft_execmd(cmd, env_list);
+		exec_externalcmd(cmd, env_list);
 }
 
 /**
@@ -507,35 +512,79 @@ void	wait_children(t_dlist **cmd_list)
 	}
 }
 
-void	ft_heredoc(t_redir *redir)
+int	get_delimiter_type(char *delimiter)
+{
+	size_t	len;
+
+	len = ft_strlen(delimiter);
+	if (len < 2)
+		return (NOT_IN_QUOTE);
+	if (delimiter[0] == '"' && delimiter[len - 1] == '"')
+		return (IN_DQUOTE);
+	else if (delimiter[0] == '\'' && delimiter[len - 1] == '\'')
+		return (IN_QUOTE);
+	else
+		return (NOT_IN_QUOTE);
+}
+
+char	*expand_heredoc(char *str, t_dlist **env_list)
+{
+	char	*env_value;
+	char	*replaced_str;
+	char	*str_head;
+
+	// size_t	state;
+	// int		is_replaced_str;
+	ft_debug("--- expand_heredoc %s ---\n", str);
+	// is_replaced_str = 0;
+	// state = NOT_IN_QUOTE;
+	str_head = str;
+	while (*str != '\0')
+	{
+		env_value = find_env_value(str, *env_list);
+		if (env_value != NULL)
+		{
+			replaced_str = replace_1st_env_var(str_head, env_value);
+			free(str_head);
+			str_head = replaced_str;
+			// state = NOT_IN_QUOTE;
+			str = replaced_str;
+		}
+		else
+			str++;
+	}
+	return (str_head);
+}
+
+void	ft_heredoc(t_redir *redir, t_dlist **env_list)
 {
 	char	*line;
 	int		fd;
+	int		delimitype;
+	char	*delim;
 
 	ft_debug("----- ft_heredoc [%s]-----\n", redir->file);
-	// fd = open("tmp.txt", O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 	if (fd == -1)
 	{
-		perror("file open error1");
+		perror("file open error");
 		exit(EXIT_FAILURE);
 	}
+	delimitype = get_delimiter_type(redir->delimiter);
 	line = "";
-	if (line != NULL)
-	{
-		ft_debug("  LINE1:%s\n", line);
-	}
 	while (line != NULL)
 	{
 		line = readline("> ");
 		if (line == NULL)
 			break ;
-		if (ft_strncmp(line, redir->delimiter,
-				ft_strlen(redir->delimiter)) == 0)
+		delim = ft_strtrim(redir->delimiter, "\"\'");
+		if (ft_strncmp(line, delim, ft_strlen(delim)) == 0)
 		{
 			ft_debug("  delimiter found\n");
 			break ;
 		}
+		if (delimitype == NOT_IN_QUOTE)
+			line = expand_heredoc(line, env_list);
 		write(fd, line, ft_strlen(line));
 		write(fd, "\n", 1);
 		free(line);
@@ -555,7 +604,7 @@ void	ft_heredoc(t_redir *redir)
 	close(fd);
 }
 
-void	input_heredocs(t_cmd *cmd)
+void	input_heredocs(t_cmd *cmd, t_dlist **env_list)
 {
 	t_dlist	*current;
 	t_redir	*rdr;
@@ -567,7 +616,7 @@ void	input_heredocs(t_cmd *cmd)
 		if (rdr->type == REDIR_HEREDOC)
 		{
 			ft_debug("### input_heredoc [%s]\n", rdr->file);
-			ft_heredoc(rdr);
+			ft_heredoc(rdr, env_list);
 		}
 		current = current->nxt;
 	}
@@ -620,7 +669,7 @@ void	exec_single_builtin(t_dlist *current, t_dlist **env_list)
 	store_stdio(current);
 	dup_stdin(current);
 	dup_stdout(current);
-	input_heredocs(cmd);
+	input_heredocs(cmd, env_list);
 	exec_builtin(cmd, env_list);
 	delete_tmp_files(cmd);
 	restore_stdio(current);
@@ -671,7 +720,7 @@ void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
 			{
 				ft_close(cmd->pipe[0]);
 				dup_stdin(current);
-				input_heredocs(cmd);
+				input_heredocs(cmd, env_list);
 				dup_stdout(current);
 				exec_cmd(cmd, env_list);
 			}
