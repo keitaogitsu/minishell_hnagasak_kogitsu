@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/20 08:39:31 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 06:16:46 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "parser.h"
 #include "utils.h"
 #include <errno.h>
+#include <signal.h>
 #include <stdio.h>
 
 void	free_tokens(t_token *tokens)
@@ -88,6 +89,7 @@ void	free_cmdlist(t_dlist **cmd_list)
 		free(tmp);
 		tmp = NULL;
 	}
+	free(cmd_list);
 }
 
 void	mainloop(char *line, t_dlist **env_list)
@@ -98,33 +100,50 @@ void	mainloop(char *line, t_dlist **env_list)
 	while (1)
 	{
 		line = readline("minishell > ");
-		if (line == NULL  || strlen(line) == 0)
+		if (line == NULL || strlen(line) == 0)
 		{
 			free(line);
-			if(line == NULL)
+			if (line == NULL)
+			{
+				printf("\033[A\033[2K\rminishell > exit\n");
+				free(line);
 				break ;
+			}
 			else
-				continue;
+				continue ;
 		}
 		add_history(line);
 		tokens = tokenize(line);
 		free(line);
+		ft_debug("--- after tokenize ---\n");
+		print_tokens(tokens);
 		if (!is_cmd_line(tokens))
 		{
 			ft_errmsg("syntax error\n");
-			continue;
+			continue ;
 		}
-			
-		ft_debug("DEBUG: %d\n", DEBUG);
 		tokens = expand_env(tokens, env_list);
+		ft_debug("--- after expand_env ---\n");
 		print_tokens(tokens);
 		cmd_list = create_cmd_list(tokens, env_list);
+		ft_debug("--- after create_cmd_list ---\n");
 		print_cmd_list(cmd_list);
 		exec_cmd_list(cmd_list, env_list);
+		// print_cmd_list(cmd_list);
 		free_tokens(tokens);
-		// free_cmdlist(cmd_list); // sefaultするので一旦コメントアウト
-		// break ; // 動作確認のため一回だけ実行する
+		// print_cmd_list(cmd_list);
+		free_cmdlist(cmd_list); // sefaultするので一旦コメントアウト
+								// break ;                  // 動作確認のため一回だけ実行する
 	}
+}
+
+void	signal_handler(int signum)
+{
+	(void)signum;
+	ft_putstr_fd("\n", STDOUT_FILENO);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -132,6 +151,15 @@ int	main(int argc, char **argv, char **envp)
 	t_dlist	**env_list;
 	char	*line;
 
+	// struct sigaction	sa;
+	// sigemptyset(&sa.sa_mask);
+	// sa.sa_handler = signal_handler;
+	// sa.sa_flags = 0;
+	// sigaction(SIGINT, &sa, NULL);
+	(void)argc;
+	(void)argv;
+	signal(SIGINT, signal_handler);
+	signal(SIGQUIT, SIG_IGN);
 	line = NULL;
 	env_list = init_env(envp);
 	mainloop(line, env_list);

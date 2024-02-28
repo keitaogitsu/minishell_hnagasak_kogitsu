@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/20 08:43:15 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 05:53:56 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,6 @@ static t_token	*trim_quotes(t_token *token)
 	char	*rmvd_str_head;
 	size_t	state;
 
-	ft_debug("--- trim_quotes %s ---\n", token->str);
 	quote_removed_str = (char *)malloc(sizeof(char) * (ft_strlen(token->str)
 				+ 1));
 	rmvd_str_head = quote_removed_str;
@@ -181,7 +180,6 @@ char	*replace_env_var(char *str, t_dlist **env_list)
 	char	*str_head;
 	int		is_replaced_str;
 
-	ft_debug("--- replace_env_var %s ---\n", str);
 	is_replaced_str = 0;
 	state = NOT_IN_QUOTE;
 	str_head = str;
@@ -221,11 +219,6 @@ char	*replace_env_var(char *str, t_dlist **env_list)
 t_token	*expand_env(t_token *tokens, t_dlist **env_list)
 {
 	t_token	*current;
-	char	*str_current;
-	char	*new_str;
-	char	*env_value;
-	size_t	state;
-	int		is_replaced_env;
 	t_token	*expanded_tokens;
 	t_token	*new_tokens_head;
 
@@ -234,19 +227,23 @@ t_token	*expand_env(t_token *tokens, t_dlist **env_list)
 	current = tokens;
 	while (current != NULL)
 	{
-		ft_debug("[expand_env] current->str:%s\n", current->str);
+		if (current->prev != NULL && current->prev->type == D_LESSER)
+		{ // heredocのdelimiterは変数展開しない
+			current = current->next;
+			continue ;
+		}
 		// 環境変数の置換
 		current->str = replace_env_var(current->str, env_list);
-		ft_debug("[expand_env] current->str(replaced):%s\n", current->str);
+		// ft_debug("[expand_env] current->str(replaced):%s\n", current->str);
 		// 置換後の文字列が引用符で囲まれていない場合、空白区切りでトークン化
 		expanded_tokens = tokenize(current->str);
-		ft_debug("[expand_env] expanded_tokens->str:%s\n", expanded_tokens->str);
-		print_tokens(expanded_tokens);
+		// ft_debug("[expand_env] expanded_tokens->str:%s\n", expanded_tokens->str);
+		// print_tokens(expanded_tokens);
 		// トークン化した文字列を元のトークンリストの間に挿入
 		insert_between_tokens(expanded_tokens, current, &new_tokens_head);
 		// 引用符を削除する
 		current = trim_quotes(expanded_tokens);
-		ft_debug("[expand_env] current->str(trimed):%s\n", current->str);
+		// ft_debug("[expand_env] current->str(trimed):%s\n", current->str);
 		current = current->next;
 	}
 	return (new_tokens_head);

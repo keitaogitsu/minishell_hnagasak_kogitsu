@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 09:34:31 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/20 08:35:48 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/25 18:09:27 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	ft_export(char *argv[], t_dlist **env_list)
 	t_env	*env;
 
 	str_env = argv[1];
-	if (find_existing_env(str_env, env_list))
+	if (!find_existing_env(str_env, env_list))
 	{
 		env = to_env(str_env, !IS_SHELL_VAR);
 		ft_dlstadd_back(env_list, ft_dlstnew(env));

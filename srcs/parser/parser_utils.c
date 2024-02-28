@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/17 12:25:53 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/17 12:26:52 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/28 00:23:52 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,18 @@ size_t	get_argv_len(t_token *token)
     return (len);
 }
 
-t_redir	*crt_redir(char *file, t_redir_type type)
+t_redir	*crt_redir(char *str, t_redir_type type)
 {
     t_redir	*redir;
 
     redir = malloc(sizeof(t_redir));
     if (redir == NULL)
         return (NULL);
-    redir->file = file;
     redir->type = type;
+		if(type == REDIR_HEREDOC)
+			redir->delimiter = ft_strdup(str);
+		else
+			redir->file = ft_strdup(str);
     return (redir);
 }
 
@@ -55,10 +58,10 @@ t_cmd	*cmd_init(t_token *tokens, t_dlist **env_list)
     return (cmd);
 }
 
-void	cmd_output_join(t_cmd *cmd, t_redir *redir)
-{
-	if (cmd->output == NULL)
-		cmd->output = ft_dlstnew(redir);
-	else
-		ft_dlstadd_back(&cmd->output, ft_dlstnew(redir));
-}
+// void	cmd_output_join(t_cmd *cmd, t_redir *redir)
+// {
+// 	if (cmd->output == NULL)
+// 		cmd->output = ft_dlstnew(redir);
+// 	else
+// 		ft_dlstadd_back(&cmd->output, ft_dlstnew(redir));
+// }
