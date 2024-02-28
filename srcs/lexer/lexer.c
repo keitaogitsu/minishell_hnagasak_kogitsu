@@ -3,14 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 18:18:42 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/20 06:09:54 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/28 22:35:07 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-// #include "debug.h"
 
 #include "debug.h"
 #include "lexer.h"
@@ -29,25 +27,23 @@ char	*ft_malloc(size_t size)
 	return (ptr);
 }
 
+void	malloc_error_exit(void)
+{
+	printf("malloc error\n");
+	exit(EXIT_FAILURE);
+}
+
 t_token	*token_init(size_t len)
 {
 	t_token	*token;
 
 	token = (t_token *)malloc(sizeof(t_token));
 	if (!token)
-	{
-		// error_exit(NULL);
-		printf("malloc error\n");
-		exit(EXIT_FAILURE);
-	}
-	// token->str = (char *)malloc(sizeof(char) * (len + 1));
-	token->str = ft_malloc(sizeof(char) * (len + 1));
+		malloc_error_exit();
+	token->str = (char *)malloc(sizeof(char) * (len + 1));
+	// token->str = ft_malloc(sizeof(char) * (len + 1));
 	if (!token->str)
-	{
-		// error_exit(NULL);
-		printf("malloc error\n");
-		exit(EXIT_FAILURE);
-	}
+		malloc_error_exit();
 	token->str[0] = '\0';
 	token->type = CHAR_NULL;
 	token->next = NULL;

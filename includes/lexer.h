@@ -6,7 +6,7 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 21:14:05 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/25 14:36:51 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/28 22:24:45 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,19 @@ void	quote_state_process(t_tokenizer *toker, char *line, t_token_type type);
 void	dquote_state_process(t_tokenizer *toker, char *line, t_token_type type);
 void	complete_current_token(t_tokenizer *toker, t_token_type type);
 
-
+// validate_token.c validate_token2.c
 int	is_cmd_line(t_token *tkn_list);
+int	is_piped_commands(t_token *tkn_list);
+int	is_pipe(t_token *tkn_list);
+int	is_command(t_token *tkn_list);
+int	is_arguments(t_token *tkn_list);
+int	is_redirection(t_token *tkn_list);
+int	has_redirection(t_token *tkn_list);
+int	is_redir_sign(t_token *tkn_list);
+int	is_string(t_token *tkn_list);
+int	has_string(t_token *tkn_list);
+
+
+
 
 #endif
