@@ -8,7 +8,7 @@ BUILTIN_FILES := pwd.c cd.c echo.c exit.c env.c export.c unset.c test.c
 BUILTIN_SRCS := $(addprefix $(BUILTIN_DIR)/, $(BUILTIN_FILES))
 
 UTILS_DIR := srcs/utils
-UTILS_FILES := list.c t_env.c free.c
+UTILS_FILES := envp.c free.c list.c t_env.c 
 UTILS_SRCS := $(addprefix $(UTILS_DIR)/, $(UTILS_FILES))
 
 LEXER_DIR := srcs/lexer
@@ -28,7 +28,7 @@ EXPANDER_FILES := expander.c
 EXPANDER_SRCS := $(addprefix $(EXPANDER_DIR)/, $(EXPANDER_FILES))
 
 CC		:= cc
-# CFLAGS	:= -Wall -Wextra -Werror
+CFLAGS	:= -Wall -Wextra -Werror
 LDLIBS = -lreadline
 NAME	:= minishell
 RM		:= rm -f

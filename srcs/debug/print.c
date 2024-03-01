@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 17:27:01 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/28 08:03:30 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/29 18:33:24 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,16 @@ void	print_env(t_dlist *env_list)
 		current = current->nxt;
 	}
 	printf("--- end print_env ----\n");
+}
+
+static char	*tokentype2str_2(t_token_type type)
+{
+	if (type == D_GREATER)
+		return ("D_GREATER");
+	else if (type == D_LESSER)
+		return ("D_LESSER");
+	else
+		return ("UNKNOWN");
 }
 
 char	*tokentype2str(t_token_type type)
@@ -51,17 +61,13 @@ char	*tokentype2str(t_token_type type)
 		return ("CHAR_TAB");
 	else if (type == CHAR_NULL)
 		return ("CHAR_NULL");
-	else if (type == D_GREATER)
-		return ("D_GREATER");
-	else if (type == D_LESSER)
-		return ("D_LESSER");
 	else
-		return ("UNKNOWN");
+		return (tokentype2str_2(type));
 }
 
 /**
  * @brief print tokens->str and tokens->type of each token in tokens
- * @param tokens pointer to the first token of the list 
+ * @param tokens pointer to the first token of the list
  */
 void	print_tokens(t_token *tokens)
 {
@@ -79,8 +85,6 @@ void	print_envlist(t_dlist **env_list)
 {
 	t_env	*env;
 	t_dlist	*current;
-	t_dlist	*prev;
-	t_dlist	*next;
 
 	current = *env_list;
 	printf("--- print_env ----\n");
@@ -89,20 +93,6 @@ void	print_envlist(t_dlist **env_list)
 		env = (t_env *)current->cont;
 		ft_debug("%s=%s , is_shell_var = %d\n", env->key, env->value,
 			env->is_shell_var);
-		prev = current->prv;
-		next = current->nxt;
-		if (prev)
-		{
-			env = (t_env *)prev->cont;
-			ft_debug("prev: %s=%s , is_shell_var = %d\n", env->key, env->value,
-				env->is_shell_var);
-		}
-		if (next)
-		{
-			env = (t_env *)next->cont;
-			ft_debug("next: %s=%s , is_shell_var = %d\n", env->key, env->value,
-				env->is_shell_var);
-		}
 		current = current->nxt;
 	}
 	printf("--- end print_env ----\n");
@@ -115,8 +105,12 @@ void	ft_debug(const char *format, ...)
 	if (DEBUG)
 	{
 		va_start(args, format);
-		// vprintf(format, args);
 		vfprintf(stderr, format, args);
 		va_end(args);
 	}
 }
+
+// void	ft_debug(const char *format, ...)
+// {
+// 	(void)format;
+// }

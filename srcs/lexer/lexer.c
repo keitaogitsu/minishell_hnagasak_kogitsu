@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 18:18:42 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/28 22:35:07 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/02/29 17:22:39 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,5 +106,7 @@ t_token	*tokenize(char *line)
 		return (NULL);
 		// exit(EXIT_FAILURE);
 	}
+	ft_debug("--- after tokenize ---\n");
+	print_tokens(tokenizer.tokens_head);
 	return (tokenizer.tokens_head);
 }

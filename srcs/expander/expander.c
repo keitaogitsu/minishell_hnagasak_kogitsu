@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/28 05:53:56 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/29 19:41:27 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,12 @@ char	*find_env_value(char *char_position, t_dlist *env_list)
 		while (env_list != NULL)
 		{
 			env = (t_env *)env_list->cont;
-            key_len = ft_strlen(env->key);
+			key_len = ft_strlen(env->key);
 			// ft_debug("key:%s, start:%s len:%zu\n", env->key,start, key_len);
-			if (ft_strncmp(env->key, start, key_len) == 0 && 
-            (*char_position == '\"' || *char_position == '\''
-			|| *char_position == ' ' || *char_position == '$'
-			|| *char_position == '\0'))
+			if (ft_strncmp(env->key, start, key_len) == 0
+				&& (*char_position == '\"' || *char_position == '\''
+					|| *char_position == ' ' || *char_position == '$'
+					|| *char_position == '\0'))
 				return (((t_env *)(env_list)->cont)->value);
 			env_list = (env_list)->nxt;
 		}
@@ -103,8 +103,9 @@ char	*replace_1st_env_var(char *str, char *env_value)
 void	insert_between_tokens(t_token *expanded_tokens, t_token *current,
 		t_token **new_tokens_head)
 {
-    t_token    *expanded_last;
-    expanded_last = expanded_tokens;
+	t_token	*expanded_last;
+
+	expanded_last = expanded_tokens;
 	if (current->next != NULL)
 	{
 		current->next->prev = expanded_tokens;
@@ -222,8 +223,6 @@ t_token	*expand_env(t_token *tokens, t_dlist **env_list)
 	t_token	*expanded_tokens;
 	t_token	*new_tokens_head;
 
-	// is_replaced_env = 0;
-	// state = NOT_IN_QUOTE;
 	current = tokens;
 	while (current != NULL)
 	{
@@ -234,17 +233,15 @@ t_token	*expand_env(t_token *tokens, t_dlist **env_list)
 		}
 		// 環境変数の置換
 		current->str = replace_env_var(current->str, env_list);
-		// ft_debug("[expand_env] current->str(replaced):%s\n", current->str);
 		// 置換後の文字列が引用符で囲まれていない場合、空白区切りでトークン化
-		expanded_tokens = tokenize(current->str);
-		// ft_debug("[expand_env] expanded_tokens->str:%s\n", expanded_tokens->str);
-		// print_tokens(expanded_tokens);
+		expanded_tokens = tokenize(current->str);		
 		// トークン化した文字列を元のトークンリストの間に挿入
 		insert_between_tokens(expanded_tokens, current, &new_tokens_head);
 		// 引用符を削除する
 		current = trim_quotes(expanded_tokens);
-		// ft_debug("[expand_env] current->str(trimed):%s\n", current->str);
 		current = current->next;
 	}
+	ft_debug("--- after expand_env ---\n");
+	print_tokens(new_tokens_head);
 	return (new_tokens_head);
 }

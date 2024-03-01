@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/13 14:20:30 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/28 00:52:55 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/29 17:18:19 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,5 +68,7 @@ t_dlist	**create_cmd_list(t_token *tokens, t_dlist **env_list)
 		if (tokens != NULL)
 			tokens = tokens->next;
 	}
+	ft_debug("--- after create_cmd_list ---\n");
+	print_cmd_list(cmd_list);
 	return (cmd_list);
 }
