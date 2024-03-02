@@ -6,28 +6,12 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/28 06:37:33 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/29 19:20:30 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "debug.h"
 #include "utils.h"
-
-// TODO: 先頭が=の場合にどうするか？
-static void	get_key_value(char *envp, char **key, char **value)
-{
-	char	*delimiter;
-
-	delimiter = ft_strchr(envp, '=');
-	if (delimiter == NULL)
-	{
-		*key = NULL;
-		*value = NULL;
-		return ;
-	}
-	*key = ft_substr(envp, 0, delimiter - envp);
-	*value = ft_strdup(delimiter + 1);
-}
 
 void	update_env_value(t_dlist **env_list, char *envp)
 {
@@ -89,17 +73,6 @@ t_env	*to_env(char *envp, int is_shell_var)
 	return (env);
 }
 
-// calcule the number of envp
-size_t	count_envp(char **envp)
-{
-	size_t	count;
-
-	count = 0;
-	while (envp[count])
-		count++;
-	return (count);
-}
-
 /**
  * @brief Initializes a double linked list for the environment variables.
  *
@@ -142,16 +115,6 @@ t_dlist	**init_env(char **envp)
 	return (env_list);
 }
 
-size_t	get_argc(char *argv[])
-{
-	size_t	i;
-
-	i = 0;
-	while (argv[i])
-		i++;
-	return (i);
-}
-
 // convert env_list to char**
 char	**envlist2arr(t_dlist **env_list)
 {
@@ -180,12 +143,11 @@ char	**envlist2arr(t_dlist **env_list)
 
 void	free_envlist(t_dlist **envlist)
 {
-	t_dlist *tmp;
-	t_dlist *current;
-	t_env *env;
+	t_dlist	*tmp;
+	t_dlist	*current;
+	t_env	*env;
 
 	ft_debug("--- free_envlist ---\n");
-
 	current = *envlist;
 	while (current != NULL)
 	{
@@ -202,4 +164,20 @@ void	free_envlist(t_dlist **envlist)
 		tmp = NULL;
 	}
 	free(envlist);
+}
+
+t_env	*find_existing_env(char *str_env, t_dlist **env_list)
+{
+	t_dlist	*current;
+	t_env	*env;
+
+	current = *env_list;
+	while (current)
+	{
+		env = (t_env *)current->cont;
+		if (ft_strncmp(env->key, str_env, ft_strlen(str_env)) == 0)
+			return (env);
+		current = current->nxt;
+	}
+	return (NULL);
 }

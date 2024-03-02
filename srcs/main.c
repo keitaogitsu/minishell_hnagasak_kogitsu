@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/28 06:16:46 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/29 17:22:56 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,79 +17,22 @@
 #include "lexer.h"
 #include "parser.h"
 #include "utils.h"
+#include "free.h"
 #include <errno.h>
 #include <signal.h>
 #include <stdio.h>
 
-void	free_tokens(t_token *tokens)
+int	shell_exit(char *line)
 {
-	t_token	*tmp;
-
-	while (tokens != NULL)
-	{
-		tmp = tokens;
-		tokens = tokens->next;
-		free(tmp->str);
-		tmp->str = NULL;
-		free(tmp);
-		tmp = NULL;
-	}
+	free(line);
+	printf("\033[A\033[2K\rminishell > exit\n");
+	return (1);
 }
 
-void	free_redir(t_dlist *redir_list)
+int	newline_process(char *line)
 {
-	t_redir	*redir;
-	t_dlist	*tmp;
-
-	while (redir_list != NULL)
-	{
-		tmp = redir_list;
-		redir = (t_redir *)redir_list->cont;
-		free(redir->file);
-		redir->file = NULL;
-		free(redir);
-		redir_list->cont = NULL;
-		redir_list = redir_list->nxt;
-		free(tmp);
-		tmp = NULL;
-	}
-}
-
-void	free_cmdlist(t_dlist **cmd_list)
-{
-	t_dlist	*tmp;
-	t_dlist	*current;
-	t_cmd	*cmd;
-	size_t	argc;
-	size_t	i;
-
-	current = *cmd_list;
-	while (current != NULL)
-	{
-		tmp = current;
-		cmd = (t_cmd *)tmp->cont;
-		argc = get_argc(cmd->argv);
-		i = 0;
-		while (i < argc)
-		{
-			free(cmd->argv[i]);
-			cmd->argv[i] = NULL;
-			i++;
-		}
-		free(cmd->argv);
-		cmd->argv = NULL;
-		if (cmd->path != NULL)
-			free(cmd->path);
-		cmd->path = NULL;
-		free_redir(cmd->input);
-		free_redir(cmd->output);
-		free(cmd);
-		cmd = NULL;
-		current = current->nxt;
-		free(tmp);
-		tmp = NULL;
-	}
-	free(cmd_list);
+	free(line);
+	return (1);
 }
 
 void	mainloop(char *line, t_dlist **env_list)
@@ -100,40 +43,23 @@ void	mainloop(char *line, t_dlist **env_list)
 	while (1)
 	{
 		line = readline("minishell > ");
-		if (line == NULL || strlen(line) == 0)
-		{
-			free(line);
-			if (line == NULL)
-			{
-				printf("\033[A\033[2K\rminishell > exit\n");
-				free(line);
-				break ;
-			}
-			else
-				continue ;
-		}
+		if (line == NULL && shell_exit(line))
+			break ;
+		else if (ft_strlen(line) == 0 && newline_process(line))
+			continue ;
 		add_history(line);
 		tokens = tokenize(line);
 		free(line);
-		ft_debug("--- after tokenize ---\n");
-		print_tokens(tokens);
 		if (!is_cmd_line(tokens))
 		{
 			ft_errmsg("syntax error\n");
 			continue ;
 		}
 		tokens = expand_env(tokens, env_list);
-		ft_debug("--- after expand_env ---\n");
-		print_tokens(tokens);
 		cmd_list = create_cmd_list(tokens, env_list);
-		ft_debug("--- after create_cmd_list ---\n");
-		print_cmd_list(cmd_list);
 		exec_cmd_list(cmd_list, env_list);
-		// print_cmd_list(cmd_list);
 		free_tokens(tokens);
-		// print_cmd_list(cmd_list);
-		free_cmdlist(cmd_list); // sefaultするので一旦コメントアウト
-								// break ;                  // 動作確認のため一回だけ実行する
+		free_cmd_list(cmd_list);
 	}
 }
 
@@ -151,11 +77,6 @@ int	main(int argc, char **argv, char **envp)
 	t_dlist	**env_list;
 	char	*line;
 
-	// struct sigaction	sa;
-	// sigemptyset(&sa.sa_mask);
-	// sa.sa_handler = signal_handler;
-	// sa.sa_flags = 0;
-	// sigaction(SIGINT, &sa, NULL);
 	(void)argc;
 	(void)argv;
 	signal(SIGINT, signal_handler);

@@ -6,28 +6,12 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 09:34:31 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/25 18:09:27 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/29 19:25:36 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 #include "util.h"
-
-t_env	*find_existing_env(char *str_env, t_dlist **env_list)
-{
-	t_dlist	*current;
-	t_env	*env;
-
-	current = *env_list;
-	while (current)
-	{
-		env = (t_env *)current->cont;
-		if (ft_strncmp(env->key, str_env, ft_strlen(str_env)) == 0)
-			return (env);
-		current = current->nxt;
-	}
-	return (NULL);
-}
 
 void	ft_export(char *argv[], t_dlist **env_list)
 {

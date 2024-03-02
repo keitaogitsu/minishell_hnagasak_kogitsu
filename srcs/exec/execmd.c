@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/28 08:16:44 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/29 16:05:34 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -536,7 +536,7 @@ char	*expand_heredoc(char *str, t_dlist **env_list)
 	return (str_head);
 }
 
-void	ft_heredoc(t_redir *redir, t_dlist **env_list)
+void	ft_heredoc(t_cmd *cmd, t_redir *redir, t_dlist **env_list)
 {
 	char	*line;
 	int		fd;
@@ -554,6 +554,7 @@ void	ft_heredoc(t_redir *redir, t_dlist **env_list)
 	line = "";
 	while (line != NULL)
 	{
+		dup2(cmd->stdio[0], STDIN_FILENO);
 		line = readline("> ");
 		if (line == NULL)
 			break ;
@@ -596,7 +597,7 @@ void	input_heredocs(t_cmd *cmd, t_dlist **env_list)
 		if (rdr->type == REDIR_HEREDOC)
 		{
 			ft_debug("### input_heredoc [%s]\n", rdr->file);
-			ft_heredoc(rdr, env_list);
+			ft_heredoc(cmd ,rdr, env_list);
 		}
 		current = current->nxt;
 	}
@@ -647,9 +648,9 @@ void	exec_single_builtin(t_dlist *current, t_dlist **env_list)
 	ft_debug("--- exec_single_builtin %s ---\n", cmd->argv[0]);
 	create_tmp_files(cmd, current->i);
 	store_stdio(current);
+	input_heredocs(cmd, env_list);
 	dup_stdin(current);
 	dup_stdout(current);
-	input_heredocs(cmd, env_list);
 	exec_builtin(cmd, env_list);
 	delete_tmp_files(cmd);
 	restore_stdio(current);
@@ -701,8 +702,9 @@ void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
 			{
 				ft_debug("[child process] close pipin fd:%d\n", cmd->pipe[0]);
 				ft_close(cmd->pipe[0]);
-				dup_stdin(current);
+				store_stdio(current);
 				input_heredocs(cmd, env_list);
+				dup_stdin(current);
 				dup_stdout(current);
 				exec_cmd(cmd, env_list);
 			}

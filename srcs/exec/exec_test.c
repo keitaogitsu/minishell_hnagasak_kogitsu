@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/17 18:37:10 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/28 08:06:07 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/02/29 19:00:48 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,50 +40,49 @@
 // 	return (cmd_list);
 // }
 
-void print_arr_str(char **arr_str){
+void	print_arr_str(char **arr_str)
+{
 	ft_debug("--- print arr_str ---\n");
-	while(*arr_str != NULL)
+	while (*arr_str != NULL)
 	{
 		ft_debug("arr_str: (%s)\n", *arr_str);
 		arr_str++;
 	}
 }
 
-
-
-void print_cmd_list(t_dlist **cmd_list)
+void	print_redirects(char *str, t_dlist *lst)
 {
-	t_dlist *current;
+	t_redir	*redir;
+
+	ft_debug("--- print_redirects ---\n");
+	while (lst != NULL)
+	{
+		redir = (t_redir *)lst->cont;
+		ft_debug("%s > file: %s, type: %d\n", str, redir->file, redir->type);
+		lst = lst->nxt;
+	}
+}
+
+void	print_cmd_list(t_dlist **cmd_list)
+{
+	t_dlist	*current;
 	t_cmd	*cmd;
 	int		i;
 
 	current = *cmd_list;
 	while (current)
 	{
-		
 		cmd = current->cont;
 		i = 0;
 		ft_debug("[print_cmd_list] argv: ");
 		while (cmd->argv[i] != NULL)
 		{
-			ft_debug("%d:%s ",i,cmd->argv[i]);
+			ft_debug("%d:%s ", i, cmd->argv[i]);
 			i++;
 		}
 		ft_debug("\n");
-		t_dlist *lst = cmd->input;
-		while(lst != NULL )
-		{
-			t_redir *redir = (t_redir *)lst->cont;
-			ft_debug("input > file:%s type:%d\n",redir->file,redir->type);
-			lst = lst->nxt;
-		}
-		lst = cmd->output;
-		while (lst != NULL)
-		{
-			t_redir *redir = (t_redir *)lst->cont;
-			ft_debug("output > file:%s type:%d\n",redir->file,redir->type);
-			lst = lst->nxt;
-		}
+		print_redirects("input", cmd->input);
+		print_redirects("output", cmd->output);
 		current = current->nxt;
 	}
 }
