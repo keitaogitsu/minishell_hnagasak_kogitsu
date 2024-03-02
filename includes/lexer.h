@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/09 21:14:05 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/02 19:19:22 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/02 19:31:39 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,12 @@
 # define LEXER_H
 
 # include "libft.h"
-# include <readline/history.h>
-# include <readline/readline.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
+// Error if not included before stdio.h
+# include <readline/history.h>
+# include <readline/readline.h>
 
 typedef enum e_token_type
 {
