@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 20:48:51 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/20 06:09:33 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/02 12:02:44 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 t_token_type	get_type(char c)
 {
 	const char	*char_list;
-	
+
 	char_list = "|\'\" \t\\><";
 	while (*char_list != '\0')
 	{
@@ -27,16 +27,16 @@ t_token_type	get_type(char c)
 	return (CHAR_GENERAL);
 }
 
-void print_tokenizer(t_tokenizer *tokenizer)
+void	print_tokenizer(t_tokenizer *tokenizer)
 {
 	ft_debug("--- print_tokenizer ---\n");
-	ft_debug("line_i:%zu\n",tokenizer->line_i);
-	ft_debug("token_str_i:%zu\n",tokenizer->token_str_i);
-	ft_debug("str_len:%zu\n",tokenizer->str_len);
-	ft_debug("tmp_token:%s\n",tokenizer->tmp_token->str);
-	if(tokenizer->tokens_head != NULL)
-		ft_debug("tokens_head:%s\n",tokenizer->tokens_head->str);
+	ft_debug("line_i:%zu\n", tokenizer->line_i);
+	ft_debug("token_str_i:%zu\n", tokenizer->token_str_i);
+	ft_debug("str_len:%zu\n", tokenizer->str_len);
+	ft_debug("tmp_token:%s\n", tokenizer->tmp_token->str);
+	if (tokenizer->tokens_head != NULL)
+		ft_debug("tokens_head:%s\n", tokenizer->tokens_head->str);
 	else
 		ft_debug("tokens_head: NULL\n");
-	ft_debug("state:%d\n",tokenizer->state);
+	ft_debug("state:%d\n", tokenizer->state);
 }

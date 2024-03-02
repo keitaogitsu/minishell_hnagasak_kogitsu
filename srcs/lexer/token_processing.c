@@ -6,7 +6,7 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 21:00:13 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/25 16:37:15 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/03/02 14:52:50 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 void	esc_process(t_tokenizer *toker, char *line, t_token_type type)
 {
-	if (type == CHAR_ESCAPE && (line[toker->line_i + 1] != '\0' && 
-	line[toker->line_i + 1] != '\'' && line[toker->line_i + 1] != '\"'))
+	if (type == CHAR_ESCAPE && (line[toker->line_i + 1] != '\0'
+			&& line[toker->line_i + 1] != '\''
+			&& line[toker->line_i + 1] != '\"'))
 	{
 		toker->line_i++;
 		toker->tmp_token->str[toker->token_str_i++] = line[toker->line_i];
@@ -52,27 +53,29 @@ void	complete_current_token(t_tokenizer *toker, t_token_type type)
 	toker->token_str_i = 0;
 }
 
+void	change_toker_state(t_tokenizer *toker, char *line, t_token_type type)
+{
+	esc_process(toker, line, type);
+	if (type == CHAR_QUOTE && line[toker->line_i - 1] != '\\')
+		toker->state = STATE_IN_QUOTE;
+	else if (type == CHAR_DQUOTE)
+		toker->state = STATE_IN_DQUOTE;
+	else
+		toker->state = STATE_GENERAL;
+}
+
 void	general_state_process(t_tokenizer *toker, char *line, t_token_type type)
 {
-	// printf("general_state_process type:%d\n", type);
 	if (type == CHAR_QUOTE || type == CHAR_DQUOTE || type == CHAR_ESCAPE
 		|| type == CHAR_GENERAL)
-	{
-		esc_process(toker, line, type);
-		if (type == CHAR_QUOTE)
-			toker->state = STATE_IN_QUOTE;
-		else if (type == CHAR_DQUOTE)
-			toker->state = STATE_IN_DQUOTE;
-		else
-			toker->state = STATE_GENERAL;
-	}
+		change_toker_state(toker, line, type);
 	else if (type == CHAR_PIPE || type == CHAR_GREATER || type == CHAR_LESSER)
 	{
 		if (toker->token_str_i > 0)
 			complete_current_token(toker, CHAR_GENERAL);
 		toker->tmp_token->str[toker->token_str_i++] = line[toker->line_i];
-		if ((type == CHAR_GREATER || type == CHAR_LESSER) && 
-			line[toker->line_i + 1] == line[toker->line_i])
+		if ((type == CHAR_GREATER || type == CHAR_LESSER)
+			&& line[toker->line_i + 1] == line[toker->line_i])
 		{
 			toker->tmp_token->str[toker->token_str_i++] = line[toker->line_i++];
 			if (type == CHAR_GREATER)
@@ -84,7 +87,6 @@ void	general_state_process(t_tokenizer *toker, char *line, t_token_type type)
 	}
 	else if (type == CHAR_WHITESPACE || type == CHAR_TAB)
 	{
-		// 今作ってるtokenを終わらせる
 		if (toker->token_str_i > 0)
 			complete_current_token(toker, CHAR_GENERAL);
 	}

@@ -8,7 +8,7 @@ BUILTIN_FILES := pwd.c cd.c echo.c exit.c env.c export.c unset.c test.c
 BUILTIN_SRCS := $(addprefix $(BUILTIN_DIR)/, $(BUILTIN_FILES))
 
 UTILS_DIR := srcs/utils
-UTILS_FILES := envp.c free.c list.c t_env.c 
+UTILS_FILES := envp.c free.c list.c malloc.c t_env.c 
 UTILS_SRCS := $(addprefix $(UTILS_DIR)/, $(UTILS_FILES))
 
 LEXER_DIR := srcs/lexer

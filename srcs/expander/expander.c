@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/29 19:41:27 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/02 14:33:18 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 char	*find_env_value(char *char_position, t_dlist *env_list)
 {
 	char	*start;
-	size_t	key_len;
 	t_env	*env;
 
 	if (*char_position == '$')
@@ -33,13 +32,10 @@ char	*find_env_value(char *char_position, t_dlist *env_list)
 			&& *char_position != ' ' && *char_position != '$'
 			&& *char_position != '\0')
 			char_position++;
-		// key_len = char_position - start;
 		while (env_list != NULL)
 		{
 			env = (t_env *)env_list->cont;
-			key_len = ft_strlen(env->key);
-			// ft_debug("key:%s, start:%s len:%zu\n", env->key,start, key_len);
-			if (ft_strncmp(env->key, start, key_len) == 0
+			if (ft_strncmp(env->key, start, ft_strlen(env->key)) == 0
 				&& (*char_position == '\"' || *char_position == '\''
 					|| *char_position == ' ' || *char_position == '$'
 					|| *char_position == '\0'))
@@ -49,6 +45,16 @@ char	*find_env_value(char *char_position, t_dlist *env_list)
 		return ("");
 	}
 	return (NULL);
+}
+
+void	copy_str_func(char **new_str, char **src, char end)
+{
+	while (**src != end)
+	{
+		**new_str = **src;
+		(*new_str)++;
+		(*src)++;
+	}
 }
 
 /**
@@ -70,32 +76,13 @@ char	*replace_1st_env_var(char *str, char *env_value)
 	if (new_str == NULL)
 		return (NULL);
 	new_str_head = new_str;
-	// $直前まで元の文字列をコピー
-	while (*str != '$')
-	{
-		*new_str = *str;
-		new_str++;
-		str++;
-	}
-	// 元の文字列を環境変数の次まで進める
-	str++; // $をスキップ
+	copy_str_func(&new_str, &str, '$');
+	str++;
 	while (*str != '\"' && *str != '\'' && *str != ' ' && *str != '$'
 		&& *str != '\0')
 		str++;
-	// 環境変数部分のコピー
-	while (*env_value != '\0')
-	{
-		*new_str = *env_value;
-		new_str++;
-		env_value++;
-	}
-	// 元の文字列の残りをコピー
-	while (*str != '\0')
-	{
-		*new_str = *str;
-		new_str++;
-		str++;
-	}
+	copy_str_func(&new_str, &env_value, '\0');
+	copy_str_func(&new_str, &str, '\0');
 	*new_str = '\0';
 	return (new_str_head);
 }
@@ -125,6 +112,24 @@ void	insert_between_tokens(t_token *expanded_tokens, t_token *current,
 	current = NULL;
 }
 
+void	trim_and_change_state(char **str, char **quote_removed_str, size_t *state)
+{
+	if (**str == '\\' && *(*str + 1) == '\'' && *state == NOT_IN_QUOTE)
+		**quote_removed_str++ = *++(*str);
+	else if (**str == '\\' && *(*str + 1) == '\"' && *state == NOT_IN_QUOTE)
+		**quote_removed_str++ = *++(*str);
+	else if (**str == '\'' && *state == NOT_IN_QUOTE)
+		*state = IN_QUOTE;
+	else if (**str == '\'' && *state == IN_QUOTE)
+		*state = NOT_IN_QUOTE;
+	else if (**str == '\"' && *state == NOT_IN_QUOTE)
+		*state = IN_DQUOTE;
+	else if (**str == '\"' && *state == IN_DQUOTE)
+		*state = NOT_IN_QUOTE;
+	else
+		**quote_removed_str++ = **str;
+}
+
 // 指定したtokenに含まれる引用符を削除する
 static t_token	*trim_quotes(t_token *token)
 {
@@ -140,6 +145,7 @@ static t_token	*trim_quotes(t_token *token)
 	str = token->str;
 	while (*str != '\0')
 	{
+		// trim_and_change_state(&str, &quote_removed_str, &state);
 		if (*str == '\\' && *(str + 1) == '\'' && state == NOT_IN_QUOTE)
 		{
 			str++;
