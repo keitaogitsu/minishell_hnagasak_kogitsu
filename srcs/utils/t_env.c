@@ -6,13 +6,14 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/29 19:20:30 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/02 19:08:05 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "debug.h"
 #include "utils.h"
 
+// update env_list with envp("KEY=VALUE")
 void	update_env_value(t_dlist **env_list, char *envp)
 {
 	t_dlist	*current;
@@ -166,6 +167,12 @@ void	free_envlist(t_dlist **envlist)
 	free(envlist);
 }
 
+/**
+ * @brief Find an existing t_env object in the environment list.
+ * @param str_env environment variable in string format "KEY=VALUE"
+ * @param env_list double pointer to the head of the double linked list
+ * @return t_env* pointer to existing t_env object
+ */
 t_env	*find_existing_env(char *str_env, t_dlist **env_list)
 {
 	t_dlist	*current;

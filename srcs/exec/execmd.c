@@ -6,12 +6,13 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/29 16:05:34 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/01 14:18:23 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 #include "expander.h"
+#include "free.h"
 
 int	delete_file(const char *filepath)
 {
@@ -19,12 +20,12 @@ int	delete_file(const char *filepath)
 	if (unlink(filepath) == 0)
 	{
 		ft_debug("'%s' が正常に削除されました。\n", filepath);
-		return (0); // 成功
+		return (0);
 	}
 	else
 	{
 		perror("ファイルの削除に失敗しました");
-		return (-1); // エラー
+		return (-1);
 	}
 }
 
@@ -81,7 +82,6 @@ int	is_builtin_cmd(t_cmd *cmd)
 {
 	char	*cmd_name;
 
-	// ft_debug("--- is_builtin_cmd [%s]---\n", cmd->argv[0]);
 	cmd_name = cmd->argv[0];
 	if (ft_strncmp(cmd_name, "echo", 5) == 0)
 		return (1);
@@ -121,7 +121,7 @@ char	*find_cmd_path(char *paths[], char *cmd)
 	int		i;
 	char	*cmd_path;
 
-	if (ft_strchr(cmd, '/') != NULL)
+	if (ft_strchr(cmd, '/') != NULL || paths == NULL)
 	{
 		if (access(cmd, X_OK) == 0)
 			return (ft_strdup(cmd));
@@ -147,26 +147,14 @@ char	*find_cmd_path(char *paths[], char *cmd)
 
 char	**get_paths(t_dlist **env_list)
 {
-	t_dlist	*current;
 	t_env	*env;
 	char	**paths;
 	char	*path;
 
-	// char	*tmp;
-	// int		i;
 	path = NULL;
-	current = *env_list;
-	// 環境変数PATHを探す
-	while (current != NULL)
-	{
-		env = (t_env *)current->cont;
-		if (ft_strncmp(env->key, "PATH", 5) == 0)
-		{
-			path = ft_strdup(env->value);
-			break ;
-		}
-		current = current->nxt;
-	}
+	env = find_existing_env("PATH", env_list);
+	if (env != NULL)
+		path = ft_strdup(env->value);
 	paths = ft_split(path, ':');
 	free(path);
 	return (paths);
@@ -283,36 +271,48 @@ void	pipin2stdout(t_dlist *cmdlst)
 
 	cmd = (t_cmd *)cmdlst->cont;
 	dup2(cmd->pipe[1], STDOUT_FILENO);
-	// close(cmd->pipe[0]);
-	close(cmd->pipe[1]);
+	cmd->pipe[1] = ft_close(cmd->pipe[1]);
 }
+
+char	*get_last_redir_file(t_dlist *redir_list)
+{
+	t_dlist	*current;
+	t_redir	*redir;
+
+	current = redir_list;
+	while (current->nxt != NULL)
+		current = current->nxt;
+	redir = (t_redir *)current->cont;
+	return (redir->file);
+}
+
+// void	stdin_from_file(char *file)
+// {
+// 	int	fd;
+
+// 	fd = file_open(file, O_RDONLY, 0);
+// 	dup2(fd, STDIN_FILENO);
+// }
 
 // リダイレクトやパイプに応じて標準入力を書き換える
 void	dup_stdin(t_dlist *current)
 {
 	t_cmd	*cmd;
-	int		fd;
 
+	// int		fd;
 	cmd = (t_cmd *)current->cont;
 	if (current->prv == NULL && cmd->input == NULL)
 		ft_debug("[dup_stdin]  %s: Not dup stdin\n", cmd->argv[0]);
 	else if (current->prv == NULL && cmd->input != NULL)
 	{
-		fd = get_dupin_fd(cmd);
-		dup2(fd, STDIN_FILENO);
-		ft_debug("[dup_stdin]  %s: dup input redir (%d)\n", cmd->argv[0], fd);
+		dup2(get_dupin_fd(cmd), STDIN_FILENO);
+		// ft_debug("[dup_stdin]  %s: dup input redir (%d)\n", cmd->argv[0],
+		// 	fd);
 	}
 	else if (current->prv != NULL && cmd->input == NULL)
-	{
 		pipout2stdin(current->prv);
-		ft_debug("[dup_stdin]  %s: dup pipout2stdin\n", cmd->argv[0]);
-	}
 	else if (current->prv != NULL && cmd->input != NULL)
-	{
-		fd = get_dupin_fd(cmd);
-		dup2(fd, STDIN_FILENO);
-		ft_debug("[dup_stdin]  %s: dup input redir (%d)\n", cmd->argv[0], fd);
-	}
+		dup2(get_dupin_fd(cmd), STDIN_FILENO);
 }
 
 /**
@@ -329,7 +329,7 @@ void	dup_stdin(t_dlist *current)
  * 4. If there is both a next command and output redirection,
 	stdout is redirected
  *    to the specified file, ignoring the pipe to the next command.
-	* @param current A pointer to the current command in the doubly linked list of commands.
+	* @param current pointer to the current command in t_dlist of commands.
  */
 void	dup_stdout(t_dlist *current)
 {
@@ -337,7 +337,6 @@ void	dup_stdout(t_dlist *current)
 	int		fd;
 
 	cmd = (t_cmd *)current->cont;
-	// ft_debug("--- dup_stdout [%s]---\n", cmd->argv[0]);
 	if (current->nxt == NULL && cmd->output == NULL)
 	{
 		ft_debug("[dup_stdout] %s: Not dup stdout\n", cmd->argv[0]);
@@ -367,8 +366,6 @@ void	set_pipe_if_needed(t_dlist *current)
 	t_cmd	*cmd;
 
 	cmd = (t_cmd *)current->cont;
-	cmd->pipe[0] = ft_close(cmd->pipe[0]); // 初期化
-	cmd->pipe[1] = ft_close(cmd->pipe[1]); // 初期化
 	if (current->nxt != NULL)
 		ft_pipe(cmd->pipe);
 	else
@@ -380,7 +377,6 @@ void	store_stdio(t_dlist *current)
 {
 	t_cmd	*cmd;
 
-	// ft_debug("--- store_stdio ---\n");
 	cmd = (t_cmd *)current->cont;
 	cmd->stdio[0] = dup(STDIN_FILENO);
 	cmd->stdio[1] = dup(STDOUT_FILENO);
@@ -388,8 +384,8 @@ void	store_stdio(t_dlist *current)
 	{
 		perror("[store_stdio] dup error");
 		ft_debug("[store_stdio] stdio(%d,%d)\n", cmd->stdio[0], cmd->stdio[1]);
-		ft_close(cmd->stdio[0]);
-		ft_close(cmd->stdio[1]);
+		cmd->stdio[0] = ft_close(cmd->stdio[0]);
+		cmd->stdio[1] = ft_close(cmd->stdio[1]);
 	}
 	else
 		ft_debug("[store_stdio] stdio(%d,%d)\n", cmd->stdio[0], cmd->stdio[1]);
@@ -406,8 +402,8 @@ void	restore_stdio(t_dlist *current)
 	res[1] = dup2(cmd->stdio[1], STDOUT_FILENO);
 	if (res[0] != -1 && res[1] != -1)
 	{
-		ft_close(cmd->stdio[0]);
-		ft_close(cmd->stdio[1]);
+		cmd->stdio[0] = ft_close(cmd->stdio[0]);
+		cmd->stdio[1] = ft_close(cmd->stdio[1]);
 	}
 }
 
@@ -513,11 +509,7 @@ char	*expand_heredoc(char *str, t_dlist **env_list)
 	char	*replaced_str;
 	char	*str_head;
 
-	// size_t	state;
-	// int		is_replaced_str;
 	ft_debug("--- expand_heredoc %s ---\n", str);
-	// is_replaced_str = 0;
-	// state = NOT_IN_QUOTE;
 	str_head = str;
 	while (*str != '\0')
 	{
@@ -527,13 +519,39 @@ char	*expand_heredoc(char *str, t_dlist **env_list)
 			replaced_str = replace_1st_env_var(str_head, env_value);
 			free(str_head);
 			str_head = replaced_str;
-			// state = NOT_IN_QUOTE;
 			str = replaced_str;
 		}
 		else
 			str++;
 	}
 	return (str_head);
+}
+
+void	input_hd(t_cmd *cmd, t_redir *redir, t_dlist **env_list)
+{
+	char	*line;
+	int		delimitype;
+	char	*delim;
+	int		fd;
+
+	fd = file_open(redir->file, O_WRONLY | O_CREAT | O_TRUNC,
+			S_IRUSR | S_IWUSR);
+	delimitype = get_delimiter_type(((t_redir *)cmd->input->cont)->delimiter);
+	line = (char *)malloc(1);
+	while (line != NULL)
+	{
+		line = readline("> ");
+		if (line == NULL)
+			break ;
+		delim = ft_strtrim(redir->delimiter, "\"\'");
+		if (ft_strncmp(line, delim, ft_strlen(delim)) == 0)
+			break ;
+		if (delimitype == NOT_IN_QUOTE)
+			line = expand_heredoc(line, env_list);
+		ft_putendl_fd(line, fd);
+	}
+	ft_free(line);
+	ft_close(fd);
 }
 
 void	ft_heredoc(t_cmd *cmd, t_redir *redir, t_dlist **env_list)
@@ -544,43 +562,29 @@ void	ft_heredoc(t_cmd *cmd, t_redir *redir, t_dlist **env_list)
 	char	*delim;
 
 	ft_debug("----- ft_heredoc [%s]-----\n", redir->file);
-	fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-	if (fd == -1)
-	{
-		perror("file open error");
-		exit(EXIT_FAILURE);
-	}
+	// input_hd(cmd, redir, env_list);
+	fd = file_open(redir->file, O_WRONLY | O_CREAT | O_TRUNC,
+			S_IRUSR | S_IWUSR);
 	delimitype = get_delimiter_type(redir->delimiter);
-	line = "";
+	line = (char *)malloc(1);
 	while (line != NULL)
 	{
-		dup2(cmd->stdio[0], STDIN_FILENO);
+		// line = input_hd(cmd, env_list);
+		line = ft_free(line);
+		dup2(cmd->stdio[0], STDIN_FILENO); // heredoc時は標準入力を元に戻す
 		line = readline("> ");
 		if (line == NULL)
 			break ;
 		delim = ft_strtrim(redir->delimiter, "\"\'");
 		if (ft_strncmp(line, delim, ft_strlen(delim)) == 0)
-		{
-			ft_debug("  delimiter found\n");
 			break ;
-		}
 		if (delimitype == NOT_IN_QUOTE)
 			line = expand_heredoc(line, env_list);
-		write(fd, line, ft_strlen(line));
-		write(fd, "\n", 1);
-		free(line);
+		ft_putendl_fd(line, fd);
 	}
+	ft_free(line);
 	close(fd);
-	fd = open(redir->file, O_RDONLY);
-	if (fd == -1)
-	{
-		perror("file open error2");
-		exit(EXIT_FAILURE);
-	}
-	if (line != NULL)
-	{
-		ft_debug("  LINE2:%s\n", line);
-	}
+	fd = file_open(redir->file, O_RDONLY, 0);
 	dup2(fd, STDIN_FILENO);
 	close(fd);
 }
@@ -597,7 +601,7 @@ void	input_heredocs(t_cmd *cmd, t_dlist **env_list)
 		if (rdr->type == REDIR_HEREDOC)
 		{
 			ft_debug("### input_heredoc [%s]\n", rdr->file);
-			ft_heredoc(cmd ,rdr, env_list);
+			ft_heredoc(cmd, rdr, env_list);
 		}
 		current = current->nxt;
 	}
@@ -675,52 +679,59 @@ void	close_parent_pipe(t_dlist *current)
 	}
 }
 
-void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
+void	child_process(t_dlist *current, t_dlist **env_list)
 {
-	t_dlist *current;
-	t_cmd *cmd;
-	int has_next_cmd;
-	int is_builtin;
+	t_cmd	*cmd;
+
+	cmd = (t_cmd *)current->cont;
+	ft_debug("[child process] close pipin fd:%d\n", cmd->pipe[0]);
+	cmd->pipe[0] = ft_close(cmd->pipe[0]);
+	store_stdio(current);
+	input_heredocs(cmd, env_list);
+	dup_stdin(current);
+	dup_stdout(current);
+	exec_cmd(cmd, env_list);
+}
+
+void	fail_fork(void)
+{
+	perror("fork");
+	exit(EXIT_FAILURE);
+}
+
+void	exec_external_or_piped_cmd(t_dlist **cmd_list, t_dlist **env_list)
+{
+	t_dlist	*current;
+	t_cmd	*cmd;
 
 	current = *cmd_list;
-	is_builtin = is_builtin_cmd((t_cmd *)current->cont);
-	has_next_cmd = (current->nxt != NULL);
+	while (current != NULL)
+	{
+		cmd = (t_cmd *)current->cont;
+		ft_debug("\n--- exec_cmd[%d]: %s ---\n", current->i, cmd->argv[0]);
+		set_pipe_if_needed(current);
+		create_tmp_files(cmd, current->i);
+		set_fork_if_needed(current);
+		if (cmd->pid == 0)
+			child_process(current, env_list);
+		else if (cmd->pid > 0)
+		{
+			close_parent_pipe(current);
+		}
+		else
+			fail_fork();
+		current = current->nxt;
+	}
+	wait_children(cmd_list);
+}
 
-	if (is_builtin && !has_next_cmd)
+void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
+{
+	t_dlist	*current;
+
+	current = *cmd_list;
+	if (is_builtin_cmd((t_cmd *)current->cont) && current->nxt == NULL)
 		exec_single_builtin(current, env_list);
 	else
-	{
-		while (current != NULL)
-		{
-			cmd = (t_cmd *)current->cont;
-			// ft_debug("[exec_cmd_list] %s\n", cmd->argv[0]);
-			ft_debug("\n--- exec_cmd[%d]: %s ---\n", current->i, cmd->argv[0]);
-			set_pipe_if_needed(current);
-			create_tmp_files(cmd, current->i);
-			cmd->pid = fork();
-			if (cmd->pid == 0)
-			{
-				ft_debug("[child process] close pipin fd:%d\n", cmd->pipe[0]);
-				ft_close(cmd->pipe[0]);
-				store_stdio(current);
-				input_heredocs(cmd, env_list);
-				dup_stdin(current);
-				dup_stdout(current);
-				exec_cmd(cmd, env_list);
-			}
-			else if (cmd->pid > 0)
-			{
-				close_parent_pipe(current);
-				// waitpid(cmd->pid, NULL, 0);
-				// fprintf(stderr, "  # waitpid %d\n", cmd->pid);
-			}
-			else
-			{
-				perror("fork");
-				exit(EXIT_FAILURE);
-			}
-			current = current->nxt;
-		}
-		wait_children(cmd_list);
-	}
+		exec_external_or_piped_cmd(cmd_list, env_list);
 }

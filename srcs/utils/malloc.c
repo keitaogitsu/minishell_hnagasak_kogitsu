@@ -3,14 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   malloc.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/02 12:15:09 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/02 12:15:21 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/03/02 19:03:13 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
+
+void	malloc_error_exit(void)
+{
+	ft_errmsg("malloc error\n");
+	exit(EXIT_FAILURE);
+}
 
 char	*ft_malloc(size_t size)
 {
@@ -18,16 +24,6 @@ char	*ft_malloc(size_t size)
 
 	ptr = (char *)malloc(size);
 	if (!ptr)
-	{
-		// error_exit(NULL);
-		printf("malloc error\n");
-		exit(EXIT_FAILURE);
-	}
+		malloc_error_exit();
 	return (ptr);
-}
-
-void	malloc_error_exit(void)
-{
-	printf("malloc error\n");
-	exit(EXIT_FAILURE);
 }

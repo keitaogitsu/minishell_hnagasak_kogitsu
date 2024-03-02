@@ -6,11 +6,12 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 19:55:27 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/28 00:30:03 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/02 18:57:01 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
+#include "free.h"
 
 char	*get_env_value(char *key, t_dlist **env_list)
 {
@@ -41,14 +42,30 @@ char	*replace_tilde(const char *str, t_dlist **env_list)
 void	ft_cd(char *argv[], t_dlist **env_list)
 {
 	char	*path;
+	char	*cwd;
+	char	*str_env;
 
-	// printf("--- ft_cd ---\n");
 	if (argv[1] == NULL)
 		path = replace_tilde("~", env_list);
 	else
 		path = replace_tilde(argv[1], env_list);
-	if (chdir(path))
-		printf("minishell: cd: %s:%s\n", argv[1], strerror(errno));
-	// printf("pwd:%s\n", getcwd(NULL, 0));
+	if (chdir(path) == 0)
+	{
+		cwd = malloc(sizeof(char) * 1024);
+		cwd = getcwd(cwd, sizeof(cwd));
+		if (cwd != NULL)
+		{
+			str_env = ft_strjoin("PWD=", cwd);
+			update_env_value(env_list, str_env);
+			ft_free(str_env);
+		}
+	}
+	else
+	{
+		ft_errmsg("minishell: cd: ");
+		ft_errmsg(argv[1]);
+		ft_errmsg(": ");
+		ft_errmsg(strerror(errno));
+	}
 	free(path);
 }
