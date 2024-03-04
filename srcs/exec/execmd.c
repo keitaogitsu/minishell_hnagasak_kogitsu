@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/01 14:18:23 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/05 00:47:14 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -299,16 +299,11 @@ void	dup_stdin(t_dlist *current)
 {
 	t_cmd	*cmd;
 
-	// int		fd;
 	cmd = (t_cmd *)current->cont;
 	if (current->prv == NULL && cmd->input == NULL)
 		ft_debug("[dup_stdin]  %s: Not dup stdin\n", cmd->argv[0]);
 	else if (current->prv == NULL && cmd->input != NULL)
-	{
 		dup2(get_dupin_fd(cmd), STDIN_FILENO);
-		// ft_debug("[dup_stdin]  %s: dup input redir (%d)\n", cmd->argv[0],
-		// 	fd);
-	}
 	else if (current->prv != NULL && cmd->input == NULL)
 		pipout2stdin(current->prv);
 	else if (current->prv != NULL && cmd->input != NULL)
@@ -537,7 +532,7 @@ void	input_hd(t_cmd *cmd, t_redir *redir, t_dlist **env_list)
 	fd = file_open(redir->file, O_WRONLY | O_CREAT | O_TRUNC,
 			S_IRUSR | S_IWUSR);
 	delimitype = get_delimiter_type(((t_redir *)cmd->input->cont)->delimiter);
-	line = (char *)malloc(1);
+	line = ft_malloc(1);
 	while (line != NULL)
 	{
 		line = readline("> ");
@@ -562,16 +557,14 @@ void	ft_heredoc(t_cmd *cmd, t_redir *redir, t_dlist **env_list)
 	char	*delim;
 
 	ft_debug("----- ft_heredoc [%s]-----\n", redir->file);
-	// input_hd(cmd, redir, env_list);
 	fd = file_open(redir->file, O_WRONLY | O_CREAT | O_TRUNC,
 			S_IRUSR | S_IWUSR);
 	delimitype = get_delimiter_type(redir->delimiter);
-	line = (char *)malloc(1);
+	line = ft_malloc(1);
 	while (line != NULL)
 	{
-		// line = input_hd(cmd, env_list);
 		line = ft_free(line);
-		dup2(cmd->stdio[0], STDIN_FILENO); // heredoc時は標準入力を元に戻す
+		dup2(cmd->stdio[0], STDIN_FILENO);
 		line = readline("> ");
 		if (line == NULL)
 			break ;

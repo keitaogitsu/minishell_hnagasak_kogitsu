@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 19:55:27 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/02 18:57:01 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/05 00:41:58 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	ft_cd(char *argv[], t_dlist **env_list)
 		path = replace_tilde(argv[1], env_list);
 	if (chdir(path) == 0)
 	{
-		cwd = malloc(sizeof(char) * 1024);
+		cwd = ft_malloc(sizeof(char) * 1024);
 		cwd = getcwd(cwd, sizeof(cwd));
 		if (cwd != NULL)
 		{

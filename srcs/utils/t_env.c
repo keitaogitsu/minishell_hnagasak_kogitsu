@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/02 19:08:05 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/05 00:28:36 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,11 +59,11 @@ t_env	*to_env(char *envp, int is_shell_var)
 	if (key == NULL)
 		return (NULL);
 	env = malloc(sizeof(t_env));
-	if (!env)
+	if (env == NULL)
 	{
 		free(key);
 		free(value);
-		return (NULL);
+		malloc_error_exit();
 	}
 	env->key = key;
 	if (value != NULL)
@@ -105,12 +105,11 @@ t_dlist	**init_env(char **envp)
 	i = 0;
 	ft_debug("--- init_env ---\n");
 	env_list = (t_dlist **)malloc(sizeof(t_dlist *));
-	while (envp[i] && i < 50)
+	if (env_list == NULL)
+		malloc_error_exit();
+	while (envp[i] != NULL)
 	{
-		if (i == 0)
-			*env_list = ft_dlstnew(to_env(envp[i], 0));
-		else
-			ft_dlstadd_back(env_list, ft_dlstnew(to_env(envp[i], 0)));
+		ft_dlstadd_back(env_list, ft_dlstnew(to_env(envp[i], 0)));
 		i++;
 	}
 	return (env_list);
