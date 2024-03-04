@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/05 00:28:36 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/05 01:09:16 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,11 +168,11 @@ void	free_envlist(t_dlist **envlist)
 
 /**
  * @brief Find an existing t_env object in the environment list.
- * @param str_env environment variable in string format "KEY=VALUE"
+ * @param key the key of the environment variable
  * @param env_list double pointer to the head of the double linked list
  * @return t_env* pointer to existing t_env object
  */
-t_env	*find_existing_env(char *str_env, t_dlist **env_list)
+t_env	*find_existing_env(char *key, t_dlist **env_list)
 {
 	t_dlist	*current;
 	t_env	*env;
@@ -181,7 +181,7 @@ t_env	*find_existing_env(char *str_env, t_dlist **env_list)
 	while (current)
 	{
 		env = (t_env *)current->cont;
-		if (ft_strncmp(env->key, str_env, ft_strlen(str_env)) == 0)
+		if (ft_strncmp(env->key, key, ft_strlen(key)) == 0)
 			return (env);
 		current = current->nxt;
 	}
