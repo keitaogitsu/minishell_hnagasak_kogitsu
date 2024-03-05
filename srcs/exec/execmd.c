@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/05 00:47:14 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/05 18:30:02 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,7 +207,10 @@ int	file_open(char *file, int flag, int mode)
 	fd = open(file, flag, mode);
 	if (fd == -1)
 	{
-		printf("%s: %s\n", file, strerror(errno));
+		ft_errmsg("minishell: ");
+		ft_errmsg(file);
+		ft_errmsg(": ");
+		ft_errmsg(strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 	return (fd);
@@ -522,43 +525,12 @@ char	*expand_heredoc(char *str, t_dlist **env_list)
 	return (str_head);
 }
 
-void	input_hd(t_cmd *cmd, t_redir *redir, t_dlist **env_list)
+void	input_hd(t_cmd *cmd, t_redir *redir, int fd, t_dlist **env_list)
 {
 	char	*line;
 	int		delimitype;
 	char	*delim;
-	int		fd;
 
-	fd = file_open(redir->file, O_WRONLY | O_CREAT | O_TRUNC,
-			S_IRUSR | S_IWUSR);
-	delimitype = get_delimiter_type(((t_redir *)cmd->input->cont)->delimiter);
-	line = ft_malloc(1);
-	while (line != NULL)
-	{
-		line = readline("> ");
-		if (line == NULL)
-			break ;
-		delim = ft_strtrim(redir->delimiter, "\"\'");
-		if (ft_strncmp(line, delim, ft_strlen(delim)) == 0)
-			break ;
-		if (delimitype == NOT_IN_QUOTE)
-			line = expand_heredoc(line, env_list);
-		ft_putendl_fd(line, fd);
-	}
-	ft_free(line);
-	ft_close(fd);
-}
-
-void	ft_heredoc(t_cmd *cmd, t_redir *redir, t_dlist **env_list)
-{
-	char	*line;
-	int		fd;
-	int		delimitype;
-	char	*delim;
-
-	ft_debug("----- ft_heredoc [%s]-----\n", redir->file);
-	fd = file_open(redir->file, O_WRONLY | O_CREAT | O_TRUNC,
-			S_IRUSR | S_IWUSR);
 	delimitype = get_delimiter_type(redir->delimiter);
 	line = ft_malloc(1);
 	while (line != NULL)
@@ -569,13 +541,23 @@ void	ft_heredoc(t_cmd *cmd, t_redir *redir, t_dlist **env_list)
 		if (line == NULL)
 			break ;
 		delim = ft_strtrim(redir->delimiter, "\"\'");
-		if (ft_strncmp(line, delim, ft_strlen(delim)) == 0)
+		if (ft_strncmp(line, delim, ft_strlen(delim) + 1) == 0)
 			break ;
 		if (delimitype == NOT_IN_QUOTE)
 			line = expand_heredoc(line, env_list);
 		ft_putendl_fd(line, fd);
 	}
 	ft_free(line);
+}
+
+void	ft_heredoc(t_cmd *cmd, t_redir *redir, t_dlist **env_list)
+{
+	int	fd;
+
+	ft_debug("----- ft_heredoc [%s]-----\n", redir->file);
+	fd = file_open(redir->file, O_WRONLY | O_CREAT | O_TRUNC,
+			S_IRUSR | S_IWUSR);
+	input_hd(cmd, redir, fd, env_list);
 	close(fd);
 	fd = file_open(redir->file, O_RDONLY, 0);
 	dup2(fd, STDIN_FILENO);
