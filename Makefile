@@ -1,6 +1,7 @@
 
 EXEC_DIR := srcs/exec
-EXEC_FILES := execmd.c exec_test.c
+EXEC_FILES := dup_stdin.c dup_stdout.c exec_cmd_list.c exec_test.c exec_cmd.c find_cmd_path.c \
+forked_process_helper.c heredoc.c set_tmp_file.c set_pipe_fork.c store_stdio.c utils.c
 EXEC_SRCS := $(addprefix $(EXEC_DIR)/, $(EXEC_FILES))
 
 BUILTIN_DIR := srcs/builtin
