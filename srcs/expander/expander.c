@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/05 00:45:19 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/07 04:06:01 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,9 @@ void	insert_between_tokens(t_token *expanded_tokens, t_token *current,
 	expanded_last = expanded_tokens;
 	if (current->next != NULL)
 	{
-		current->next->prev = expanded_tokens;
 		while (expanded_last->next != NULL)
 			expanded_last = expanded_last->next;
+		current->next->prev = expanded_last;
 		expanded_last->next = current->next;
 	}
 	if (current->prev != NULL)
@@ -239,10 +239,20 @@ t_token	*expand_env(t_token *tokens, t_dlist **env_list)
 		current->str = replace_env_var(current->str, env_list);
 		// 置換後の文字列が引用符で囲まれていない場合、空白区切りでトークン化
 		expanded_tokens = tokenize(current->str);
-		// トークン化した文字列を元のトークンリストの間に挿入
-		insert_between_tokens(expanded_tokens, current, &new_tokens_head);
-		// 引用符を削除する
-		current = trim_quotes(expanded_tokens);
+		if (expanded_tokens != NULL)
+		{
+			// トークン化した文字列を元のトークンリストの間に挿入
+			insert_between_tokens(expanded_tokens, current, &new_tokens_head);
+			// 引用符を削除する
+			current = trim_quotes(expanded_tokens);
+		}
+		else
+		{
+			if (current->prev != NULL)
+				current->prev->next = current->next;
+			if (current->next != NULL)
+				current->next->prev = current->prev;
+		}
 		current = current->next;
 	}
 	ft_debug("--- after expand_env ---\n");
