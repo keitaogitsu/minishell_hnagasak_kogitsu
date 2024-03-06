@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 17:27:01 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/29 18:33:24 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/05 00:27:34 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ void	print_envlist(t_dlist **env_list)
 	while (current)
 	{
 		env = (t_env *)current->cont;
-		ft_debug("%s=%s , is_shell_var = %d\n", env->key, env->value,
+		printf("%s=%s , is_shell_var = %d\n", env->key, env->value,
 			env->is_shell_var);
 		current = current->nxt;
 	}
