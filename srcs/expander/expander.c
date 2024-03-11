@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/07 04:06:01 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/11 22:35:56 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,9 +114,17 @@ void	trim_and_change_state(char **str, char **quote_removed_str,
 		size_t *state)
 {
 	if (**str == '\\' && *(*str + 1) == '\'' && *state == NOT_IN_QUOTE)
-		**quote_removed_str++ = *++(*str);
+	{
+		(*str)++;
+		**quote_removed_str = **str;
+		(*quote_removed_str)++;
+	}
 	else if (**str == '\\' && *(*str + 1) == '\"' && *state == NOT_IN_QUOTE)
-		**quote_removed_str++ = *++(*str);
+	{
+		(*str)++;
+		**quote_removed_str = **str;
+		(*quote_removed_str)++;
+	}
 	else if (**str == '\'' && *state == NOT_IN_QUOTE)
 		*state = IN_QUOTE;
 	else if (**str == '\'' && *state == IN_QUOTE)
@@ -126,7 +134,10 @@ void	trim_and_change_state(char **str, char **quote_removed_str,
 	else if (**str == '\"' && *state == IN_DQUOTE)
 		*state = NOT_IN_QUOTE;
 	else
-		**quote_removed_str++ = **str;
+	{
+		**quote_removed_str = **str;
+		(*quote_removed_str)++;
+	}
 }
 
 // 指定したtokenに含まれる引用符を削除する
@@ -143,32 +154,7 @@ static t_token	*trim_quotes(t_token *token)
 	str = token->str;
 	while (*str != '\0')
 	{
-		// trim_and_change_state(&str, &quote_removed_str, &state);
-		if (*str == '\\' && *(str + 1) == '\'' && state == NOT_IN_QUOTE)
-		{
-			str++;
-			*quote_removed_str = *str;
-			quote_removed_str++;
-		}
-		else if (*str == '\\' && *(str + 1) == '\"' && state == NOT_IN_QUOTE)
-		{
-			str++;
-			*quote_removed_str = *str;
-			quote_removed_str++;
-		}
-		else if (*str == '\'' && state == NOT_IN_QUOTE)
-			state = IN_QUOTE;
-		else if (*str == '\'' && state == IN_QUOTE)
-			state = NOT_IN_QUOTE;
-		else if (*str == '\"' && state == NOT_IN_QUOTE)
-			state = IN_DQUOTE;
-		else if (*str == '\"' && state == IN_DQUOTE)
-			state = NOT_IN_QUOTE;
-		else
-		{
-			*quote_removed_str = *str;
-			quote_removed_str++;
-		}
+		trim_and_change_state(&str, &quote_removed_str, &state);
 		str++;
 	}
 	*quote_removed_str = '\0';
@@ -176,6 +162,86 @@ static t_token	*trim_quotes(t_token *token)
 	token->str = rmvd_str_head;
 	return (token);
 }
+
+size_t	toggle_quote_state(size_t state, char *str)
+{
+	if (*str == '\'' && state == NOT_IN_QUOTE)
+		return (IN_QUOTE);
+	else if (*str == '\'' && state == IN_QUOTE)
+		return (NOT_IN_QUOTE);
+	else if (*str == '\"' && state == NOT_IN_QUOTE)
+		return (IN_DQUOTE);
+	else if (*str == '\"' && state == IN_DQUOTE)
+		return (NOT_IN_QUOTE);
+	return (state);
+}
+
+// void	replace_env_vars_in_str(char *str, char *replaced_str, t_dlist **env_list)
+// {
+// 	char *env_value;
+
+// 	env_value = find_env_value(str, *env_list);
+// 	if (env_value != NULL)
+// 	{
+// 		replaced_str = replace_1st_env_var(str_head, env_value);
+// 		free(str_head);
+// 		str_head = replaced_str;
+// 		state = NOT_IN_QUOTE;
+// 		is_replaced_str = 1;
+// 	}
+// }
+
+// char *replace_with_env_value(char *str, char *str_head, t_dlist **env_list, int *is_replaced_str)
+// {
+// 	char *env_value;
+// 	char *replaced_str;
+
+// 	env_value = find_env_value(str, *env_list);
+// 	if (env_value != NULL)
+// 	{
+// 		replaced_str = replace_1st_env_var(str_head, env_value);
+// 		free(str_head);
+// 		str_head = replaced_str;
+// 		*is_replaced_str = 1;
+// 	}
+// 	return (str_head);
+// }
+
+// char *handle_replaced_string(char *str, char *replaced_str, int *is_replaced_str, size_t *state)
+// {
+// 	if (*is_replaced_str == 1)
+// 	{
+// 		str = replaced_str;
+// 		*is_replaced_str = 0;
+// 		*state = NOT_IN_QUOTE;
+// 	}
+// 	else
+// 		str++;
+// 	return (str);
+// }
+
+// char	*replace_env_var(char *str, t_dlist **env_list)
+// {
+//     char	*replaced_str;
+//     size_t	state;
+//     char	*str_head;
+//     int		is_replaced_str;
+
+//     is_replaced_str = 0;
+//     state = NOT_IN_QUOTE;
+//     str_head = str;
+//     while (*str != '\0')
+//     {
+//         state = toggle_quote_state(state, str);
+//         if (state != IN_QUOTE)
+//         {
+//             replaced_str = replace_with_env_value(str, str_head, env_list, &is_replaced_str);
+//             str_head = replaced_str;
+//         }
+//         str = handle_replaced_string(str, replaced_str, &is_replaced_str, &state);
+//     }
+//     return (str_head);
+// }
 
 char	*replace_env_var(char *str, t_dlist **env_list)
 {
@@ -190,14 +256,8 @@ char	*replace_env_var(char *str, t_dlist **env_list)
 	str_head = str;
 	while (*str != '\0')
 	{
-		if (*str == '\'' && state == NOT_IN_QUOTE)
-			state = IN_QUOTE;
-		else if (*str == '\'' && state == IN_QUOTE)
-			state = NOT_IN_QUOTE;
-		else if (*str == '\"' && state == NOT_IN_QUOTE)
-			state = IN_DQUOTE;
-		else if (*str == '\"' && state == IN_DQUOTE)
-			state = NOT_IN_QUOTE;
+		state = toggle_quote_state(state, str);
+		// printf("#1 str:%c state:%zu\n",*str, state);
 		if (state != IN_QUOTE)
 		{
 			env_value = find_env_value(str, *env_list);
@@ -206,19 +266,39 @@ char	*replace_env_var(char *str, t_dlist **env_list)
 				replaced_str = replace_1st_env_var(str_head, env_value);
 				free(str_head);
 				str_head = replaced_str;
-				state = NOT_IN_QUOTE;
 				is_replaced_str = 1;
+				state = NOT_IN_QUOTE;
 			}
 		}
 		if (is_replaced_str == 1)
 		{
 			str = replaced_str;
 			is_replaced_str = 0;
+			printf("replaced_str:%s\n",replaced_str);
 		}
 		else
 			str++;
+		// printf("#2 str:%c state:%zu\n",*str, state);
 	}
+	// printf("## state:%zu\n", state);
 	return (str_head);
+}
+
+static void	handle_expanded_tokens(t_token **expanded_tokens, t_token **current,
+		t_token **new_tokens_head)
+{
+	if (*expanded_tokens != NULL)
+	{
+		insert_between_tokens(*expanded_tokens, *current, new_tokens_head);
+		*current = trim_quotes(*expanded_tokens);
+	}
+	else
+	{
+		if ((*current)->prev != NULL)
+			(*current)->prev->next = (*current)->next;
+		if ((*current)->next != NULL)
+			(*current)->next->prev = (*current)->prev;
+	}
 }
 
 t_token	*expand_env(t_token *tokens, t_dlist **env_list)
@@ -231,31 +311,16 @@ t_token	*expand_env(t_token *tokens, t_dlist **env_list)
 	while (current != NULL)
 	{
 		if (current->prev != NULL && current->prev->type == D_LESSER)
-		{ // heredocのdelimiterは変数展開しない
+		{
 			current = current->next;
 			continue ;
 		}
-		// 環境変数の置換
 		current->str = replace_env_var(current->str, env_list);
-		// 置換後の文字列が引用符で囲まれていない場合、空白区切りでトークン化
 		expanded_tokens = tokenize(current->str);
-		if (expanded_tokens != NULL)
-		{
-			// トークン化した文字列を元のトークンリストの間に挿入
-			insert_between_tokens(expanded_tokens, current, &new_tokens_head);
-			// 引用符を削除する
-			current = trim_quotes(expanded_tokens);
-		}
-		else
-		{
-			if (current->prev != NULL)
-				current->prev->next = current->next;
-			if (current->next != NULL)
-				current->next->prev = current->prev;
-		}
+		handle_expanded_tokens(&expanded_tokens, &current, &new_tokens_head);
 		current = current->next;
 	}
-	ft_debug("--- after expand_env ---\n");
-	print_tokens(new_tokens_head);
 	return (new_tokens_head);
 }
+	// ft_debug("--- after expand_env ---\n");
+	// print_tokens(new_tokens_head);
