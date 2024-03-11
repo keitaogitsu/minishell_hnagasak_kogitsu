@@ -9,7 +9,7 @@ BUILTIN_FILES := pwd.c cd.c echo.c exit.c env.c export.c unset.c test.c
 BUILTIN_SRCS := $(addprefix $(BUILTIN_DIR)/, $(BUILTIN_FILES))
 
 UTILS_DIR := srcs/utils
-UTILS_FILES := envp.c free.c list.c malloc.c t_env.c 
+UTILS_FILES := envp.c free.c free2.c list.c malloc.c t_env.c 
 UTILS_SRCS := $(addprefix $(UTILS_DIR)/, $(UTILS_FILES))
 
 LEXER_DIR := srcs/lexer
@@ -17,7 +17,7 @@ LEXER_FILES := lexer.c lexer_utils.c token_processing.c quote_process.c validate
 LEXER_SRCS := $(addprefix $(LEXER_DIR)/, $(LEXER_FILES))
 
 DEBUG_DIR := srcs/debug
-DEBUG_FILES := print.c
+DEBUG_FILES := print_tokens.c print.c
 DEBUG_SRCS := $(addprefix $(DEBUG_DIR)/, $(DEBUG_FILES))
 
 PARSER_DIR := srcs/parser

@@ -6,28 +6,12 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 19:55:27 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/11 09:55:55 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/11 10:23:43 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 #include "free.h"
-
-// char	*get_env_value(char *key, t_dlist **env_list)
-// {
-// 	t_dlist	*current;
-// 	t_env	*env;
-
-// 	current = *env_list;
-// 	while (current)
-// 	{
-// 		env = current->cont;
-// 		if (ft_strncmp(env->key, key, ft_strlen(key)) == 0)
-// 			return (env->value);
-// 		current = current->nxt;
-// 	}
-// 	return (NULL);
-// }
 
 // if 1st char is '~', replace it with $HOME
 char	*replace_tilde(const char *str, t_dlist **env_list)
@@ -35,7 +19,6 @@ char	*replace_tilde(const char *str, t_dlist **env_list)
 	t_env	*env;
 	char	*home;
 
-	// home = get_env_value("HOME", env_list);
 	home = NULL;
 	env = find_existing_env("HOME", env_list);
 	if (env != NULL)
@@ -51,16 +34,22 @@ void	update_oldpwd(t_dlist **env_list)
 	char	*pwd;
 	char	*oldpwd;
 
-	// PWDを検索
 	env = find_existing_env("PWD", env_list);
 	if (env == NULL)
 		pwd = ft_strdup("");
 	else
 		pwd = env->value;
-	// OLDPWDの更新
 	oldpwd = ft_strjoin("OLDPWD=", pwd);
 	update_env_value(env_list, oldpwd);
 	ft_free(oldpwd);
+}
+
+static void	cd_errmsg(char **argv)
+{
+	ft_errmsg("minishell: cd: ");
+	ft_errmsg(argv[1]);
+	ft_errmsg(": ");
+	ft_errmsg(strerror(errno));
 }
 
 void	ft_cd(char *argv[], t_dlist **env_list)
@@ -87,11 +76,6 @@ void	ft_cd(char *argv[], t_dlist **env_list)
 		cwd = ft_free(cwd);
 	}
 	else
-	{
-		ft_errmsg("minishell: cd: ");
-		ft_errmsg(argv[1]);
-		ft_errmsg(": ");
-		ft_errmsg(strerror(errno));
-	}
+		cd_errmsg(argv);
 	free(path);
 }

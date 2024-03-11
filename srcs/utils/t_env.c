@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/10 13:52:27 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/11 10:17:10 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,10 @@
 // envp is in the format "KEY=VALUE".
 void	update_env_value(t_dlist **env_list, char *envp)
 {
-	// t_dlist	*current;
 	t_env	*env;
 	char	*key;
 	char	*value;
 
-	// printf("--- update_env_value [%s]---\n", envp);
-
-	// current = *env_list;
 	get_key_value(envp, &key, &value);
 	if (key == NULL)
 		return ;
@@ -138,31 +134,6 @@ char	**envlist2arr(t_dlist **env_list)
 	}
 	envp[i] = NULL;
 	return (envp);
-}
-
-void	free_envlist(t_dlist **envlist)
-{
-	t_dlist	*tmp;
-	t_dlist	*current;
-	t_env	*env;
-
-	ft_debug("--- free_envlist ---\n");
-	current = *envlist;
-	while (current != NULL)
-	{
-		tmp = current;
-		env = (t_env *)tmp->cont;
-		free(env->key);
-		env->key = NULL;
-		free(env->value);
-		env->value = NULL;
-		free(env);
-		env = NULL;
-		current = current->nxt;
-		free(tmp);
-		tmp = NULL;
-	}
-	free(envlist);
 }
 
 /**
