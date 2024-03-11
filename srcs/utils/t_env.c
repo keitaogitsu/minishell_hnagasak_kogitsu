@@ -6,40 +6,39 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/05 01:09:16 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/10 13:52:27 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "debug.h"
 #include "utils.h"
 
-// update env_list with envp("KEY=VALUE")
+// update env_list if the key exists, update the value.
+// if the key does not exist, add a new env to the list.
+// envp is in the format "KEY=VALUE".
 void	update_env_value(t_dlist **env_list, char *envp)
 {
-	t_dlist	*current;
+	// t_dlist	*current;
 	t_env	*env;
 	char	*key;
 	char	*value;
 
-	current = *env_list;
+	// printf("--- update_env_value [%s]---\n", envp);
+
+	// current = *env_list;
 	get_key_value(envp, &key, &value);
 	if (key == NULL)
 		return ;
-	while (current)
+	if (value == NULL)
+		value = ft_strdup("");
+	env = find_existing_env(key, env_list);
+	if (env != NULL)
 	{
-		env = (t_env *)current->cont;
-		if (ft_strncmp(env->key, key, ft_strlen(key)) == 0)
-		{
-			free(env->value);
-			if (value != NULL)
-				env->value = value;
-			else
-				env->value = ft_strdup("");
-			free(key);
-			return ;
-		}
-		current = current->nxt;
+		free(env->value);
+		env->value = value;
 	}
+	else
+		ft_dlstadd_back(env_list, ft_dlstnew(to_env(envp, !IS_SHELL_VAR)));
 	free(key);
 }
 
@@ -109,7 +108,7 @@ t_dlist	**init_env(char **envp)
 		malloc_error_exit();
 	while (envp[i] != NULL)
 	{
-		ft_dlstadd_back(env_list, ft_dlstnew(to_env(envp[i], 0)));
+		ft_dlstadd_back(env_list, ft_dlstnew(to_env(envp[i], !IS_SHELL_VAR)));
 		i++;
 	}
 	return (env_list);
