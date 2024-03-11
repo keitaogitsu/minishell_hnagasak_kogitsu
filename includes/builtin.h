@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 14:23:31 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/28 00:32:45 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/02 19:19:44 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # include <sys/errno.h>
 # include <unistd.h>
 
-#define ECHO_OPT_N 1
+# define ECHO_OPT_N 1
 
 // builtin
 void	ft_echo(char *argv[]);

@@ -6,14 +6,13 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 14:08:27 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/28 05:55:00 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/02 19:00:32 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 #include "debug.h"
 
-// 変数展開された文字列が渡される前提
 void	ft_echo(char *argv[])
 {
 	int				i;
@@ -31,9 +30,7 @@ void	ft_echo(char *argv[])
 		opt |= ECHO_OPT_N;
 	}
 	else
-	{
 		i = 1;
-	}
 	while (argv[i] != NULL)
 	{
 		printf("%s", argv[i]);

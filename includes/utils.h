@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 12:45:23 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/02 12:16:52 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/03/02 19:19:53 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void				update_env_value(t_dlist **env_list, char *envp);
 t_env				*find_existing_env(char *str_env, t_dlist **env_list);
 
 // malloc.c
-char	*ft_malloc(size_t size);
-void	malloc_error_exit(void);
+char				*ft_malloc(size_t size);
+void				malloc_error_exit(void);
 
 #endif

@@ -6,39 +6,35 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/29 19:20:30 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/11 10:17:10 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "debug.h"
 #include "utils.h"
 
+// update env_list if the key exists, update the value.
+// if the key does not exist, add a new env to the list.
+// envp is in the format "KEY=VALUE".
 void	update_env_value(t_dlist **env_list, char *envp)
 {
-	t_dlist	*current;
 	t_env	*env;
 	char	*key;
 	char	*value;
 
-	current = *env_list;
 	get_key_value(envp, &key, &value);
 	if (key == NULL)
 		return ;
-	while (current)
+	if (value == NULL)
+		value = ft_strdup("");
+	env = find_existing_env(key, env_list);
+	if (env != NULL)
 	{
-		env = (t_env *)current->cont;
-		if (ft_strncmp(env->key, key, ft_strlen(key)) == 0)
-		{
-			free(env->value);
-			if (value != NULL)
-				env->value = value;
-			else
-				env->value = ft_strdup("");
-			free(key);
-			return ;
-		}
-		current = current->nxt;
+		free(env->value);
+		env->value = value;
 	}
+	else
+		ft_dlstadd_back(env_list, ft_dlstnew(to_env(envp, !IS_SHELL_VAR)));
 	free(key);
 }
 
@@ -58,11 +54,11 @@ t_env	*to_env(char *envp, int is_shell_var)
 	if (key == NULL)
 		return (NULL);
 	env = malloc(sizeof(t_env));
-	if (!env)
+	if (env == NULL)
 	{
 		free(key);
 		free(value);
-		return (NULL);
+		malloc_error_exit();
 	}
 	env->key = key;
 	if (value != NULL)
@@ -104,12 +100,11 @@ t_dlist	**init_env(char **envp)
 	i = 0;
 	ft_debug("--- init_env ---\n");
 	env_list = (t_dlist **)malloc(sizeof(t_dlist *));
-	while (envp[i] && i < 50)
+	if (env_list == NULL)
+		malloc_error_exit();
+	while (envp[i] != NULL)
 	{
-		if (i == 0)
-			*env_list = ft_dlstnew(to_env(envp[i], 0));
-		else
-			ft_dlstadd_back(env_list, ft_dlstnew(to_env(envp[i], 0)));
+		ft_dlstadd_back(env_list, ft_dlstnew(to_env(envp[i], !IS_SHELL_VAR)));
 		i++;
 	}
 	return (env_list);
@@ -141,32 +136,13 @@ char	**envlist2arr(t_dlist **env_list)
 	return (envp);
 }
 
-void	free_envlist(t_dlist **envlist)
-{
-	t_dlist	*tmp;
-	t_dlist	*current;
-	t_env	*env;
-
-	ft_debug("--- free_envlist ---\n");
-	current = *envlist;
-	while (current != NULL)
-	{
-		tmp = current;
-		env = (t_env *)tmp->cont;
-		free(env->key);
-		env->key = NULL;
-		free(env->value);
-		env->value = NULL;
-		free(env);
-		env = NULL;
-		current = current->nxt;
-		free(tmp);
-		tmp = NULL;
-	}
-	free(envlist);
-}
-
-t_env	*find_existing_env(char *str_env, t_dlist **env_list)
+/**
+ * @brief Find an existing t_env object in the environment list.
+ * @param key the key of the environment variable
+ * @param env_list double pointer to the head of the double linked list
+ * @return t_env* pointer to existing t_env object
+ */
+t_env	*find_existing_env(char *key, t_dlist **env_list)
 {
 	t_dlist	*current;
 	t_env	*env;
@@ -175,7 +151,7 @@ t_env	*find_existing_env(char *str_env, t_dlist **env_list)
 	while (current)
 	{
 		env = (t_env *)current->cont;
-		if (ft_strncmp(env->key, str_env, ft_strlen(str_env)) == 0)
+		if (ft_strncmp(env->key, key, ft_strlen(key)) == 0)
 			return (env);
 		current = current->nxt;
 	}

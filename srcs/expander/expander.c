@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/02 14:33:18 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/03/07 04:06:01 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,7 @@ char	*replace_1st_env_var(char *str, char *env_value)
 
 	value_len = ft_strlen(env_value);
 	str_len = ft_strlen(str);
-	new_str = (char *)malloc(sizeof(char) * (str_len + value_len + 1));
-	if (new_str == NULL)
-		return (NULL);
+	new_str = ft_malloc(sizeof(char) * (str_len + value_len + 1));
 	new_str_head = new_str;
 	copy_str_func(&new_str, &str, '$');
 	str++;
@@ -95,9 +93,9 @@ void	insert_between_tokens(t_token *expanded_tokens, t_token *current,
 	expanded_last = expanded_tokens;
 	if (current->next != NULL)
 	{
-		current->next->prev = expanded_tokens;
 		while (expanded_last->next != NULL)
 			expanded_last = expanded_last->next;
+		current->next->prev = expanded_last;
 		expanded_last->next = current->next;
 	}
 	if (current->prev != NULL)
@@ -112,7 +110,8 @@ void	insert_between_tokens(t_token *expanded_tokens, t_token *current,
 	current = NULL;
 }
 
-void	trim_and_change_state(char **str, char **quote_removed_str, size_t *state)
+void	trim_and_change_state(char **str, char **quote_removed_str,
+		size_t *state)
 {
 	if (**str == '\\' && *(*str + 1) == '\'' && *state == NOT_IN_QUOTE)
 		**quote_removed_str++ = *++(*str);
@@ -138,8 +137,7 @@ static t_token	*trim_quotes(t_token *token)
 	char	*rmvd_str_head;
 	size_t	state;
 
-	quote_removed_str = (char *)malloc(sizeof(char) * (ft_strlen(token->str)
-				+ 1));
+	quote_removed_str = ft_malloc(sizeof(char) * (ft_strlen(token->str) + 1));
 	rmvd_str_head = quote_removed_str;
 	state = NOT_IN_QUOTE;
 	str = token->str;
@@ -240,11 +238,21 @@ t_token	*expand_env(t_token *tokens, t_dlist **env_list)
 		// 環境変数の置換
 		current->str = replace_env_var(current->str, env_list);
 		// 置換後の文字列が引用符で囲まれていない場合、空白区切りでトークン化
-		expanded_tokens = tokenize(current->str);		
-		// トークン化した文字列を元のトークンリストの間に挿入
-		insert_between_tokens(expanded_tokens, current, &new_tokens_head);
-		// 引用符を削除する
-		current = trim_quotes(expanded_tokens);
+		expanded_tokens = tokenize(current->str);
+		if (expanded_tokens != NULL)
+		{
+			// トークン化した文字列を元のトークンリストの間に挿入
+			insert_between_tokens(expanded_tokens, current, &new_tokens_head);
+			// 引用符を削除する
+			current = trim_quotes(expanded_tokens);
+		}
+		else
+		{
+			if (current->prev != NULL)
+				current->prev->next = current->next;
+			if (current->next != NULL)
+				current->next->prev = current->prev;
+		}
 		current = current->next;
 	}
 	ft_debug("--- after expand_env ---\n");

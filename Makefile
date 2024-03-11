@@ -1,6 +1,7 @@
 
 EXEC_DIR := srcs/exec
-EXEC_FILES := execmd.c exec_test.c
+EXEC_FILES := dup_stdin.c dup_stdout.c exec_cmd_list.c exec_test.c exec_cmd.c find_cmd_path.c \
+forked_process_helper.c heredoc.c set_tmp_file.c set_pipe_fork.c store_stdio.c utils.c
 EXEC_SRCS := $(addprefix $(EXEC_DIR)/, $(EXEC_FILES))
 
 BUILTIN_DIR := srcs/builtin
@@ -8,7 +9,7 @@ BUILTIN_FILES := pwd.c cd.c echo.c exit.c env.c export.c unset.c test.c
 BUILTIN_SRCS := $(addprefix $(BUILTIN_DIR)/, $(BUILTIN_FILES))
 
 UTILS_DIR := srcs/utils
-UTILS_FILES := envp.c free.c list.c malloc.c t_env.c 
+UTILS_FILES := envp.c free.c free2.c list.c malloc.c t_env.c 
 UTILS_SRCS := $(addprefix $(UTILS_DIR)/, $(UTILS_FILES))
 
 LEXER_DIR := srcs/lexer
@@ -16,7 +17,7 @@ LEXER_FILES := lexer.c lexer_utils.c token_processing.c quote_process.c validate
 LEXER_SRCS := $(addprefix $(LEXER_DIR)/, $(LEXER_FILES))
 
 DEBUG_DIR := srcs/debug
-DEBUG_FILES := print.c
+DEBUG_FILES := print_tokens.c print.c
 DEBUG_SRCS := $(addprefix $(DEBUG_DIR)/, $(DEBUG_FILES))
 
 PARSER_DIR := srcs/parser

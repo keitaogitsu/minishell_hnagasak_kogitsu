@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 12:40:45 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/29 17:32:33 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/05 00:20:31 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ t_dlist	*ft_dlstnew(void *content)
 
 	list = (t_dlist *)malloc(sizeof(t_dlist));
 	if (list == NULL)
-		return (NULL);
+		malloc_error_exit();
 	list->cont = content;
 	list->nxt = NULL;
 	list->prv = NULL;

@@ -1,30 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   malloc.c                                           :+:      :+:    :+:   */
+/*   free2.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/02 12:15:09 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/02 19:13:18 by hnagasak         ###   ########.fr       */
+/*   Created: 2024/03/11 10:15:55 by hnagasak          #+#    #+#             */
+/*   Updated: 2024/03/11 10:17:20 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lexer.h"
-#include "utils.h"
+#include "free.h"
 
-void	malloc_error_exit(void)
+void	free_envlist(t_dlist **envlist)
 {
-	ft_errmsg("malloc error\n");
-	exit(EXIT_FAILURE);
-}
+	t_dlist	*tmp;
+	t_dlist	*current;
+	t_env	*env;
 
-char	*ft_malloc(size_t size)
-{
-	char	*ptr;
-
-	ptr = (char *)malloc(size);
-	if (!ptr)
-		malloc_error_exit();
-	return (ptr);
+	ft_debug("--- free_envlist ---\n");
+	current = *envlist;
+	while (current != NULL)
+	{
+		tmp = current;
+		env = (t_env *)tmp->cont;
+		free(env->key);
+		env->key = NULL;
+		free(env->value);
+		env->value = NULL;
+		free(env);
+		env = NULL;
+		current = current->nxt;
+		free(tmp);
+		tmp = NULL;
+	}
+	free(envlist);
 }

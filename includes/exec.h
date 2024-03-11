@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/28 00:44:44 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/07 02:34:22 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,58 @@ typedef struct s_cmd
 	int				pid;
 }					t_cmd;
 
+// dup_stdin.c
+void				dup_stdin(t_dlist *current);
+int					get_dupin_fd(t_cmd *cmd);
+void				pipout2stdin(t_dlist *cmdlst);
+// dup_stdout.c
+void				dup_stdout(t_dlist *current);
+int					get_dupout_fd(t_cmd *cmd);
+void				pipin2stdout(t_dlist *cmdlst);
+// exec_cmd.c
+void				exec_cmd(t_cmd *cmd, t_dlist **env_list);
 int					is_builtin_cmd(t_cmd *cmd);
+void				exec_builtin(t_cmd *cmd, t_dlist **env_list);
+int					exec_externalcmd(t_cmd *cmd, t_dlist **env_list);
+// exec_cmd_list.c
 void				exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list);
-
-// test
-// t_dlist				**test_cmd_list(char **str_cmds, t_dlist **envlst);
+void				exec_single_builtin(t_dlist *current, t_dlist **env_list);
+void				exec_external_or_piped_cmd(t_dlist **cmd_list,
+						t_dlist **env_list);
+// exec_test.c
 void				print_arr_str(char **arr_str);
 void				print_cmd_list(t_dlist **cmd_list);
+// find_cmd_path.c
+char				**get_paths(t_dlist **env_list);
+char				*cat_path(char *path, char *cmd);
+char				*find_cmd_path(char *paths[], char *cmd);
+// forked_process_manage.c
+void				child_process(t_dlist *current, t_dlist **env_list);
+void				close_parent_pipe(t_dlist *current);
+void				fail_fork(void);
+void				wait_children(t_dlist **cmd_list);
+// heredoc.c
+void				input_heredocs(t_cmd *cmd, t_dlist **env_list);
+int					get_delimiter_type(char *delimiter);
+char				*expand_heredoc(char *str, t_dlist **env_list);
+void				input_hd(t_cmd *cmd, t_redir *redir, int fd,
+						t_dlist **env_list);
+void				ft_heredoc(t_cmd *cmd, t_redir *redir, t_dlist **env_list);
+// set_pipe_fork.c
+void				set_pipe_if_needed(t_dlist *current);
+void				set_fork_if_needed(t_dlist *current);
+// set_tmp_file.c
+void				create_tmp_files(t_cmd *cmd, size_t cmd_idx);
+char				*generate_tmpfile_name(size_t cmd_idx, size_t redir_idx);
+void				delete_tmp_files(t_cmd *cmd);
+// store_stdio.c
+void				store_stdio(t_dlist *current);
+void				restore_stdio(t_dlist *current);
+// utils.c
+int					ft_close(int fd);
+void				ft_pipe(int fd[2]);
+int					delete_file(const char *filepath);
+int					file_open(char *file, int flag, int mode);
+void				free_strarr(char **arr);
 
 #endif
