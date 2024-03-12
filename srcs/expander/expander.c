@@ -3,15 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/11 22:35:56 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/03/12 18:03:16 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "debug.h"
 #include "expander.h"
+
+int is_env_key_char(char c)
+{
+	return (ft_isalnum(c) || c == '_');
+}
 
 /**
  * @brief Retrieves the value of an environment variable from a list.
@@ -26,19 +31,22 @@ char	*find_env_value(char *char_position, t_dlist *env_list)
 
 	if (*char_position == '$')
 	{
+		printf("char_position:%s\n", char_position);
 		char_position++;
 		start = char_position;
-		while (*char_position != '\"' && *char_position != '\''
-			&& *char_position != ' ' && *char_position != '$'
-			&& *char_position != '\0')
+		// while (*char_position != '\"' && *char_position != '\'' // ここの条件が誤り
+		// 	&& *char_position != ' ' && *char_position != '$'
+		// 	&& *char_position != '\0')
+		while (is_env_key_char(*char_position))
 			char_position++;
 		while (env_list != NULL)
 		{
 			env = (t_env *)env_list->cont;
 			if (ft_strncmp(env->key, start, ft_strlen(env->key)) == 0
-				&& (*char_position == '\"' || *char_position == '\''
-					|| *char_position == ' ' || *char_position == '$'
-					|| *char_position == '\0'))
+			&& !is_env_key_char(*char_position))
+				// && (*char_position == '\"' || *char_position == '\'' // ここの条件が誤り
+				// 	|| *char_position == ' ' || *char_position == '$'
+				// 	|| *char_position == '\0'))
 				return (((t_env *)(env_list)->cont)->value);
 			env_list = (env_list)->nxt;
 		}
@@ -76,8 +84,7 @@ char	*replace_1st_env_var(char *str, char *env_value)
 	new_str_head = new_str;
 	copy_str_func(&new_str, &str, '$');
 	str++;
-	while (*str != '\"' && *str != '\'' && *str != ' ' && *str != '$'
-		&& *str != '\0')
+	while(is_env_key_char(*str))
 		str++;
 	copy_str_func(&new_str, &env_value, '\0');
 	copy_str_func(&new_str, &str, '\0');
@@ -176,7 +183,8 @@ size_t	toggle_quote_state(size_t state, char *str)
 	return (state);
 }
 
-// void	replace_env_vars_in_str(char *str, char *replaced_str, t_dlist **env_list)
+// void	replace_env_vars_in_str(char *str, char *replaced_str,
+		// t_dlist **env_list)
 // {
 // 	char *env_value;
 
@@ -191,7 +199,8 @@ size_t	toggle_quote_state(size_t state, char *str)
 // 	}
 // }
 
-// char *replace_with_env_value(char *str, char *str_head, t_dlist **env_list, int *is_replaced_str)
+// char *replace_with_env_value(char *str, char *str_head, t_dlist **env_list,
+	// int *is_replaced_str)
 // {
 // 	char *env_value;
 // 	char *replaced_str;
@@ -207,7 +216,8 @@ size_t	toggle_quote_state(size_t state, char *str)
 // 	return (str_head);
 // }
 
-// char *handle_replaced_string(char *str, char *replaced_str, int *is_replaced_str, size_t *state)
+// char *handle_replaced_string(char *str, char *replaced_str,
+	// int *is_replaced_str, size_t *state)
 // {
 // 	if (*is_replaced_str == 1)
 // 	{
@@ -235,10 +245,12 @@ size_t	toggle_quote_state(size_t state, char *str)
 //         state = toggle_quote_state(state, str);
 //         if (state != IN_QUOTE)
 //         {
-//             replaced_str = replace_with_env_value(str, str_head, env_list, &is_replaced_str);
+//             replaced_str = replace_with_env_value(str, str_head, env_list,
+		// &is_replaced_str);
 //             str_head = replaced_str;
 //         }
-//         str = handle_replaced_string(str, replaced_str, &is_replaced_str, &state);
+//         str = handle_replaced_string(str, replaced_str, &is_replaced_str,
+		// &state);
 //     }
 //     return (str_head);
 // }
@@ -261,6 +273,7 @@ char	*replace_env_var(char *str, t_dlist **env_list)
 		if (state != IN_QUOTE)
 		{
 			env_value = find_env_value(str, *env_list);
+			// printf("str:%s env_value:%s\n",str,env_value);
 			if (env_value != NULL)
 			{
 				replaced_str = replace_1st_env_var(str_head, env_value);
@@ -274,7 +287,7 @@ char	*replace_env_var(char *str, t_dlist **env_list)
 		{
 			str = replaced_str;
 			is_replaced_str = 0;
-			printf("replaced_str:%s\n",replaced_str);
+			printf("replaced_str:%s\n", replaced_str);
 		}
 		else
 			str++;
@@ -322,5 +335,5 @@ t_token	*expand_env(t_token *tokens, t_dlist **env_list)
 	}
 	return (new_tokens_head);
 }
-	// ft_debug("--- after expand_env ---\n");
-	// print_tokens(new_tokens_head);
+// ft_debug("--- after expand_env ---\n");
+// print_tokens(new_tokens_head);
