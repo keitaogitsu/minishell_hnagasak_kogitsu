@@ -25,7 +25,7 @@ PARSER_FILES := parser.c parser_utils.c
 PARSER_SRCS := $(addprefix $(PARSER_DIR)/, $(PARSER_FILES))
 
 EXPANDER_DIR := srcs/expander
-EXPANDER_FILES := expander.c
+EXPANDER_FILES := expander.c replace_env.c
 EXPANDER_SRCS := $(addprefix $(EXPANDER_DIR)/, $(EXPANDER_FILES))
 
 CC		:= cc

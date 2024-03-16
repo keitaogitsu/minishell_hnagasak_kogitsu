@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 12:45:23 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/02 19:19:53 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/16 17:49:42 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct s_env
 // envp.c
 void				get_key_value(char *envp, char **key, char **value);
 size_t				get_argc(char *argv[]);
+int					is_env_key_char(char c);
 
 // list.c
 t_dlist				*ft_dlstnew(void *content);
