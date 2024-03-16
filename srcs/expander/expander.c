@@ -6,14 +6,14 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/12 18:03:16 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/16 17:22:09 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "debug.h"
 #include "expander.h"
 
-int is_env_key_char(char c)
+int	is_env_key_char(char c)
 {
 	return (ft_isalnum(c) || c == '_');
 }
@@ -31,22 +31,15 @@ char	*find_env_value(char *char_position, t_dlist *env_list)
 
 	if (*char_position == '$')
 	{
-		printf("char_position:%s\n", char_position);
 		char_position++;
 		start = char_position;
-		// while (*char_position != '\"' && *char_position != '\'' // ここの条件が誤り
-		// 	&& *char_position != ' ' && *char_position != '$'
-		// 	&& *char_position != '\0')
 		while (is_env_key_char(*char_position))
 			char_position++;
 		while (env_list != NULL)
 		{
 			env = (t_env *)env_list->cont;
 			if (ft_strncmp(env->key, start, ft_strlen(env->key)) == 0
-			&& !is_env_key_char(*char_position))
-				// && (*char_position == '\"' || *char_position == '\'' // ここの条件が誤り
-				// 	|| *char_position == ' ' || *char_position == '$'
-				// 	|| *char_position == '\0'))
+				&& !is_env_key_char(*char_position))
 				return (((t_env *)(env_list)->cont)->value);
 			env_list = (env_list)->nxt;
 		}
@@ -71,25 +64,32 @@ void	copy_str_func(char **new_str, char **src, char end)
  * @param env_value The value to replace the environment variable with.
  * @return A new string with the first environment variable replaced.
  */
-char	*replace_1st_env_var(char *str, char *env_value)
+void	replace_env_value(char **str_head, char **start, char *env_value)
 {
-	size_t	value_len;
-	size_t	str_len;
 	char	*new_str;
 	char	*new_str_head;
+	char	*str;
 
-	value_len = ft_strlen(env_value);
-	str_len = ft_strlen(str);
-	new_str = ft_malloc(sizeof(char) * (str_len + value_len + 1));
+	new_str = ft_malloc(sizeof(char) * (ft_strlen(*str_head)
+				+ ft_strlen(env_value) + 1));
+	str = *str_head;
 	new_str_head = new_str;
-	copy_str_func(&new_str, &str, '$');
-	str++;
-	while(is_env_key_char(*str))
+	while (str != *start) // 展開する位置まではstrをコピー
+	{
+		*new_str = *str;
+		new_str++;
 		str++;
+	}
 	copy_str_func(&new_str, &env_value, '\0');
-	copy_str_func(&new_str, &str, '\0');
+	// strを環境変数の終わりまで進める
+	str++;
+	while (is_env_key_char(*str))
+		str++;
+	*start = new_str - 1;
+	copy_str_func(&new_str, &str, '\0'); // 環境変数以降をコピー
 	*new_str = '\0';
-	return (new_str_head);
+	free(*str_head);
+	*str_head = new_str_head;
 }
 
 void	insert_between_tokens(t_token *expanded_tokens, t_token *current,
@@ -184,7 +184,7 @@ size_t	toggle_quote_state(size_t state, char *str)
 }
 
 // void	replace_env_vars_in_str(char *str, char *replaced_str,
-		// t_dlist **env_list)
+// t_dlist **env_list)
 // {
 // 	char *env_value;
 
@@ -200,7 +200,7 @@ size_t	toggle_quote_state(size_t state, char *str)
 // }
 
 // char *replace_with_env_value(char *str, char *str_head, t_dlist **env_list,
-	// int *is_replaced_str)
+// int *is_replaced_str)
 // {
 // 	char *env_value;
 // 	char *replaced_str;
@@ -217,7 +217,7 @@ size_t	toggle_quote_state(size_t state, char *str)
 // }
 
 // char *handle_replaced_string(char *str, char *replaced_str,
-	// int *is_replaced_str, size_t *state)
+// int *is_replaced_str, size_t *state)
 // {
 // 	if (*is_replaced_str == 1)
 // 	{
@@ -246,11 +246,11 @@ size_t	toggle_quote_state(size_t state, char *str)
 //         if (state != IN_QUOTE)
 //         {
 //             replaced_str = replace_with_env_value(str, str_head, env_list,
-		// &is_replaced_str);
+// &is_replaced_str);
 //             str_head = replaced_str;
 //         }
 //         str = handle_replaced_string(str, replaced_str, &is_replaced_str,
-		// &state);
+// &state);
 //     }
 //     return (str_head);
 // }
@@ -258,42 +258,24 @@ size_t	toggle_quote_state(size_t state, char *str)
 char	*replace_env_var(char *str, t_dlist **env_list)
 {
 	char	*env_value;
-	char	*replaced_str;
 	size_t	state;
 	char	*str_head;
-	int		is_replaced_str;
 
-	is_replaced_str = 0;
 	state = NOT_IN_QUOTE;
 	str_head = str;
+	// int i = 0;
 	while (*str != '\0')
 	{
 		state = toggle_quote_state(state, str);
-		// printf("#1 str:%c state:%zu\n",*str, state);
 		if (state != IN_QUOTE)
 		{
+			// 現在位置の文字列が環境変数かどうかを判定
 			env_value = find_env_value(str, *env_list);
-			// printf("str:%s env_value:%s\n",str,env_value);
 			if (env_value != NULL)
-			{
-				replaced_str = replace_1st_env_var(str_head, env_value);
-				free(str_head);
-				str_head = replaced_str;
-				is_replaced_str = 1;
-				state = NOT_IN_QUOTE;
-			}
+				replace_env_value(&str_head, &str, env_value);
 		}
-		if (is_replaced_str == 1)
-		{
-			str = replaced_str;
-			is_replaced_str = 0;
-			printf("replaced_str:%s\n", replaced_str);
-		}
-		else
-			str++;
-		// printf("#2 str:%c state:%zu\n",*str, state);
+		str++;
 	}
-	// printf("## state:%zu\n", state);
 	return (str_head);
 }
 
