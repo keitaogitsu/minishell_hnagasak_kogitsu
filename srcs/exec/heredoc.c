@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 02:00:02 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/07 02:08:04 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/16 17:17:43 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void	input_heredocs(t_cmd *cmd, t_dlist **env_list)
 char	*expand_heredoc(char *str, t_dlist **env_list)
 {
 	char	*env_value;
-	char	*replaced_str;
 	char	*str_head;
 
 	ft_debug("--- expand_heredoc %s ---\n", str);
@@ -60,14 +59,8 @@ char	*expand_heredoc(char *str, t_dlist **env_list)
 	{
 		env_value = find_env_value(str, *env_list);
 		if (env_value != NULL)
-		{
-			replaced_str = replace_1st_env_var(str_head, env_value);
-			free(str_head);
-			str_head = replaced_str;
-			str = replaced_str;
-		}
-		else
-			str++;
+			replace_env_value(&str_head, &str, env_value);
+		str++;
 	}
 	return (str_head);
 }

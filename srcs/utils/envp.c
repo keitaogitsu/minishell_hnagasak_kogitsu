@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/08 00:49:10 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/16 17:48:54 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,17 +30,6 @@ void	get_key_value(char *envp, char **key, char **value)
 	*value = ft_strdup(delimiter + 1);
 }
 
-// calcule the number of envp
-// size_t	count_envp(char **envp)
-// {
-// 	size_t	count;
-
-// 	count = 0;
-// 	while (envp[count])
-// 		count++;
-// 	return (count);
-// }
-
 size_t	get_argc(char *argv[])
 {
 	size_t	i;
@@ -49,4 +38,9 @@ size_t	get_argc(char *argv[])
 	while (argv[i])
 		i++;
 	return (i);
+}
+
+int	is_env_key_char(char c)
+{
+	return (ft_isalnum(c) || c == '_');
 }
