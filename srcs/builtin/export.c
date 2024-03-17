@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 09:34:31 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/17 19:49:51 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/17 21:00:15 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,15 @@ static int	is_invalid_arg(char **argv)
 	int		i;
 
 	if (ft_isdigit(argv[1][0]) || argv[1][0] == '=')
-	{
-		// ft_errmsg("minishell: export: not a valid identifier\n");
 		return (1);
-	}
 	get_key_value(argv[1], &key, &value);
 	if (key == NULL)
 		key = ft_strdup(argv[1]);
 	i = 0;
 	while (key[i])
 	{
-		// printf("is_invalid_arg *key:%c\n", key[i]);
 		if (!ft_isalnum(key[i]) && key[i] != '_')
 		{
-			// ft_errmsg("minishell: export: not a valid identifier2\n");
 			ft_free(key);
 			ft_free(value);
 			return (1);
