@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   t_env.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/17 14:09:25 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/03/17 15:15:00 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ t_dlist	**init_env(char **envp)
 	env_list = (t_dlist **)malloc(sizeof(t_dlist *));
 	if (env_list == NULL)
 		malloc_error_exit();
+	*env_list = NULL;
 	while (envp[i] != NULL)
 	{
 		ft_dlstadd_back(env_list, ft_dlstnew(to_env(envp[i], !IS_SHELL_VAR)));

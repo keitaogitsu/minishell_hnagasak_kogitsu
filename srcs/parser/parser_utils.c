@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/17 12:25:53 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/17 14:10:02 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/03/17 15:13:43 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ t_cmd	*cmd_init(t_token *tokens, t_dlist **env_list)
 	cmd->argv = (char **)malloc(sizeof(char *) * (get_argv_len(tokens) + 1));
 	if (cmd->argv == NULL)
 		malloc_error_exit();
+	*(cmd->argv) = NULL;
 	cmd->envp = env_list;
 	cmd->stdio[0] = -1;
 	cmd->stdio[1] = -1;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/13 14:20:30 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/17 14:11:02 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/03/17 15:14:01 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ t_dlist	**create_cmd_list(t_token *tokens, t_dlist **env_list)
 	cmd_list = (t_dlist **)malloc(sizeof(t_dlist *));
 	if (cmd_list == NULL)
 		malloc_error_exit();
+	*cmd_list = NULL;
 	while (tokens != NULL)
 	{
 		i = 0;
