@@ -6,7 +6,7 @@
 /*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/17 12:25:53 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/02 13:39:30 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/03/17 14:10:02 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ t_redir	*crt_redir(char *str, t_redir_type type)
 
 	redir = malloc(sizeof(t_redir));
 	if (redir == NULL)
-		return (NULL);
+		malloc_error_exit();
 	redir->type = type;
 	if (type == REDIR_HEREDOC)
 		redir->delimiter = ft_strdup(str);
@@ -46,10 +46,10 @@ t_cmd	*cmd_init(t_token *tokens, t_dlist **env_list)
 
 	cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	if (cmd == NULL)
-		return (NULL);
+		malloc_error_exit();
 	cmd->argv = (char **)malloc(sizeof(char *) * (get_argv_len(tokens) + 1));
 	if (cmd->argv == NULL)
-		return (NULL);
+		malloc_error_exit();
 	cmd->envp = env_list;
 	cmd->stdio[0] = -1;
 	cmd->stdio[1] = -1;
