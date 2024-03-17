@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/17 12:25:53 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/17 15:13:43 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/17 15:52:16 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,14 @@ t_cmd	*cmd_init(t_token *tokens, t_dlist **env_list)
 		malloc_error_exit();
 	*(cmd->argv) = NULL;
 	cmd->envp = env_list;
+	cmd->path = NULL;
+	cmd->input = NULL;
+	cmd->output = NULL;
 	cmd->stdio[0] = -1;
 	cmd->stdio[1] = -1;
 	cmd->pipe[0] = -1;
 	cmd->pipe[1] = -1;
+	cmd->pid = -1;
 	return (cmd);
 }
 
