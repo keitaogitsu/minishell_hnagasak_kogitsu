@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/13 14:20:30 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/17 15:14:01 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/17 15:39:47 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ void	create_cmd(t_token **tokens, t_cmd *cmd, size_t *i)
 	{
 		cmd->argv[*i] = ft_strdup(token->str);
 		*i = *i + 1;
+		if (token->next == NULL || token->next->type == CHAR_PIPE)
+			cmd->argv[*i] = NULL;
 	}
 	else if (token->type == CHAR_GREATER)
 		process_redir(tokens, cmd, REDIR_OUTPUT);
