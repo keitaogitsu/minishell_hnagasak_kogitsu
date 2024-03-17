@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/17 19:49:23 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/17 20:28:37 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	mainloop(char *line, t_dlist **env_list)
 		}
 		tokens = expand_env(tokens, env_list, exit_status);
 		cmd_list = create_cmd_list(tokens, env_list);
+		// print_cmd_list(cmd_list);
 		exec_cmd_list(cmd_list, env_list, &exit_status);
 		free_tokens(tokens);
 		free_cmd_list(cmd_list);

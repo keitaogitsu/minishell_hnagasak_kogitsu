@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/17 21:01:43 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/17 21:31:14 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void				pipin2stdout(t_dlist *cmdlst);
 // exec_cmd.c
 void				exec_cmd(t_cmd *cmd, t_dlist **env_list);
 int					is_builtin_cmd(t_cmd *cmd);
-void				exec_builtin(t_cmd *cmd, t_dlist **env_list);
+int					exec_builtin(t_cmd *cmd, t_dlist **env_list);
 int					exec_externalcmd(t_cmd *cmd, t_dlist **env_list);
 // exec_cmd_list.c
 void				exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list,

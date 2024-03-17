@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 14:23:31 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/02 19:19:44 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/17 21:41:50 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	ft_cd(char *argv[], t_dlist **env_list);
 void	ft_pwd(void);
 void	ft_exit(char *argv[]);
 void	ft_env(char **argv, t_dlist **env_list);
-void	ft_export(char *argv[], t_dlist **env_list);
+int		ft_export(char *argv[], t_dlist **env_list);
 void	ft_unset(char *argv[], t_dlist **env_list);
 
 // test

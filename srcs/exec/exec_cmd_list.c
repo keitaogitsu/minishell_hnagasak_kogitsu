@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:56:44 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/17 19:53:50 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/17 21:42:15 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 int	exec_single_builtin(t_dlist *current, t_dlist **env_list)
 {
 	t_cmd	*cmd;
+	int		exit_status;
 
+	exit_status = 0;
 	cmd = (t_cmd *)current->cont;
 	ft_debug("--- exec_single_builtin %s ---\n", cmd->argv[0]);
 	create_tmp_files(cmd, current->i);
@@ -23,10 +25,10 @@ int	exec_single_builtin(t_dlist *current, t_dlist **env_list)
 	input_heredocs(cmd, env_list);
 	dup_stdin(current);
 	dup_stdout(current);
-	exec_builtin(cmd, env_list);
+	exit_status = exec_builtin(cmd, env_list);
 	delete_tmp_files(cmd);
 	restore_stdio(current);
-	return (EXIT_SUCCESS);
+	return (exit_status);
 }
 
 int	exec_external_or_piped_cmd(t_dlist **cmd_list, t_dlist **env_list)

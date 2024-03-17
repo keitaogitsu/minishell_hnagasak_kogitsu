@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 09:34:31 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/17 21:00:15 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/17 21:42:32 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int	is_invalid_arg(char **argv)
 	return (0);
 }
 
-void	ft_export(char *argv[], t_dlist **env_list)
+int	ft_export(char *argv[], t_dlist **env_list)
 {
 	char	*str_env;
 	char	*key;
@@ -50,16 +50,17 @@ void	ft_export(char *argv[], t_dlist **env_list)
 	if (is_invalid_arg(argv))
 	{
 		ft_errmsg("minishell: export: not a valid identifier\n");
-		return ;
+		return (EXIT_FAILURE);
 	}
 	str_env = argv[1];
 	get_key_value(str_env, &key, &value);
 	if (key == NULL)
-		return ;
+		return (EXIT_SUCCESS);
 	if (!find_existing_env(key, env_list))
 		ft_dlstadd_back(env_list, ft_dlstnew(to_env(str_env, !IS_SHELL_VAR)));
 	else
 		update_env_value(env_list, str_env);
 	ft_free(key);
 	ft_free(value);
+	return (EXIT_SUCCESS);
 }

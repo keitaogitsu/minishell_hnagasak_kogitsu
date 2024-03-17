@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/07 02:30:50 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/17 21:42:27 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "free.h"
 
 // void	exec_builtin(char **argv, t_dlist **env_list)
-void	exec_builtin(t_cmd *cmd, t_dlist **env_list)
+int	exec_builtin(t_cmd *cmd, t_dlist **env_list)
 {
 	ft_debug("[exec_builtin] %s\n", cmd->argv[0]);
 	if (ft_strncmp(cmd->argv[0], "echo", 4) == 0)
@@ -29,9 +29,10 @@ void	exec_builtin(t_cmd *cmd, t_dlist **env_list)
 	else if (ft_strncmp(cmd->argv[0], "env", 3) == 0)
 		ft_env(cmd->argv, env_list);
 	else if (ft_strncmp(cmd->argv[0], "export", 6) == 0)
-		ft_export(cmd->argv, env_list);
+		return (ft_export(cmd->argv, env_list));
 	else if (ft_strncmp(cmd->argv[0], "unset", 5) == 0)
 		ft_unset(cmd->argv, env_list);
+	return (EXIT_SUCCESS); // あとで見直す
 }
 
 // return 1 if cmd is a builtin command
@@ -75,7 +76,7 @@ int	exec_externalcmd(t_cmd *cmd, t_dlist **env_list)
 		perror("ft_execve");
 		exit(EXIT_FAILURE);
 	}
-	return (0);
+	return (EXIT_SUCCESS);
 }
 
 // char	*get_last_redir_file(t_dlist *redir_list)
@@ -133,10 +134,13 @@ int	exec_externalcmd(t_cmd *cmd, t_dlist **env_list)
 // 組み込みコマンドまたは外部コマンドを実行する
 void	exec_cmd(t_cmd *cmd, t_dlist **env_list)
 {
+	int	exit_status;
+
+	exit_status = 0;
 	if (is_builtin_cmd(cmd))
 	{
-		exec_builtin(cmd, cmd->envp);
-		exit(EXIT_SUCCESS);
+		exit_status = exec_builtin(cmd, cmd->envp);
+		exit(exit_status);
 	}
 	else
 	{
