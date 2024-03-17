@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   t_env.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/11 10:17:10 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/17 14:09:25 by kogitsu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ char	**envlist2arr(t_dlist **env_list)
 	current = *env_list;
 	envp = (char **)malloc(sizeof(char *) * (ft_dlstsize(env_list) + 1));
 	if (!envp)
-		return (NULL);
+		malloc_error_exit();
 	while (current != NULL)
 	{
 		env = (t_env *)current->cont;
