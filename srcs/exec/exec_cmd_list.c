@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd_list.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:56:44 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/07 02:17:24 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/17 19:53:50 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-void	exec_single_builtin(t_dlist *current, t_dlist **env_list)
+int	exec_single_builtin(t_dlist *current, t_dlist **env_list)
 {
 	t_cmd	*cmd;
 
@@ -26,9 +26,10 @@ void	exec_single_builtin(t_dlist *current, t_dlist **env_list)
 	exec_builtin(cmd, env_list);
 	delete_tmp_files(cmd);
 	restore_stdio(current);
+	return (EXIT_SUCCESS);
 }
 
-void	exec_external_or_piped_cmd(t_dlist **cmd_list, t_dlist **env_list)
+int	exec_external_or_piped_cmd(t_dlist **cmd_list, t_dlist **env_list)
 {
 	t_dlist	*current;
 	t_cmd	*cmd;
@@ -49,16 +50,16 @@ void	exec_external_or_piped_cmd(t_dlist **cmd_list, t_dlist **env_list)
 			fail_fork();
 		current = current->nxt;
 	}
-	wait_children(cmd_list);
+	return (wait_children(cmd_list));
 }
 
-void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list)
+void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list, int *exit_status)
 {
 	t_dlist	*current;
 
 	current = *cmd_list;
 	if (is_builtin_cmd((t_cmd *)current->cont) && current->nxt == NULL)
-		exec_single_builtin(current, env_list);
+		*exit_status = exec_single_builtin(current, env_list);
 	else
-		exec_external_or_piped_cmd(cmd_list, env_list);
+		*exit_status = exec_external_or_piped_cmd(cmd_list, env_list);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/02/29 17:22:56 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/17 19:49:23 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 #include "debug.h"
 #include "exec.h"
 #include "expander.h"
+#include "free.h"
 #include "lexer.h"
 #include "parser.h"
 #include "utils.h"
-#include "free.h"
 #include <errno.h>
 #include <signal.h>
 #include <stdio.h>
@@ -39,7 +39,9 @@ void	mainloop(char *line, t_dlist **env_list)
 {
 	t_token	*tokens;
 	t_dlist	**cmd_list;
+	int		exit_status;
 
+	exit_status = 0;
 	while (1)
 	{
 		line = readline("minishell > ");
@@ -55,9 +57,9 @@ void	mainloop(char *line, t_dlist **env_list)
 			ft_errmsg("syntax error\n");
 			continue ;
 		}
-		tokens = expand_env(tokens, env_list);
+		tokens = expand_env(tokens, env_list, exit_status);
 		cmd_list = create_cmd_list(tokens, env_list);
-		exec_cmd_list(cmd_list, env_list);
+		exec_cmd_list(cmd_list, env_list, &exit_status);
 		free_tokens(tokens);
 		free_cmd_list(cmd_list);
 	}

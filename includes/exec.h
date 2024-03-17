@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/11 20:26:22 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/03/17 19:48:29 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,11 @@ int					is_builtin_cmd(t_cmd *cmd);
 void				exec_builtin(t_cmd *cmd, t_dlist **env_list);
 int					exec_externalcmd(t_cmd *cmd, t_dlist **env_list);
 // exec_cmd_list.c
-void				exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list);
-void				exec_single_builtin(t_dlist *current, t_dlist **env_list);
-void				exec_external_or_piped_cmd(t_dlist **cmd_list,
-						t_dlist **env_list);
+void				exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list,
+						int *exit_status);
+int					exec_single_builtin(t_dlist *current, t_dlist **env_list);
+int	exec_external_or_piped_cmd(t_dlist **cmd_list,
+								t_dlist **env_list);
 // exec_test.c
 void				print_arr_str(char **arr_str);
 void				print_cmd_list(t_dlist **cmd_list);
@@ -75,7 +76,7 @@ char				*find_cmd_path(char *paths[], char *cmd);
 void				child_process(t_dlist *current, t_dlist **env_list);
 void				close_parent_pipe(t_dlist *current);
 void				fail_fork(void);
-void				wait_children(t_dlist **cmd_list);
+int					wait_children(t_dlist **cmd_list);
 // heredoc.c
 void				input_heredocs(t_cmd *cmd, t_dlist **env_list);
 int					get_delimiter_type(char *delimiter);

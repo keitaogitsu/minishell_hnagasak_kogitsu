@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   forked_process_helper.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 02:21:39 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/07 02:24:07 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/17 19:54:01 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,18 +52,20 @@ void	fail_fork(void)
 }
 
 // wait for all child processes to finish
-void	wait_children(t_dlist **cmd_list)
+int	wait_children(t_dlist **cmd_list)
 {
 	t_dlist	*current;
 	t_cmd	*cmd;
+	int		status;
 
 	current = *cmd_list;
 	while (current != NULL)
 	{
 		cmd = (t_cmd *)current->cont;
-		waitpid(cmd->pid, NULL, 0);
+		waitpid(cmd->pid, &status, 0);
 		ft_debug("[waitpid] %d: %d.%s\n", cmd->pid, current->i, cmd->argv[0]);
 		delete_tmp_files(cmd);
 		current = current->nxt;
 	}
+	return (status % 255);
 }

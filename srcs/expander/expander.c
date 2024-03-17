@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/16 17:57:15 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/17 19:55:14 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ static void	handle_expanded_tokens(t_token **expanded_tokens, t_token **current,
 	}
 }
 
-t_token	*expand_env(t_token *tokens, t_dlist **env_list)
+t_token	*expand_env(t_token *tokens, t_dlist **env_list, int exit_status)
 {
 	t_token	*current;
 	t_token	*expanded_tokens;
@@ -123,7 +123,7 @@ t_token	*expand_env(t_token *tokens, t_dlist **env_list)
 			current = current->next;
 			continue ;
 		}
-		current->str = replace_env_var(current->str, env_list);
+		current->str = replace_env_var(current->str, env_list, exit_status);
 		expanded_tokens = tokenize(current->str);
 		handle_expanded_tokens(&expanded_tokens, &current, &new_tokens_head);
 		current = current->next;
