@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 12:45:23 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/16 17:49:42 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/20 04:42:27 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ typedef struct s_env
 void				get_key_value(char *envp, char **key, char **value);
 size_t				get_argc(char *argv[]);
 int					is_env_key_char(char c);
+char				**envlist2arr(t_dlist **env_list);
 
 // list.c
 t_dlist				*ft_dlstnew(void *content);
@@ -46,12 +47,11 @@ size_t				ft_dlstsize(t_dlist **lst);
 void				ft_errmsg(char *msg);
 
 // t_env.c
-t_dlist				**init_env(char **envp);
-t_env				*to_env(char *envp, int is_shell_var);
-char				**envlist2arr(t_dlist **env_list);
-void				free_envlist(t_dlist **envlist);
-void				update_env_value(t_dlist **env_list, char *envp);
 t_env				*find_existing_env(char *str_env, t_dlist **env_list);
+t_env				*to_env(char *envp, int is_shell_var);
+t_dlist				**init_env(char **envp);
+void				update_env_value(t_dlist **env_list, char *envp);
+void				remove_env(char *key, t_dlist **env_list);
 
 // malloc.c
 char				*ft_malloc(size_t size);
