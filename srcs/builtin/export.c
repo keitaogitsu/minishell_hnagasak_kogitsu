@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 09:34:31 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/20 04:10:52 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/20 04:26:49 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,12 @@ static void	export_env_value(t_dlist **env_list, char *key_value)
 	ft_free(value);
 }
 
-static void	print_export_err(char *key_value)
+static int	print_export_err(char *key_value)
 {
 	ft_errmsg("minishell: export: ");
 	ft_errmsg(key_value);
 	ft_errmsg(" : not a valid identifier\n");
+	return (EXIT_FAILURE);
 }
 
 static int	print_declare_env(t_dlist *env_list)
@@ -87,7 +88,7 @@ int	ft_export(char *argv[], t_dlist **env_list)
 	int		i;
 	int		exit_status;
 
-	exit_status = 0;
+	exit_status = EXIT_SUCCESS;
 	argc = get_argc(argv);
 	if (argc == 1)
 		return (print_declare_env(*env_list));
@@ -96,10 +97,7 @@ int	ft_export(char *argv[], t_dlist **env_list)
 	{
 		key_value = argv[i];
 		if (is_invalid_key_value(key_value))
-		{
-			print_export_err(key_value);
-			exit_status = 1;
-		}
+			exit_status = print_export_err(key_value);
 		else
 			export_env_value(env_list, key_value);
 		i++;
