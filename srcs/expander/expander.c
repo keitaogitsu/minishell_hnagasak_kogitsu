@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/17 19:55:14 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/22 07:43:45 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ t_token	*expand_env(t_token *tokens, t_dlist **env_list, int exit_status)
 	t_token	*expanded_tokens;
 	t_token	*new_tokens_head;
 
+	new_tokens_head = NULL;
 	current = tokens;
 	while (current != NULL)
 	{
@@ -129,6 +130,7 @@ t_token	*expand_env(t_token *tokens, t_dlist **env_list, int exit_status)
 		current = current->next;
 	}
 	ft_debug("--- after expand_env ---\n");
-	print_tokens(new_tokens_head);
+	if (new_tokens_head != NULL)
+		print_tokens(new_tokens_head);
 	return (new_tokens_head);
 }

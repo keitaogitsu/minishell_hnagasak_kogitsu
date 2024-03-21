@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:56:44 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/22 06:23:38 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/22 07:40:43 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,8 @@ void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list, int *exit_status)
 	t_dlist	*current;
 
 	current = *cmd_list;
+	if (current == NULL)
+		return ;
 	if (is_builtin_cmd((t_cmd *)current->cont) && current->nxt == NULL)
 		*exit_status = exec_single_builtin(current, env_list);
 	else
