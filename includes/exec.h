@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/22 06:23:10 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/22 07:54:11 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ typedef struct s_cmd
 	int				stdio[2];
 	int				pid;
 }					t_cmd;
+
+# define STATUS_CMD_NOT_FOUND 127
 
 // dup_stdin.c
 void				dup_stdin(t_dlist *current);

@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/21 23:29:23 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/22 07:53:43 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	exec_externalcmd(t_cmd *cmd, t_dlist **env_list)
 	cmd->path = find_cmd_path(paths, cmd->argv[0]);
 	free_strarr(paths);
 	if (cmd->path == NULL)
-		exit(EXIT_FAILURE);
+		exit(STATUS_CMD_NOT_FOUND);
 	if (execve(cmd->path, cmd->argv, env) == -1)
 	{
 		perror("ft_execve");
