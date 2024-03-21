@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/17 21:31:14 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/22 06:16:17 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void				input_hd(t_cmd *cmd, t_redir *redir, int fd,
 void				ft_heredoc(t_cmd *cmd, t_redir *redir, t_dlist **env_list);
 // set_pipe_fork.c
 void				set_pipe_if_needed(t_dlist *current);
-void				set_fork_if_needed(t_dlist *current);
+void				set_fork(t_dlist *current);
 // set_tmp_file.c
 void				create_tmp_files(t_cmd *cmd, size_t cmd_idx);
 char				*generate_tmpfile_name(size_t cmd_idx, size_t redir_idx);
