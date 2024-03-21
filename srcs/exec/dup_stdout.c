@@ -6,11 +6,12 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:45:53 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/07 01:47:11 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/21 16:48:44 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
+#include "utils.h"
 
 void	dup_stdout(t_dlist *current)
 {
@@ -50,8 +51,20 @@ int	get_dupout_fd(t_cmd *cmd)
 
 	last = cmd->output;
 	while (last->nxt != NULL)
+	{
+		// 途中のリダイレクションもファイルは作成する
+		rdr = (t_redir *)last->cont;
+		file_open(rdr->file, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
 		last = last->nxt;
+	}
 	rdr = (t_redir *)last->cont;
+	// if(is_updatable_file(rdr->file))
+	// {
+	// 	ft_errmsg("minishell: ");
+	// 	ft_errmsg(rdr->file);
+	// 	ft_errmsg(": Is a directory!!\n");
+	// 	exit(EXIT_FAILURE);
+	// }
 	if (rdr->type == REDIR_OUTPUT)
 		return (file_open(rdr->file, O_WRONLY | O_CREAT | O_TRUNC,
 				S_IRUSR | S_IWUSR));
