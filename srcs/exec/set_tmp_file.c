@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:52:45 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/07 01:53:54 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/22 06:23:28 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ char	*generate_tmpfile_name(size_t cmd_idx, size_t redir_idx)
 	return (file_name);
 }
 
-void	create_tmp_files(t_cmd *cmd, size_t cmd_idx)
+void	set_tmpfile_name(t_cmd *cmd, size_t cmd_idx)
 {
 	t_dlist	*current;
 	t_redir	*redir;

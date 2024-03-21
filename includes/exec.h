@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/22 06:16:17 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/22 06:23:10 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void				ft_heredoc(t_cmd *cmd, t_redir *redir, t_dlist **env_list);
 void				set_pipe_if_needed(t_dlist *current);
 void				set_fork(t_dlist *current);
 // set_tmp_file.c
-void				create_tmp_files(t_cmd *cmd, size_t cmd_idx);
+void				set_tmpfile_name(t_cmd *cmd, size_t cmd_idx);
 char				*generate_tmpfile_name(size_t cmd_idx, size_t redir_idx);
 void				delete_tmp_files(t_cmd *cmd);
 // store_stdio.c
