@@ -6,11 +6,12 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/19 18:23:23 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/04 23:55:34 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/22 10:58:37 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
+#include "exit_status.h"
 
 static int	is_invalid_arg(char **argv)
 {
@@ -29,24 +30,26 @@ static int	is_invalid_arg(char **argv)
 		if (!ft_isdigit(argv[1][i]))
 		{
 			ft_errmsg("minishell: exit: numeric argument required\n");
-			return (1);
+			return (STATUS_NO_NUMERIC_ARG);
 		}
 		i++;
 	}
 	return (0);
 }
 
-void	ft_exit(char *argv[])
+int	ft_exit(char *argv[])
 {
-	int	status;
+	int	exit_status;
 
-	ft_errmsg("exit\n");
-	if (is_invalid_arg(argv))
-		return ;
+	// ft_errmsg("exit\n");
+	printf("exit\n");
+	exit_status = is_invalid_arg(argv);
+	if (exit_status != 0)
+		return (exit_status);
 	if (argv[1] != NULL)
 	{
-		status = ft_atoi(argv[1]);
-		exit(status);
+		exit_status = ft_atoi(argv[1]);
+		exit(exit_status);
 	}
 	exit(EXIT_SUCCESS);
 }

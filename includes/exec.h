@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/22 09:03:19 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/22 10:54:28 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,6 @@ typedef struct s_cmd
 	int				stdio[2];
 	int				pid;
 }					t_cmd;
-
-# define STATUS_CMD_NOT_FOUND 127 // command not found
-# define STATUS_ENOENT 127 // No such file or directory
-# define STATUS_EACCES 126 // permission denied
-# define STATUS_EISDIR 126 // is a directory
 
 // dup_stdin.c
 void				dup_stdin(t_dlist *current);
