@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/22 07:54:11 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/22 09:03:19 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,10 @@ typedef struct s_cmd
 	int				pid;
 }					t_cmd;
 
-# define STATUS_CMD_NOT_FOUND 127
+# define STATUS_CMD_NOT_FOUND 127 // command not found
+# define STATUS_ENOENT 127 // No such file or directory
+# define STATUS_EACCES 126 // permission denied
+# define STATUS_EISDIR 126 // is a directory
 
 // dup_stdin.c
 void				dup_stdin(t_dlist *current);
@@ -73,7 +76,8 @@ void				print_cmd_list(t_dlist **cmd_list);
 // find_cmd_path.c
 char				**get_paths(t_dlist **env_list);
 char				*cat_path(char *path, char *cmd);
-char				*find_cmd_path(char *paths[], char *cmd);
+// char				*find_cmd_path(char *paths[], char *cmd);
+int					find_cmd_path(char **cmd_path, char *paths[], char *cmd);
 // forked_process_manage.c
 void				child_process(t_dlist *current, t_dlist **env_list);
 void				close_parent_pipe(t_dlist *current);

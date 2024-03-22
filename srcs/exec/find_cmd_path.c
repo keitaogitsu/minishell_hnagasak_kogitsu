@@ -6,11 +6,12 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 22:02:46 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/06 22:03:45 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/22 10:28:06 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
+#include "free.h"
 
 // パスとコマンド名を連結した文字列を返す
 char	*cat_path(char *path, char *cmd)
@@ -42,31 +43,82 @@ char	**get_paths(t_dlist **env_list)
 // 外部コマンドのパスを探し、コマンド名を連結して返す
 // paths: PATHを:で分割した文字列配列
 // cmd: 検索するコマンド名
-char	*find_cmd_path(char *paths[], char *cmd)
-{
-	int		i;
-	char	*cmd_path;
+// char	*_find_cmd_path(char *paths[], char *cmd)
+// {
+// 	int		i;
+// 	char	*cmd_path;
 
+// 	if (ft_strchr(cmd, '/') != NULL || paths == NULL)
+// 	{
+// 		if (access(cmd, X_OK) == 0)
+// 			return (ft_strdup(cmd));
+// 		printf("%s: No such file or directory\n", cmd);
+// 		return (NULL);
+// 	}
+// 	i = 0;
+// 	while (paths[i] != NULL)
+// 	{
+// 		cmd_path = cat_path(paths[i], cmd);
+// 		if (access(cmd_path, X_OK) == 0)
+// 		{
+// 			return (cmd_path);
+// 		}
+// 		free(cmd_path);
+// 		i++;
+// 	}
+// 	ft_errmsg("minishell: ");
+// 	ft_errmsg(cmd);
+// 	ft_errmsg(": command not found\n");
+// 	return (NULL);
+// }
+
+int	find_cmd_path(char **cmd_path, char *paths[], char *cmd)
+{
+	int	i;
+
+	// char	*cmd_path;
 	if (ft_strchr(cmd, '/') != NULL || paths == NULL)
 	{
+		if (is_directory(cmd))
+		{
+			ft_errmsg("minishell: ");
+			ft_errmsg(cmd);
+			ft_errmsg(": is a directory\n");
+			return (STATUS_EISDIR);
+		}
+		if (access(cmd, F_OK) != 0)
+		{
+			ft_errmsg("minishell: ");
+			ft_errmsg(cmd);
+			ft_errmsg(": No such file or directory\n");
+			return (STATUS_ENOENT);
+		}
 		if (access(cmd, X_OK) == 0)
-			return (ft_strdup(cmd));
-		printf("%s: No such file or directory\n", cmd);
-		return (NULL);
+		{
+			// return (ft_strdup(cmd));
+			*cmd_path = ft_strdup(cmd);
+			return (0);
+		}
+		ft_errmsg("minishell: ");
+		ft_errmsg(cmd);
+		// ft_errmsg(": No such file or directory\n");
+		ft_errmsg(": Permission denied\n");
+		return (STATUS_EACCES);
 	}
 	i = 0;
 	while (paths[i] != NULL)
 	{
-		cmd_path = cat_path(paths[i], cmd);
-		if (access(cmd_path, X_OK) == 0)
+		*cmd_path = cat_path(paths[i], cmd);
+		if (access(*cmd_path, X_OK) == 0)
 		{
-			return (cmd_path);
+			// return (*cmd_path);
+			return (0);
 		}
-		free(cmd_path);
+		*cmd_path = ft_free(*cmd_path);
 		i++;
 	}
 	ft_errmsg("minishell: ");
 	ft_errmsg(cmd);
 	ft_errmsg(": command not found\n");
-	return (NULL);
+	return (STATUS_CMD_NOT_FOUND);
 }
