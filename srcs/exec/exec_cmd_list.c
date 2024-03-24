@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:56:44 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/22 07:40:43 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/24 23:56:25 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,39 @@ int	exec_single_builtin(t_dlist *current, t_dlist **env_list)
 	return (exit_status);
 }
 
+void input_heredocuments(t_dlist **cmd_list, t_dlist **env_list)
+{
+	t_dlist	*current;
+	// t_dlist	*curdr;
+	t_cmd	*cmd;
+	// t_redir	*rdr;
+
+	current = *cmd_list;
+	while (current != NULL)
+	{
+		cmd = (t_cmd *)current->cont;
+		store_stdio(current);
+		set_tmpfile_name(cmd, current->i);
+		input_heredocs(cmd, env_list);
+		restore_stdio(current);
+		current = current->nxt;
+	}
+}
+
 int	exec_external_or_piped_cmd(t_dlist **cmd_list, t_dlist **env_list)
 {
 	t_dlist	*current;
 	t_cmd	*cmd;
 
 	current = *cmd_list;
+
+	input_heredocuments(cmd_list, env_list);
 	while (current != NULL)
 	{
 		cmd = (t_cmd *)current->cont;
 		ft_debug("\n--- exec_cmd[%d]: %s ---\n", current->i, cmd->argv[0]);
 		set_pipe_if_needed(current);
-		set_tmpfile_name(cmd, current->i);
+		// set_tmpfile_name(cmd, current->i);
 		set_fork(current);
 		if (cmd->pid == 0)
 			child_process(current, env_list);

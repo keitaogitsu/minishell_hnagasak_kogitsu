@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:43:16 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/07 01:48:16 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/23 18:44:21 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,10 @@ int	get_dupin_fd(t_cmd *cmd)
 	while (last->nxt != NULL)
 		last = last->nxt;
 	rdr = (t_redir *)last->cont;
-	if (rdr->type == REDIR_INPUT)
+	if (rdr->type == REDIR_INPUT || rdr->type == REDIR_HEREDOC)
 		return (file_open(rdr->file, O_RDONLY, 0));
-	else if (rdr->type == REDIR_HEREDOC)
-		return (STDIN_FILENO);
+	// else if (rdr->type == REDIR_HEREDOC)
+	// 	return (STDIN_FILENO);
 	else
 		ft_errmsg("error: get_dupin_fd\n");
 	exit(EXIT_FAILURE);
