@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 02:09:50 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/07 02:10:26 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/22 06:15:39 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,13 @@ void	set_pipe_if_needed(t_dlist *current)
 		ft_debug("[set_pipe] unset pipe\n");
 }
 
-// 外部コマンドまたは次のコマンドがある場合、子プロセスを作成する
-void	set_fork_if_needed(t_dlist *current)
+// 子プロセスを作成する
+// old:外部コマンドまたは次のコマンドがある場合、子プロセスを作成する
+void	set_fork(t_dlist *current)
 {
 	t_cmd	*cmd;
 
-	ft_debug("--- set_fork_if_needed ---\n");
+	ft_debug("--- set_fork ---\n");
 	cmd = (t_cmd *)current->cont;
-	if (!is_builtin_cmd(cmd) || current->nxt != NULL)
-	{
-		ft_debug("  should fork\n");
-		cmd->pid = fork();
-	}
-	else
-		ft_debug("  No fork\n");
+	cmd->pid = fork();
 }

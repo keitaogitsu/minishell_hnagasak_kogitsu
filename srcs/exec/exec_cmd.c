@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/17 21:42:27 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/22 10:44:30 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 #include "expander.h"
 #include "free.h"
+#include "utils.h"
 
 // void	exec_builtin(char **argv, t_dlist **env_list)
 int	exec_builtin(t_cmd *cmd, t_dlist **env_list)
@@ -21,17 +22,17 @@ int	exec_builtin(t_cmd *cmd, t_dlist **env_list)
 	if (ft_strncmp(cmd->argv[0], "echo", 4) == 0)
 		ft_echo(cmd->argv);
 	else if (ft_strncmp(cmd->argv[0], "cd", 2) == 0)
-		ft_cd(cmd->argv, env_list);
+		return (ft_cd(cmd->argv, env_list));
 	else if (ft_strncmp(cmd->argv[0], "pwd", 3) == 0)
 		ft_pwd();
 	else if (ft_strncmp(cmd->argv[0], "exit", 4) == 0)
-		ft_exit(cmd->argv);
+		return (ft_exit(cmd->argv));
 	else if (ft_strncmp(cmd->argv[0], "env", 3) == 0)
 		ft_env(cmd->argv, env_list);
 	else if (ft_strncmp(cmd->argv[0], "export", 6) == 0)
 		return (ft_export(cmd->argv, env_list));
 	else if (ft_strncmp(cmd->argv[0], "unset", 5) == 0)
-		ft_unset(cmd->argv, env_list);
+		return (ft_unset(cmd->argv, env_list));
 	return (EXIT_SUCCESS); // あとで見直す
 }
 
@@ -63,14 +64,16 @@ int	exec_externalcmd(t_cmd *cmd, t_dlist **env_list)
 {
 	char	**env;
 	char	**paths;
+	int		exit_status;
 
 	ft_debug("[exec_externalcmd]: %s\n", cmd->argv[0]);
 	env = envlist2arr(env_list);
 	paths = get_paths(env_list);
-	cmd->path = find_cmd_path(paths, cmd->argv[0]);
+	// cmd->path = find_cmd_path(paths, cmd->argv[0]);
+	exit_status = find_cmd_path(&cmd->path, paths, cmd->argv[0]);
 	free_strarr(paths);
-	if (cmd->path == NULL)
-		exit(EXIT_FAILURE);
+	if (exit_status != EXIT_SUCCESS)
+		exit(exit_status);
 	if (execve(cmd->path, cmd->argv, env) == -1)
 	{
 		perror("ft_execve");

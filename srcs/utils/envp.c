@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/16 17:48:54 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/20 04:36:44 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,32 @@ void	get_key_value(char *envp, char **key, char **value)
 	}
 	*key = ft_substr(envp, 0, delimiter - envp);
 	*value = ft_strdup(delimiter + 1);
+}
+
+// convert env_list to char**
+char	**envlist2arr(t_dlist **env_list)
+{
+	char	**envp;
+	t_dlist	*current;
+	t_env	*env;
+	size_t	i;
+
+	i = 0;
+	current = *env_list;
+	envp = (char **)malloc(sizeof(char *) * (ft_dlstsize(env_list) + 1));
+	if (!envp)
+		malloc_error_exit();
+	while (current != NULL)
+	{
+		env = (t_env *)current->cont;
+		envp[i] = ft_strjoin(env->key, "=");
+		if (env->value != NULL)
+			envp[i] = ft_strjoin(envp[i], env->value);
+		current = current->nxt;
+		i++;
+	}
+	envp[i] = NULL;
+	return (envp);
 }
 
 size_t	get_argc(char *argv[])

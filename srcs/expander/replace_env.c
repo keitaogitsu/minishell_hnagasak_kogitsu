@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replace_env.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 17:52:02 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/17 19:55:27 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/22 10:34:36 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ char	*find_env_value(char *char_position, t_dlist *env_list)
 		start = char_position;
 		while (is_env_key_char(*char_position))
 			char_position++;
+		if (start == char_position)
+			return (NULL);
 		while (env_list != NULL)
 		{
 			env = (t_env *)env_list->cont;

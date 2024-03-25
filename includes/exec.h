@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/17 21:31:14 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/22 10:54:28 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,8 @@ void				print_cmd_list(t_dlist **cmd_list);
 // find_cmd_path.c
 char				**get_paths(t_dlist **env_list);
 char				*cat_path(char *path, char *cmd);
-char				*find_cmd_path(char *paths[], char *cmd);
+// char				*find_cmd_path(char *paths[], char *cmd);
+int					find_cmd_path(char **cmd_path, char *paths[], char *cmd);
 // forked_process_manage.c
 void				child_process(t_dlist *current, t_dlist **env_list);
 void				close_parent_pipe(t_dlist *current);
@@ -86,9 +87,9 @@ void				input_hd(t_cmd *cmd, t_redir *redir, int fd,
 void				ft_heredoc(t_cmd *cmd, t_redir *redir, t_dlist **env_list);
 // set_pipe_fork.c
 void				set_pipe_if_needed(t_dlist *current);
-void				set_fork_if_needed(t_dlist *current);
+void				set_fork(t_dlist *current);
 // set_tmp_file.c
-void				create_tmp_files(t_cmd *cmd, size_t cmd_idx);
+void				set_tmpfile_name(t_cmd *cmd, size_t cmd_idx);
 char				*generate_tmpfile_name(size_t cmd_idx, size_t redir_idx);
 void				delete_tmp_files(t_cmd *cmd);
 // store_stdio.c

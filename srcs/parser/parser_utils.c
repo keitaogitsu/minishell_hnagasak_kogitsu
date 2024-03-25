@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/17 12:25:53 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/17 15:52:16 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/21 20:55:12 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ t_cmd	*cmd_init(t_token *tokens, t_dlist **env_list)
 	cmd->stdio[1] = -1;
 	cmd->pipe[0] = -1;
 	cmd->pipe[1] = -1;
-	cmd->pid = -1;
+	cmd->pid = 0;
 	return (cmd);
 }
 

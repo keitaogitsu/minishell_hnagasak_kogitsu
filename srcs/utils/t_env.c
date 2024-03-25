@@ -3,39 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   t_env.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/17 15:15:00 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/20 04:38:40 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "debug.h"
 #include "utils.h"
 
-// update env_list if the key exists, update the value.
-// if the key does not exist, add a new env to the list.
-// envp is in the format "KEY=VALUE".
-void	update_env_value(t_dlist **env_list, char *envp)
+/**
+ * @brief Find an existing t_env object in the environment list.
+ * @param key the key of the environment variable
+ * @param env_list double pointer to the head of the double linked list
+ * @return t_env* pointer to existing t_env object
+ */
+t_env	*find_existing_env(char *key, t_dlist **env_list)
 {
+	t_dlist	*current;
 	t_env	*env;
-	char	*key;
-	char	*value;
 
-	get_key_value(envp, &key, &value);
-	if (key == NULL)
-		return ;
-	if (value == NULL)
-		value = ft_strdup("");
-	env = find_existing_env(key, env_list);
-	if (env != NULL)
+	current = *env_list;
+	while (current)
 	{
-		free(env->value);
-		env->value = value;
+		env = (t_env *)current->cont;
+		if (ft_strncmp(env->key, key, ft_strlen(key)) == 0)
+			return (env);
+		current = current->nxt;
 	}
-	else
-		ft_dlstadd_back(env_list, ft_dlstnew(to_env(envp, !IS_SHELL_VAR)));
-	free(key);
+	return (NULL);
 }
 
 /**
@@ -111,50 +108,54 @@ t_dlist	**init_env(char **envp)
 	return (env_list);
 }
 
-// convert env_list to char**
-char	**envlist2arr(t_dlist **env_list)
+// update env_list if the key exists, update the value.
+// if the key does not exist, add a new env to the list.
+// envp is in the format "KEY=VALUE".
+void	update_env_value(t_dlist **env_list, char *envp)
 {
-	char	**envp;
+	t_env	*env;
+	char	*key;
+	char	*value;
+
+	get_key_value(envp, &key, &value);
+	if (key == NULL)
+		return ;
+	if (value == NULL)
+		value = ft_strdup("");
+	env = find_existing_env(key, env_list);
+	if (env != NULL)
+	{
+		free(env->value);
+		env->value = value;
+	}
+	else
+		ft_dlstadd_back(env_list, ft_dlstnew(to_env(envp, !IS_SHELL_VAR)));
+	free(key);
+}
+
+void	remove_env(char *key, t_dlist **env_list)
+{
 	t_dlist	*current;
 	t_env	*env;
-	size_t	i;
 
-	i = 0;
 	current = *env_list;
-	envp = (char **)malloc(sizeof(char *) * (ft_dlstsize(env_list) + 1));
-	if (!envp)
-		malloc_error_exit();
 	while (current != NULL)
 	{
 		env = (t_env *)current->cont;
-		envp[i] = ft_strjoin(env->key, "=");
-		if (env->value != NULL)
-			envp[i] = ft_strjoin(envp[i], env->value);
-		current = current->nxt;
-		i++;
-	}
-	envp[i] = NULL;
-	return (envp);
-}
-
-/**
- * @brief Find an existing t_env object in the environment list.
- * @param key the key of the environment variable
- * @param env_list double pointer to the head of the double linked list
- * @return t_env* pointer to existing t_env object
- */
-t_env	*find_existing_env(char *key, t_dlist **env_list)
-{
-	t_dlist	*current;
-	t_env	*env;
-
-	current = *env_list;
-	while (current)
-	{
-		env = (t_env *)current->cont;
-		if (ft_strncmp(env->key, key, ft_strlen(key)) == 0)
-			return (env);
+		if (ft_strncmp(env->key, key, ft_strlen(env->key)) == 0)
+		{
+			if (current->prv != NULL)
+				current->prv->nxt = current->nxt;
+			if (current->nxt != NULL)
+				current->nxt->prv = current->prv;
+			if (current == *env_list)
+				*env_list = current->nxt;
+			free(env->key);
+			free(env->value);
+			free(env);
+			free(current);
+			return ;
+		}
 		current = current->nxt;
 	}
-	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/13 19:55:27 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/11 10:23:43 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/21 23:28:08 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,24 +44,36 @@ void	update_oldpwd(t_dlist **env_list)
 	ft_free(oldpwd);
 }
 
-static void	cd_errmsg(char **argv)
+static int	cd_errmsg(char **argv)
 {
 	ft_errmsg("minishell: cd: ");
 	ft_errmsg(argv[1]);
 	ft_errmsg(": ");
 	ft_errmsg(strerror(errno));
+	ft_errmsg("\n");
+	return (EXIT_FAILURE);
 }
 
-void	ft_cd(char *argv[], t_dlist **env_list)
+static char	*get_cd_path(char *path, t_dlist **env_list)
+{
+	char	*replaced_path;
+
+	if (path == NULL)
+		replaced_path = replace_tilde("~", env_list);
+	else
+		replaced_path = replace_tilde(path, env_list);
+	return (replaced_path);
+}
+
+int	ft_cd(char *argv[], t_dlist **env_list)
 {
 	char	*path;
 	char	*cwd;
-	char	*str_env;
+	char	*key_value;
+	int		exit_status;
 
-	if (argv[1] == NULL)
-		path = replace_tilde("~", env_list);
-	else
-		path = replace_tilde(argv[1], env_list);
+	exit_status = EXIT_SUCCESS;
+	path = get_cd_path(argv[1], env_list);
 	update_oldpwd(env_list);
 	if (chdir(path) == 0)
 	{
@@ -69,13 +81,14 @@ void	ft_cd(char *argv[], t_dlist **env_list)
 		getcwd(cwd, sizeof(char) * 1024);
 		if (cwd != NULL)
 		{
-			str_env = ft_strjoin("PWD=", cwd);
-			update_env_value(env_list, str_env);
-			ft_free(str_env);
+			key_value = ft_strjoin("PWD=", cwd);
+			update_env_value(env_list, key_value);
+			ft_free(key_value);
 		}
 		cwd = ft_free(cwd);
 	}
 	else
-		cd_errmsg(argv);
+		exit_status = cd_errmsg(argv);
 	free(path);
+	return (exit_status);
 }
