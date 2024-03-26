@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/22 10:54:28 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/26 22:56:45 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include "libft.h"
 # include "utils.h"
 # include <fcntl.h>
+
+int		g_signum;
 
 typedef enum e_redir_type
 {
@@ -47,7 +49,7 @@ typedef struct s_cmd
 }					t_cmd;
 
 // dup_stdin.c
-void				dup_stdin(t_dlist *current);
+int					dup_stdin(t_dlist *current);
 int					get_dupin_fd(t_cmd *cmd);
 void				pipout2stdin(t_dlist *cmdlst);
 // dup_stdout.c
@@ -82,8 +84,9 @@ int					wait_children(t_dlist **cmd_list);
 void				input_heredocs(t_cmd *cmd, t_dlist **env_list);
 int					get_delimiter_type(char *delimiter);
 char				*expand_heredoc(char *str, t_dlist **env_list);
-void				input_hd(t_cmd *cmd, t_redir *redir, int fd,
-						t_dlist **env_list);
+// void				input_hd(t_cmd *cmd, t_redir *redir, int fd,
+// 						t_dlist **env_list);
+void				input_hd(t_cmd *cmd, t_redir *redir, t_dlist **env_list);
 void				ft_heredoc(t_cmd *cmd, t_redir *redir, t_dlist **env_list);
 // set_pipe_fork.c
 void				set_pipe_if_needed(t_dlist *current);

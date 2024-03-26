@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:56:44 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/24 23:56:25 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/26 22:58:55 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,13 @@ int	exec_single_builtin(t_dlist *current, t_dlist **env_list)
 	return (exit_status);
 }
 
-void input_heredocuments(t_dlist **cmd_list, t_dlist **env_list)
+void	input_heredocuments(t_dlist **cmd_list, t_dlist **env_list)
 {
 	t_dlist	*current;
-	// t_dlist	*curdr;
 	t_cmd	*cmd;
-	// t_redir	*rdr;
 
+	// t_dlist	*curdr;
+	// t_redir	*rdr;
 	current = *cmd_list;
 	while (current != NULL)
 	{
@@ -56,7 +56,6 @@ int	exec_external_or_piped_cmd(t_dlist **cmd_list, t_dlist **env_list)
 	t_cmd	*cmd;
 
 	current = *cmd_list;
-
 	input_heredocuments(cmd_list, env_list);
 	while (current != NULL)
 	{
