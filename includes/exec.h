@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/26 22:56:45 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/27 01:44:00 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int					dup_stdin(t_dlist *current);
 int					get_dupin_fd(t_cmd *cmd);
 void				pipout2stdin(t_dlist *cmdlst);
 // dup_stdout.c
-void				dup_stdout(t_dlist *current);
+int					dup_stdout(t_dlist *current);
 int					get_dupout_fd(t_cmd *cmd);
 void				pipin2stdout(t_dlist *cmdlst);
 // exec_cmd.c

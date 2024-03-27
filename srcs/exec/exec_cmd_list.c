@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:56:44 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/26 22:58:55 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/27 01:45:27 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,14 @@ int	exec_single_builtin(t_dlist *current, t_dlist **env_list)
 	set_tmpfile_name(cmd, current->i);
 	store_stdio(current);
 	input_heredocs(cmd, env_list);
-	dup_stdin(current);
-	dup_stdout(current);
+	// dup_stdin(current);
+	if(dup_stdin(current) == EXIT_FAILURE)
+		exit(EXIT_FAILURE);
+	// if ((exit_status = dup_stdin(current)) != 0)
+	// 	return (exit_status);
+	// dup_stdout(current);
+	if(dup_stdout(current) == EXIT_FAILURE)
+		exit(EXIT_FAILURE);
 	exit_status = exec_builtin(cmd, env_list);
 	delete_tmp_files(cmd);
 	restore_stdio(current);

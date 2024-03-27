@@ -6,14 +6,14 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:45:53 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/21 16:48:44 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/27 01:43:32 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 #include "utils.h"
 
-void	dup_stdout(t_dlist *current)
+int	dup_stdout(t_dlist *current)
 {
 	t_cmd	*cmd;
 	int		fd;
@@ -26,6 +26,8 @@ void	dup_stdout(t_dlist *current)
 	else if (current->nxt == NULL && cmd->output != NULL)
 	{
 		fd = get_dupout_fd(cmd);
+		if ( fd == -1)
+			return (EXIT_FAILURE);
 		dup2(fd, STDOUT_FILENO);
 		ft_debug("[dup_stdout] %s: dup output redir (%d)\n", cmd->argv[0], fd);
 	}
@@ -37,9 +39,12 @@ void	dup_stdout(t_dlist *current)
 	else if (current->nxt != NULL && cmd->output != NULL)
 	{
 		fd = get_dupout_fd(cmd);
+		if ( fd == -1)
+			return (EXIT_FAILURE);
 		dup2(fd, STDOUT_FILENO);
 		ft_debug("[dup_stdout] %s: dup output redir (%d)\n", cmd->argv[0], fd);
 	}
+	return (EXIT_SUCCESS);
 }
 
 // コマンドの最後の出力リダイレクションに対応するファイルを開き、そのファイルディスクリプタを返す。
@@ -48,21 +53,25 @@ int	get_dupout_fd(t_cmd *cmd)
 {
 	t_dlist	*last;
 	t_redir	*rdr;
+	int		fd;
 
 	last = cmd->output;
 	while (last->nxt != NULL)
 	{
 		// 途中のリダイレクションもファイルは作成する
 		rdr = (t_redir *)last->cont;
-		file_open(rdr->file, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
+		fd = file_open(rdr->file, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
+		if (fd == -1)
+					return fd;
+		close(fd);
 		last = last->nxt;
 	}
 	rdr = (t_redir *)last->cont;
-	// if(is_updatable_file(rdr->file))
+	// if(!is_updatable_file(rdr->file))
 	// {
 	// 	ft_errmsg("minishell: ");
 	// 	ft_errmsg(rdr->file);
-	// 	ft_errmsg(": Is a directory!!\n");
+	// 	ft_errmsg(": not updateble file!!\n");
 	// 	exit(EXIT_FAILURE);
 	// }
 	if (rdr->type == REDIR_OUTPUT)
@@ -72,7 +81,7 @@ int	get_dupout_fd(t_cmd *cmd)
 		return (file_open(rdr->file, O_WRONLY | O_CREAT | O_APPEND,
 				S_IRUSR | S_IWUSR));
 	else
-		ft_errmsg("error: get_dupout_fd\n");
+		ft_errmsg("error: invalid output redir type\n");
 	exit(EXIT_FAILURE);
 }
 

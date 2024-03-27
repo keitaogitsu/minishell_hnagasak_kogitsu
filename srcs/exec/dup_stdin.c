@@ -6,26 +6,40 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:43:16 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/23 18:44:21 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/27 01:42:31 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
 // リダイレクトやパイプに応じて標準入力を書き換える
-void	dup_stdin(t_dlist *current)
+int	dup_stdin(t_dlist *current)
 {
 	t_cmd	*cmd;
+	int		fd;
 
 	cmd = (t_cmd *)current->cont;
 	if (current->prv == NULL && cmd->input == NULL)
 		ft_debug("[dup_stdin]  %s: Not dup stdin\n", cmd->argv[0]);
 	else if (current->prv == NULL && cmd->input != NULL)
-		dup2(get_dupin_fd(cmd), STDIN_FILENO);
+	{
+		fd = get_dupin_fd(cmd);
+		if (fd == -1)
+			return (EXIT_FAILURE);
+		dup2(fd,STDIN_FILENO);
+		// dup2(get_dupin_fd(cmd), STDIN_FILENO);
+	}
 	else if (current->prv != NULL && cmd->input == NULL)
 		pipout2stdin(current->prv);
 	else if (current->prv != NULL && cmd->input != NULL)
-		dup2(get_dupin_fd(cmd), STDIN_FILENO);
+	{
+		fd = get_dupin_fd(cmd);
+		if (fd == -1)
+			return (EXIT_FAILURE);
+		dup2(fd,STDIN_FILENO);
+		// dup2(get_dupin_fd(cmd), STDIN_FILENO);
+	}
+	return (EXIT_SUCCESS);
 }
 
 // 指定したコマンドの最後の入力リダイレクションのfdを返す。
@@ -33,17 +47,26 @@ int	get_dupin_fd(t_cmd *cmd)
 {
 	t_dlist	*last;
 	t_redir	*rdr;
+	int		fd;
 
 	last = cmd->input;
 	while (last->nxt != NULL)
+	{
+		rdr = (t_redir *)last->cont;
+		if (rdr->type == REDIR_INPUT || rdr->type == REDIR_HEREDOC)
+		{
+			fd = file_open(rdr->file, O_RDONLY, 0);
+			if (fd == -1)
+					return fd;
+			close(fd);
+		}
 		last = last->nxt;
+	}
 	rdr = (t_redir *)last->cont;
 	if (rdr->type == REDIR_INPUT || rdr->type == REDIR_HEREDOC)
 		return (file_open(rdr->file, O_RDONLY, 0));
-	// else if (rdr->type == REDIR_HEREDOC)
-	// 	return (STDIN_FILENO);
 	else
-		ft_errmsg("error: get_dupin_fd\n");
+		ft_errmsg("error: invalid input redir type\n");
 	exit(EXIT_FAILURE);
 }
 

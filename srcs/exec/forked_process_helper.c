@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 02:21:39 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/24 23:57:43 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/27 02:45:02 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,22 @@ void	close_parent_pipe(t_dlist *current)
 void	child_process(t_dlist *current, t_dlist **env_list)
 {
 	t_cmd	*cmd;
+	// int result1;
+	// int result2;
 
 	cmd = (t_cmd *)current->cont;
 	ft_debug("[child process] close pipin fd:%d\n", cmd->pipe[0]);
 	cmd->pipe[0] = ft_close(cmd->pipe[0]);
 	store_stdio(current);
-	dup_stdin(current);
-	dup_stdout(current);
+	// result1 = dup_stdin(current);
+	// result2 = dup_stdout(current);
+	// if(result1 == EXIT_FAILURE || result2 == EXIT_FAILURE)
+	// 	exit(EXIT_FAILURE);
+	if(dup_stdin(current) == EXIT_FAILURE)
+		exit(EXIT_FAILURE);
+	if(dup_stdout(current) == EXIT_FAILURE)
+		exit(EXIT_FAILURE);
+	// dup_stdout(current);
 	exec_cmd(cmd, env_list);
 }
 
