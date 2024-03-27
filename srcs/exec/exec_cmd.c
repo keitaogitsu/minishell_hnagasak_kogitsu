@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/22 10:44:30 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/27 16:46:21 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,12 @@ int	exec_externalcmd(t_cmd *cmd, t_dlist **env_list)
 	int		exit_status;
 
 	ft_debug("[exec_externalcmd]: %s\n", cmd->argv[0]);
-	env = envlist2arr(env_list);
+	if (cmd->argv[0][0] == '\0')
+		exit(EXIT_SUCCESS);
 	paths = get_paths(env_list);
-	// cmd->path = find_cmd_path(paths, cmd->argv[0]);
 	exit_status = find_cmd_path(&cmd->path, paths, cmd->argv[0]);
 	free_strarr(paths);
+	env = envlist2arr(env_list);
 	if (exit_status != EXIT_SUCCESS)
 		exit(exit_status);
 	if (execve(cmd->path, cmd->argv, env) == -1)
@@ -79,7 +80,7 @@ int	exec_externalcmd(t_cmd *cmd, t_dlist **env_list)
 		perror("ft_execve");
 		exit(EXIT_FAILURE);
 	}
-	return (EXIT_SUCCESS);
+	return (EXIT_FAILURE);
 }
 
 // char	*get_last_redir_file(t_dlist *redir_list)
