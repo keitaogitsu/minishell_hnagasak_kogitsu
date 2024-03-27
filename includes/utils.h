@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/21 12:45:23 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/20 22:09:29 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/25 20:09:31 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ size_t				get_argc(char *argv[]);
 int					is_env_key_char(char c);
 char				**envlist2arr(t_dlist **env_list);
 
-int is_executable_file(char *path);
-int	is_directory(const char *path);
-int is_updatable_file(char *path);
+int					is_executable_file(char *path);
+int					is_directory(const char *path);
+int					is_updatable_file(char *path);
 
 // list.c
 t_dlist				*ft_dlstnew(void *content);

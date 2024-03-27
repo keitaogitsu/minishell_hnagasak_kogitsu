@@ -19,7 +19,7 @@
 # include "utils.h"
 # include <fcntl.h>
 
-int		g_signum;
+int					g_signum;
 
 typedef enum e_redir_type
 {
