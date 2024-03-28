@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/28 20:58:32 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/28 21:37:57 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include "utils.h"
 # include <fcntl.h>
 
-int					g_signum;
+extern int			g_signum;
 
 typedef enum e_redir_type
 {
