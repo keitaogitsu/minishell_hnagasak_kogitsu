@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/13 14:20:30 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/27 16:48:29 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/28 09:13:56 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,8 @@ void	create_cmd(t_token **tokens, t_cmd *cmd, size_t *i)
 		process_redir(tokens, cmd, REDIR_HEREDOC);
 	if ((*tokens)->next == NULL || (*tokens)->next->type == CHAR_PIPE)
 	{
-		if (cmd->argv[0] == NULL)
-		{
-			cmd->argv[0] = ft_strdup("");
-			*i = 1;
-		}
+		if (*i == 0 && cmd->argv[*i] == NULL)
+			cmd->argv[(*i)++] = ft_strdup("");
 		cmd->argv[*i] = NULL;
 	}
 }

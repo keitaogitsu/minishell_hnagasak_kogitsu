@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/27 16:05:20 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/28 20:54:45 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,7 @@ void	mainloop(char *line, t_dlist **env_list)
 		tokens = tokenize(line);
 		free(line);
 		if (!is_cmd_line(tokens))
-		{
-			ft_errmsg("syntax error\n");
 			continue ;
-		}
 		tokens = expand_env(tokens, env_list, exit_status);
 		cmd_list = create_cmd_list(tokens, env_list);
 		print_cmd_list(cmd_list);

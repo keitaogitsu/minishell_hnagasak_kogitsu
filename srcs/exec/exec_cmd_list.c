@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:56:44 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/27 01:45:27 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/28 09:41:11 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,9 @@ int	exec_single_builtin(t_dlist *current, t_dlist **env_list)
 	set_tmpfile_name(cmd, current->i);
 	store_stdio(current);
 	input_heredocs(cmd, env_list);
-	// dup_stdin(current);
-	if(dup_stdin(current) == EXIT_FAILURE)
+	if (dup_stdin(current) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
-	// if ((exit_status = dup_stdin(current)) != 0)
-	// 	return (exit_status);
-	// dup_stdout(current);
-	if(dup_stdout(current) == EXIT_FAILURE)
+	if (dup_stdout(current) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
 	exit_status = exec_builtin(cmd, env_list);
 	delete_tmp_files(cmd);
@@ -42,8 +38,6 @@ void	input_heredocuments(t_dlist **cmd_list, t_dlist **env_list)
 	t_dlist	*current;
 	t_cmd	*cmd;
 
-	// t_dlist	*curdr;
-	// t_redir	*rdr;
 	current = *cmd_list;
 	while (current != NULL)
 	{
@@ -68,7 +62,6 @@ int	exec_external_or_piped_cmd(t_dlist **cmd_list, t_dlist **env_list)
 		cmd = (t_cmd *)current->cont;
 		ft_debug("\n--- exec_cmd[%d]: %s ---\n", current->i, cmd->argv[0]);
 		set_pipe_if_needed(current);
-		// set_tmpfile_name(cmd, current->i);
 		set_fork(current);
 		if (cmd->pid == 0)
 			child_process(current, env_list);

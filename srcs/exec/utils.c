@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 02:13:48 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/27 01:27:25 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/28 20:50:51 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ int	file_open(char *file, int flag, int mode)
 		ft_errmsg(": ");
 		ft_errmsg(strerror(errno));
 		ft_errmsg("\n");
-		// exit(EXIT_FAILURE);
 	}
 	return (fd);
 }

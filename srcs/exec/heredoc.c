@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 02:00:02 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/26 22:57:44 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/28 20:50:33 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,25 +65,10 @@ char	*expand_heredoc(char *str, t_dlist **env_list)
 	return (str_head);
 }
 
-void	sig_hd(int signum)
-{
-	(void)signum;
-	g_signum = SIGINT;
-	ft_putstr_fd("\n", STDOUT_FILENO);
-	close(STDIN_FILENO);
-}
-
-int	eof_handler(void)
-{
-	write(STDOUT_FILENO, "\033[A\033[2K\r> ", 10);
-	return (1);
-}
-
 void	input_hd(t_cmd *cmd, t_redir *redir, t_dlist **env_list)
 {
 	char	*line;
 	int		delimitype;
-	char	*delim;
 	int		fd;
 
 	fd = file_open(redir->file, O_WRONLY | O_CREAT | O_TRUNC,
@@ -97,17 +82,7 @@ void	input_hd(t_cmd *cmd, t_redir *redir, t_dlist **env_list)
 		line = ft_free(line);
 		dup2(cmd->stdio[0], STDIN_FILENO);
 		line = readline("> ");
-		if (g_signum == SIGINT)
-		{
-			close(fd);
-			fd = file_open(redir->file, O_WRONLY | O_CREAT | O_TRUNC,
-					S_IRUSR | S_IWUSR);
-			break ;
-		}
-		if (line == NULL && eof_handler())
-			break ;
-		delim = ft_strtrim(redir->delimiter, "\"\'");
-		if (ft_strncmp(line, delim, ft_strlen(delim) + 1) == 0)
+		if (should_break(line, redir, &fd))
 			break ;
 		if (delimitype == NOT_IN_QUOTE)
 			line = expand_heredoc(line, env_list);

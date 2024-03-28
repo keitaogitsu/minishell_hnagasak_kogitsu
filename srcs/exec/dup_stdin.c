@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:43:16 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/27 01:42:31 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/28 09:38:14 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,7 @@ int	dup_stdin(t_dlist *current)
 		fd = get_dupin_fd(cmd);
 		if (fd == -1)
 			return (EXIT_FAILURE);
-		dup2(fd,STDIN_FILENO);
-		// dup2(get_dupin_fd(cmd), STDIN_FILENO);
+		dup2(fd, STDIN_FILENO);
 	}
 	else if (current->prv != NULL && cmd->input == NULL)
 		pipout2stdin(current->prv);
@@ -36,8 +35,7 @@ int	dup_stdin(t_dlist *current)
 		fd = get_dupin_fd(cmd);
 		if (fd == -1)
 			return (EXIT_FAILURE);
-		dup2(fd,STDIN_FILENO);
-		// dup2(get_dupin_fd(cmd), STDIN_FILENO);
+		dup2(fd, STDIN_FILENO);
 	}
 	return (EXIT_SUCCESS);
 }
@@ -57,7 +55,7 @@ int	get_dupin_fd(t_cmd *cmd)
 		{
 			fd = file_open(rdr->file, O_RDONLY, 0);
 			if (fd == -1)
-					return fd;
+				return (fd);
 			close(fd);
 		}
 		last = last->nxt;

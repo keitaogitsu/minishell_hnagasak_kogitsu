@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/27 01:44:00 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/28 20:58:32 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,16 +70,29 @@ int					exec_external_or_piped_cmd(t_dlist **cmd_list,
 // exec_test.c
 void				print_arr_str(char **arr_str);
 void				print_cmd_list(t_dlist **cmd_list);
+
 // find_cmd_path.c
 char				**get_paths(t_dlist **env_list);
 char				*cat_path(char *path, char *cmd);
-// char				*find_cmd_path(char *paths[], char *cmd);
 int					find_cmd_path(char **cmd_path, char *paths[], char *cmd);
+
+// find_cmd_path_errmsg.c
+int					errmsg_isdir(char *cmd);
+int					errmsg_missing_path(char *cmd);
+int					errmsg_permission(char *cmd);
+int					errmsg_cmd_not_found(char *cmd);
+
 // forked_process_manage.c
 void				child_process(t_dlist *current, t_dlist **env_list);
 void				close_parent_pipe(t_dlist *current);
 void				fail_fork(void);
 int					wait_children(t_dlist **cmd_list);
+
+// heredoc_signal.c
+void				sig_hd(int signum);
+int					eof_handler(void);
+int					should_break(char *line, t_redir *redir, int *fd);
+
 // heredoc.c
 void				input_heredocs(t_cmd *cmd, t_dlist **env_list);
 int					get_delimiter_type(char *delimiter);

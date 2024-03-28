@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/27 16:46:21 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/28 20:18:48 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "free.h"
 #include "utils.h"
 
-// void	exec_builtin(char **argv, t_dlist **env_list)
+// 組み込みコマンド結果をreturnするように修正後、最後のreturnはEXIT_FAILUREにする
 int	exec_builtin(t_cmd *cmd, t_dlist **env_list)
 {
 	ft_debug("[exec_builtin] %s\n", cmd->argv[0]);
@@ -33,7 +33,7 @@ int	exec_builtin(t_cmd *cmd, t_dlist **env_list)
 		return (ft_export(cmd->argv, env_list));
 	else if (ft_strncmp(cmd->argv[0], "unset", 5) == 0)
 		return (ft_unset(cmd->argv, env_list));
-	return (EXIT_SUCCESS); // あとで見直す
+	return (EXIT_SUCCESS);
 }
 
 // return 1 if cmd is a builtin command
