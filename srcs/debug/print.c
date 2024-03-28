@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 17:27:01 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/11 10:11:29 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/28 21:05:18 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,19 +46,19 @@ void	print_envlist(t_dlist **env_list)
 	printf("--- end print_env ----\n");
 }
 
-void	ft_debug(const char *format, ...)
-{
-	va_list	args;
-
-	if (DEBUG)
-	{
-		va_start(args, format);
-		vfprintf(stderr, format, args);
-		va_end(args);
-	}
-}
-
 // void	ft_debug(const char *format, ...)
 // {
-// 	(void)format;
+// 	va_list	args;
+
+// 	if (DEBUG)
+// 	{
+// 		va_start(args, format);
+// 		vfprintf(stderr, format, args);
+// 		va_end(args);
+// 	}
 // }
+
+void	ft_debug(const char *format, ...)
+{
+	(void)format;
+}

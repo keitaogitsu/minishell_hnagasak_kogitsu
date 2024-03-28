@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   validate_token2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 22:21:27 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/02/28 22:22:09 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/03/28 20:57:00 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
+#include "utils.h"
 
 int	is_arguments(t_token *tkn_list)
 {
@@ -66,5 +67,8 @@ int	is_cmd_line(t_token *tkn_list)
 	if (is_piped_commands(tkn_list))
 		return (1);
 	else
+	{
+		ft_errmsg("minishell: syntax error\n");
 		return (0);
+	}
 }

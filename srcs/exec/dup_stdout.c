@@ -6,40 +6,58 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:45:53 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/21 16:48:44 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/28 10:04:03 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 #include "utils.h"
 
-void	dup_stdout(t_dlist *current)
+int	dup_output_redir(t_cmd *cmd)
+{
+	int	fd;
+
+	ft_debug("[dup_output_redir] dup output redir: ");
+	fd = get_dupout_fd(cmd);
+	if (fd == -1)
+		return (EXIT_FAILURE);
+	dup2(fd, STDOUT_FILENO);
+	ft_debug("%d\n", fd);
+	return (EXIT_SUCCESS);
+}
+
+int	dup_stdout(t_dlist *current)
 {
 	t_cmd	*cmd;
-	int		fd;
+	int		exit_status;
 
+	exit_status = EXIT_SUCCESS;
 	cmd = (t_cmd *)current->cont;
 	if (current->nxt == NULL && cmd->output == NULL)
-	{
 		ft_debug("[dup_stdout] %s: Not dup stdout\n", cmd->argv[0]);
-	}
 	else if (current->nxt == NULL && cmd->output != NULL)
-	{
-		fd = get_dupout_fd(cmd);
-		dup2(fd, STDOUT_FILENO);
-		ft_debug("[dup_stdout] %s: dup output redir (%d)\n", cmd->argv[0], fd);
-	}
+		exit_status = dup_output_redir(cmd);
 	else if (current->nxt != NULL && cmd->output == NULL)
 	{
 		pipin2stdout(current);
 		ft_debug("[dup_stdout] %s: dup pipin2stdout\n", cmd->argv[0]);
 	}
 	else if (current->nxt != NULL && cmd->output != NULL)
-	{
-		fd = get_dupout_fd(cmd);
-		dup2(fd, STDOUT_FILENO);
-		ft_debug("[dup_stdout] %s: dup output redir (%d)\n", cmd->argv[0], fd);
-	}
+		exit_status = dup_output_redir(cmd);
+	return (exit_status);
+}
+
+int	redir_open(t_dlist *redirects)
+{
+	t_redir	*rdr;
+	int		fd;
+
+	rdr = (t_redir *)redirects->cont;
+	fd = file_open(rdr->file, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
+	if (fd == -1)
+		return (-1);
+	close(fd);
+	return (0);
 }
 
 // コマンドの最後の出力リダイレクションに対応するファイルを開き、そのファイルディスクリプタを返す。
@@ -52,19 +70,11 @@ int	get_dupout_fd(t_cmd *cmd)
 	last = cmd->output;
 	while (last->nxt != NULL)
 	{
-		// 途中のリダイレクションもファイルは作成する
-		rdr = (t_redir *)last->cont;
-		file_open(rdr->file, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
+		if (redir_open(last) == -1)
+			return (-1);
 		last = last->nxt;
 	}
 	rdr = (t_redir *)last->cont;
-	// if(is_updatable_file(rdr->file))
-	// {
-	// 	ft_errmsg("minishell: ");
-	// 	ft_errmsg(rdr->file);
-	// 	ft_errmsg(": Is a directory!!\n");
-	// 	exit(EXIT_FAILURE);
-	// }
 	if (rdr->type == REDIR_OUTPUT)
 		return (file_open(rdr->file, O_WRONLY | O_CREAT | O_TRUNC,
 				S_IRUSR | S_IWUSR));
@@ -72,7 +82,7 @@ int	get_dupout_fd(t_cmd *cmd)
 		return (file_open(rdr->file, O_WRONLY | O_CREAT | O_APPEND,
 				S_IRUSR | S_IWUSR));
 	else
-		ft_errmsg("error: get_dupout_fd\n");
+		ft_errmsg("error: invalid output redir type\n");
 	exit(EXIT_FAILURE);
 }
 

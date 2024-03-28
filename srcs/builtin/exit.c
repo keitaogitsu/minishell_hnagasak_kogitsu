@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/19 18:23:23 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/22 10:58:37 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/28 08:36:40 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ int	ft_exit(char *argv[])
 {
 	int	exit_status;
 
-	// ft_errmsg("exit\n");
 	printf("exit\n");
 	exit_status = is_invalid_arg(argv);
 	if (exit_status != 0)

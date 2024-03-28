@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 14:08:27 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/02 19:00:32 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/27 21:24:24 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,12 @@ void	ft_echo(char *argv[])
 		return ;
 	}
 	opt = 0;
-	if (ft_strncmp("-n", argv[1], 2) == 0)
+	i = 1;
+	while (ft_strncmp("-n", argv[i], 3) == 0)
 	{
-		i = 2;
+		i++;
 		opt |= ECHO_OPT_N;
 	}
-	else
-		i = 1;
 	while (argv[i] != NULL)
 	{
 		printf("%s", argv[i]);

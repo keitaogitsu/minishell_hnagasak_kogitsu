@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/06 22:02:46 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/22 19:37:23 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/28 09:32:32 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,66 +41,50 @@ char	**get_paths(t_dlist **env_list)
 	return (paths);
 }
 
-// 外部コマンドのパスを探し、コマンド名を連結して返す
-// paths: PATHを:で分割した文字列配列
-// cmd: 検索するコマンド名
-// char	*_find_cmd_path(char *paths[], char *cmd)
+// int	errmsg_isdir(char *cmd)
 // {
-// 	int		i;
-// 	char	*cmd_path;
+// 	ft_errmsg("minishell: ");
+// 	ft_errmsg(cmd);
+// 	ft_errmsg(": is a directory\n");
+// 	return (STATUS_EISDIR);
+// }
 
-// 	if (ft_strchr(cmd, '/') != NULL || paths == NULL)
-// 	{
-// 		if (access(cmd, X_OK) == 0)
-// 			return (ft_strdup(cmd));
-// 		printf("%s: No such file or directory\n", cmd);
-// 		return (NULL);
-// 	}
-// 	i = 0;
-// 	while (paths[i] != NULL)
-// 	{
-// 		cmd_path = cat_path(paths[i], cmd);
-// 		if (access(cmd_path, X_OK) == 0)
-// 		{
-// 			return (cmd_path);
-// 		}
-// 		free(cmd_path);
-// 		i++;
-// 	}
+// int	errmsg_missing_path(char *cmd)
+// {
+// 	ft_errmsg("minishell: ");
+// 	ft_errmsg(cmd);
+// 	ft_errmsg(": No such file or directory\n");
+// 	return (STATUS_ENOENT);
+// }
+
+// int	errmsg_permission(char *cmd)
+// {
+// 	ft_errmsg("minishell: ");
+// 	ft_errmsg(cmd);
+// 	ft_errmsg(": Permission denied\n");
+// 	return (STATUS_EACCES);
+// }
+
+// int	errmsg_cmd_not_found(char *cmd)
+// {
 // 	ft_errmsg("minishell: ");
 // 	ft_errmsg(cmd);
 // 	ft_errmsg(": command not found\n");
-// 	return (NULL);
+// 	return (STATUS_CMD_NOT_FOUND);
 // }
 
 int	find_cmd_path(char **cmd_path, char *paths[], char *cmd)
 {
 	int	i;
 
-	// char	*cmd_path;
 	if (ft_strchr(cmd, '/') != NULL || paths == NULL)
 	{
 		if (is_directory(cmd))
-		{
-			ft_errmsg("minishell: ");
-			ft_errmsg(cmd);
-			ft_errmsg(": is a directory\n");
-			return (STATUS_EISDIR);
-		}
+			return (errmsg_isdir(cmd));
 		if (access(cmd, F_OK) != 0)
-		{
-			ft_errmsg("minishell: ");
-			ft_errmsg(cmd);
-			ft_errmsg(": No such file or directory\n");
-			return (STATUS_ENOENT);
-		}
+			return (errmsg_missing_path(cmd));
 		if (access(cmd, X_OK) != 0)
-		{
-			ft_errmsg("minishell: ");
-			ft_errmsg(cmd);
-			ft_errmsg(": Permission denied\n");
-			return (STATUS_EACCES);
-		}
+			return (errmsg_permission(cmd));
 		*cmd_path = ft_strdup(cmd);
 		return (EXIT_SUCCESS);
 	}
@@ -113,8 +97,5 @@ int	find_cmd_path(char **cmd_path, char *paths[], char *cmd)
 		*cmd_path = ft_free(*cmd_path);
 		i++;
 	}
-	ft_errmsg("minishell: ");
-	ft_errmsg(cmd);
-	ft_errmsg(": command not found\n");
-	return (STATUS_CMD_NOT_FOUND);
+	return (errmsg_cmd_not_found(cmd));
 }
