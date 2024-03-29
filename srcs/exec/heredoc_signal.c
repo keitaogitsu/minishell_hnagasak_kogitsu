@@ -6,14 +6,13 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 02:00:02 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/28 20:50:20 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/30 05:50:51 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 
-// #include "expander.h"
-// #include "free.h"
+int		g_signum = 0;
 
 void	sig_hd(int signum)
 {
