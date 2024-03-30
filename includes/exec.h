@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/28 21:37:57 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/30 10:48:28 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,10 @@ int					exec_externalcmd(t_cmd *cmd, t_dlist **env_list);
 // exec_cmd_list.c
 void				exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list,
 						int *exit_status);
-int					exec_single_builtin(t_dlist *current, t_dlist **env_list);
+int					exec_single_builtin(t_dlist *current, t_dlist **env_list,
+						int exit_status);
 int					exec_external_or_piped_cmd(t_dlist **cmd_list,
-						t_dlist **env_list);
+						t_dlist **env_list, int exit_status);
 // exec_test.c
 void				print_arr_str(char **arr_str);
 void				print_cmd_list(t_dlist **cmd_list);
@@ -94,13 +95,15 @@ int					eof_handler(void);
 int					should_break(char *line, t_redir *redir, int *fd);
 
 // heredoc.c
-void				input_heredocs(t_cmd *cmd, t_dlist **env_list);
+void				input_heredocs(t_cmd *cmd, t_dlist **env_list,
+						int exit_status);
 int					get_delimiter_type(char *delimiter);
-char				*expand_heredoc(char *str, t_dlist **env_list);
-// void				input_hd(t_cmd *cmd, t_redir *redir, int fd,
-// 						t_dlist **env_list);
-void				input_hd(t_cmd *cmd, t_redir *redir, t_dlist **env_list);
-void				ft_heredoc(t_cmd *cmd, t_redir *redir, t_dlist **env_list);
+char				*expand_heredoc(char *str, t_dlist **env_list,
+						int replace_exit_status);
+void				input_hd(t_cmd *cmd, t_redir *redir, t_dlist **env_list,
+						int exit_status);
+void				ft_heredoc(t_cmd *cmd, t_redir *redir, t_dlist **env_list,
+						int exit_status);
 // set_pipe_fork.c
 void				set_pipe_if_needed(t_dlist *current);
 void				set_fork(t_dlist *current);
