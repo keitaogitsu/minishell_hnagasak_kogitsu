@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 02:00:02 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/16 17:17:43 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/30 10:41:20 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	get_delimiter_type(char *delimiter)
 		return (NOT_IN_QUOTE);
 }
 
-void	input_heredocs(t_cmd *cmd, t_dlist **env_list)
+void	input_heredocs(t_cmd *cmd, t_dlist **env_list, int exit_status)
 {
 	t_dlist	*current;
 	t_redir	*rdr;
@@ -40,15 +40,12 @@ void	input_heredocs(t_cmd *cmd, t_dlist **env_list)
 	{
 		rdr = (t_redir *)current->cont;
 		if (rdr->type == REDIR_HEREDOC)
-		{
-			ft_debug("### input_heredoc [%s]\n", rdr->file);
-			ft_heredoc(cmd, rdr, env_list);
-		}
+			ft_heredoc(cmd, rdr, env_list, exit_status);
 		current = current->nxt;
 	}
 }
 
-char	*expand_heredoc(char *str, t_dlist **env_list)
+char	*expand_heredoc(char *str, t_dlist **env_list, int exit_status)
 {
 	char	*env_value;
 	char	*str_head;
@@ -57,48 +54,54 @@ char	*expand_heredoc(char *str, t_dlist **env_list)
 	str_head = str;
 	while (*str != '\0')
 	{
-		env_value = find_env_value(str, *env_list);
-		if (env_value != NULL)
-			replace_env_value(&str_head, &str, env_value);
+		if (ft_strncmp(str, "$?", ft_strlen("$?")) == 0)
+			replace_exit_status(&str_head, &str, exit_status);
+		else
+		{
+			env_value = find_env_value(str, *env_list);
+			if (env_value != NULL)
+				replace_env_value(&str_head, &str, env_value);
+		}
 		str++;
 	}
 	return (str_head);
 }
 
-void	input_hd(t_cmd *cmd, t_redir *redir, int fd, t_dlist **env_list)
+void	input_hd(t_cmd *cmd, t_redir *redir, t_dlist **env_list,
+		int exit_status)
 {
 	char	*line;
 	int		delimitype;
-	char	*delim;
+	int		fd;
 
+	fd = file_open(redir->file, O_WRONLY | O_CREAT | O_TRUNC,
+			S_IRUSR | S_IWUSR);
 	delimitype = get_delimiter_type(redir->delimiter);
 	line = ft_malloc(1);
+	signal(SIGINT, sig_hd);
+	g_signum = 0;
 	while (line != NULL)
 	{
 		line = ft_free(line);
 		dup2(cmd->stdio[0], STDIN_FILENO);
 		line = readline("> ");
-		if (line == NULL)
-			break ;
-		delim = ft_strtrim(redir->delimiter, "\"\'");
-		if (ft_strncmp(line, delim, ft_strlen(delim) + 1) == 0)
+		if (should_break(line, redir, &fd))
 			break ;
 		if (delimitype == NOT_IN_QUOTE)
-			line = expand_heredoc(line, env_list);
+			line = expand_heredoc(line, env_list, exit_status);
 		ft_putendl_fd(line, fd);
 	}
 	ft_free(line);
+	close(fd);
 }
 
-void	ft_heredoc(t_cmd *cmd, t_redir *redir, t_dlist **env_list)
+void	ft_heredoc(t_cmd *cmd, t_redir *redir, t_dlist **env_list,
+		int exit_status)
 {
 	int	fd;
 
 	ft_debug("----- ft_heredoc [%s]-----\n", redir->file);
-	fd = file_open(redir->file, O_WRONLY | O_CREAT | O_TRUNC,
-			S_IRUSR | S_IWUSR);
-	input_hd(cmd, redir, fd, env_list);
-	close(fd);
+	input_hd(cmd, redir, env_list, exit_status);
 	fd = file_open(redir->file, O_RDONLY, 0);
 	dup2(fd, STDIN_FILENO);
 	close(fd);

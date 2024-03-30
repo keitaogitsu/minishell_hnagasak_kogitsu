@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/22 10:44:30 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/03/28 20:18:48 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "free.h"
 #include "utils.h"
 
-// void	exec_builtin(char **argv, t_dlist **env_list)
+// 組み込みコマンド結果をreturnするように修正後、最後のreturnはEXIT_FAILUREにする
 int	exec_builtin(t_cmd *cmd, t_dlist **env_list)
 {
 	ft_debug("[exec_builtin] %s\n", cmd->argv[0]);
@@ -33,7 +33,7 @@ int	exec_builtin(t_cmd *cmd, t_dlist **env_list)
 		return (ft_export(cmd->argv, env_list));
 	else if (ft_strncmp(cmd->argv[0], "unset", 5) == 0)
 		return (ft_unset(cmd->argv, env_list));
-	return (EXIT_SUCCESS); // あとで見直す
+	return (EXIT_SUCCESS);
 }
 
 // return 1 if cmd is a builtin command
@@ -67,11 +67,12 @@ int	exec_externalcmd(t_cmd *cmd, t_dlist **env_list)
 	int		exit_status;
 
 	ft_debug("[exec_externalcmd]: %s\n", cmd->argv[0]);
-	env = envlist2arr(env_list);
+	if (cmd->argv[0][0] == '\0')
+		exit(EXIT_SUCCESS);
 	paths = get_paths(env_list);
-	// cmd->path = find_cmd_path(paths, cmd->argv[0]);
 	exit_status = find_cmd_path(&cmd->path, paths, cmd->argv[0]);
 	free_strarr(paths);
+	env = envlist2arr(env_list);
 	if (exit_status != EXIT_SUCCESS)
 		exit(exit_status);
 	if (execve(cmd->path, cmd->argv, env) == -1)
@@ -79,7 +80,7 @@ int	exec_externalcmd(t_cmd *cmd, t_dlist **env_list)
 		perror("ft_execve");
 		exit(EXIT_FAILURE);
 	}
-	return (EXIT_SUCCESS);
+	return (EXIT_FAILURE);
 }
 
 // char	*get_last_redir_file(t_dlist *redir_list)
