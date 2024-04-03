@@ -8,7 +8,7 @@ DEBUG_SRCS := $(addprefix $(DEBUG_DIR)/, $(DEBUG_FILES))
 
 EXEC_DIR := srcs/exec
 EXEC_FILES := dup_stdin.c dup_stdout.c exec_cmd_list.c exec_test.c exec_cmd.c find_cmd_path.c find_cmd_path_errmsg.c \
-forked_process_helper.c heredoc_signal.c heredoc.c set_tmp_file.c set_pipe_fork.c store_stdio.c utils.c
+forked_process_helper.c heredoc.c set_tmp_file.c set_pipe_fork.c signal_handlers.c store_stdio.c utils.c
 EXEC_SRCS := $(addprefix $(EXEC_DIR)/, $(EXEC_FILES))
 
 EXPANDER_DIR := srcs/expander
