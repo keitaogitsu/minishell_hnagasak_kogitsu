@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd_list.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:56:44 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/30 10:47:18 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/04/04 03:35:04 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ int	exec_external_or_piped_cmd(t_dlist **cmd_list, t_dlist **env_list,
 	t_cmd	*cmd;
 
 	current = *cmd_list;
+	ft_debug("--- exec_external_or_piped_cmd ---\n");
 	input_heredocuments(cmd_list, env_list, exit_status);
 	while (current != NULL)
 	{

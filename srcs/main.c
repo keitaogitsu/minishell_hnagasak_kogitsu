@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/28 20:54:45 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/04/04 03:29:48 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,15 @@ int	newline_process(char *line)
 	return (1);
 }
 
+void	signal_handler(int signum)
+{
+	(void)signum;
+	ft_putstr_fd("\n", STDOUT_FILENO);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
+
 void	mainloop(char *line, t_dlist **env_list)
 {
 	t_token	*tokens;
@@ -44,6 +53,7 @@ void	mainloop(char *line, t_dlist **env_list)
 	exit_status = 0;
 	while (1)
 	{
+		signal(SIGINT, signal_handler);
 		line = readline("minishell > ");
 		if (line == NULL && shell_exit(line))
 			break ;
@@ -63,15 +73,6 @@ void	mainloop(char *line, t_dlist **env_list)
 	}
 }
 
-void	signal_handler(int signum)
-{
-	(void)signum;
-	ft_putstr_fd("\n", STDOUT_FILENO);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-}
-
 int	main(int argc, char **argv, char **envp)
 {
 	t_dlist	**env_list;
@@ -79,7 +80,6 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
-	signal(SIGINT, signal_handler);
 	signal(SIGQUIT, SIG_IGN);
 	line = NULL;
 	env_list = init_env(envp);
