@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 02:00:02 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/04/04 05:13:14 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/04/05 06:24:23 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,6 @@ void	input_heredocs(t_cmd *cmd, t_dlist **env_list, int exit_status)
 		redir = (t_redir *)current->cont;
 		if (redir->type == REDIR_HEREDOC)
 		{
-			// ft_heredoc(cmd, redir, env_list, exit_status);
 			input_hd(cmd, redir, env_list, exit_status);
 			fd = file_open(redir->file, O_RDONLY, 0);
 			dup2(fd, STDIN_FILENO);
