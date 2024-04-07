@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/27 01:45:42 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/20 04:38:40 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/04/07 15:24:41 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ t_env	*find_existing_env(char *key, t_dlist **env_list)
 	while (current)
 	{
 		env = (t_env *)current->cont;
-		if (ft_strncmp(env->key, key, ft_strlen(key)) == 0)
+		if (ft_strlen(env->key) == ft_strlen(key) && ft_strncmp(env->key, key,
+				ft_strlen(env->key)) == 0)
 			return (env);
 		current = current->nxt;
 	}
@@ -142,7 +143,8 @@ void	remove_env(char *key, t_dlist **env_list)
 	while (current != NULL)
 	{
 		env = (t_env *)current->cont;
-		if (ft_strncmp(env->key, key, ft_strlen(env->key)) == 0)
+		if (ft_strlen(env->key) == ft_strlen(key) && ft_strncmp(env->key, key,
+				ft_strlen(env->key)) == 0)
 		{
 			if (current->prv != NULL)
 				current->prv->nxt = current->nxt;

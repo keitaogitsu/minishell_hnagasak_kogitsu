@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kogitsu <kogitsu@student.42tokyo.jp>       +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 18:18:42 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/17 14:08:49 by kogitsu          ###   ########.fr       */
+/*   Updated: 2024/04/07 12:34:00 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "debug.h"
+#include "free.h"
 #include "lexer.h"
 #include "utils.h"
 
@@ -56,7 +57,7 @@ void	tokenizer_init(t_tokenizer *tokenizer, char *line)
 // }
 
 void	proccess_line_by_state(char *line, t_tokenizer *tokenizer,
-	t_token_type type)
+		t_token_type type)
 {
 	if (tokenizer->state == STATE_GENERAL)
 		general_state_process(tokenizer, line, type);
@@ -86,6 +87,7 @@ t_token	*tokenize(char *line)
 	free(tokenizer.tmp_token);
 	if (tokenizer.state != STATE_GENERAL)
 	{
+		free_tokens(tokenizer.tokens_head);
 		ft_errmsg("unclosed quote\n");
 		return (NULL);
 	}

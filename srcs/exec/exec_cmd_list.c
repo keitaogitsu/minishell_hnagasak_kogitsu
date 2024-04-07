@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd_list.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:56:44 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/30 10:47:18 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/04/04 05:40:07 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
+#include "signal_handlers.h"
 
 int	exec_single_builtin(t_dlist *current, t_dlist **env_list, int exit_status)
 {
@@ -25,6 +26,8 @@ int	exec_single_builtin(t_dlist *current, t_dlist **env_list, int exit_status)
 		exit(EXIT_FAILURE);
 	if (dup_stdout(current) == EXIT_FAILURE)
 		exit(EXIT_FAILURE);
+	signal(SIGINT, sigint_handler_in_exec);
+	signal(SIGQUIT, sigquit_handler_in_exec);
 	exit_status = exec_builtin(cmd, env_list);
 	delete_tmp_files(cmd);
 	restore_stdio(current);
@@ -56,7 +59,10 @@ int	exec_external_or_piped_cmd(t_dlist **cmd_list, t_dlist **env_list,
 	t_cmd	*cmd;
 
 	current = *cmd_list;
+	ft_debug("--- exec_external_or_piped_cmd ---\n");
 	input_heredocuments(cmd_list, env_list, exit_status);
+	signal(SIGINT, sigint_handler_in_exec);
+	signal(SIGQUIT, sigquit_handler_in_exec);
 	while (current != NULL)
 	{
 		cmd = (t_cmd *)current->cont;

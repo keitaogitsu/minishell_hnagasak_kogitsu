@@ -1,48 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc_signal.c                                   :+:      :+:    :+:   */
+/*   signal_handlers.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 02:00:02 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/30 05:50:51 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/04/04 05:44:49 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "exec.h"
+#include "signal_handlers.h"
+#include <signal.h>
+#include <stdio.h>
+#include <unistd.h>
 
-int		g_signum = 0;
-
-void	sig_hd(int signum)
+void	sigint_handler_in_heredoc(int signum)
 {
 	(void)signum;
 	g_signum = SIGINT;
-	ft_putstr_fd("\n", STDOUT_FILENO);
+	write(STDOUT_FILENO, "\n", 1);
 	close(STDIN_FILENO);
 }
 
-int	eof_handler(void)
+int	eof_handler_in_heredoc(void)
 {
 	write(STDOUT_FILENO, "\033[A\033[2K\r> ", 10);
 	return (1);
 }
 
-int	should_break(char *line, t_redir *redir, int *fd)
+void	sigint_handler_in_exec(int signum)
 {
-	char	*delim;
+	(void)signum;
+	write(STDOUT_FILENO, "\n", 1);
+}
 
-	if (g_signum == SIGINT)
-	{
-		close(*fd);
-		*fd = file_open(redir->file, O_WRONLY | O_CREAT | O_TRUNC,
-				S_IRUSR | S_IWUSR);
-		return (1);
-	}
-	if (line == NULL && eof_handler())
-		return (1);
-	delim = ft_strtrim(redir->delimiter, "\"\'");
-	if (ft_strncmp(line, delim, ft_strlen(delim) + 1) == 0)
-		return (1);
-	return (0);
+void	sigquit_handler_in_exec(int signum)
+{
+	(void)signum;
+	printf("Quit: %d\n", SIGQUIT);
 }

@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 02:00:02 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/30 10:41:20 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/04/05 06:24:23 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "exec.h"
 #include "expander.h"
 #include "free.h"
+#include "signal_handlers.h"
 
 // delimiterがダブルクォートまたはシングルクォートで囲まれているかを判定する
 int	get_delimiter_type(char *delimiter)
@@ -28,21 +29,6 @@ int	get_delimiter_type(char *delimiter)
 		return (IN_QUOTE);
 	else
 		return (NOT_IN_QUOTE);
-}
-
-void	input_heredocs(t_cmd *cmd, t_dlist **env_list, int exit_status)
-{
-	t_dlist	*current;
-	t_redir	*rdr;
-
-	current = cmd->input;
-	while (current != NULL)
-	{
-		rdr = (t_redir *)current->cont;
-		if (rdr->type == REDIR_HEREDOC)
-			ft_heredoc(cmd, rdr, env_list, exit_status);
-		current = current->nxt;
-	}
 }
 
 char	*expand_heredoc(char *str, t_dlist **env_list, int exit_status)
@@ -67,6 +53,25 @@ char	*expand_heredoc(char *str, t_dlist **env_list, int exit_status)
 	return (str_head);
 }
 
+int	should_break(char *line, t_redir *redir, int *fd)
+{
+	char	*delim;
+
+	if (g_signum == SIGINT)
+	{
+		close(*fd);
+		*fd = file_open(redir->file, O_WRONLY | O_CREAT | O_TRUNC,
+				S_IRUSR | S_IWUSR);
+		return (1);
+	}
+	if (line == NULL && eof_handler_in_heredoc())
+		return (1);
+	delim = ft_strtrim(redir->delimiter, "\"\'");
+	if (ft_strncmp(line, delim, ft_strlen(delim) + 1) == 0)
+		return (1);
+	return (0);
+}
+
 void	input_hd(t_cmd *cmd, t_redir *redir, t_dlist **env_list,
 		int exit_status)
 {
@@ -78,7 +83,7 @@ void	input_hd(t_cmd *cmd, t_redir *redir, t_dlist **env_list,
 			S_IRUSR | S_IWUSR);
 	delimitype = get_delimiter_type(redir->delimiter);
 	line = ft_malloc(1);
-	signal(SIGINT, sig_hd);
+	signal(SIGINT, sigint_handler_in_heredoc);
 	g_signum = 0;
 	while (line != NULL)
 	{
@@ -95,14 +100,23 @@ void	input_hd(t_cmd *cmd, t_redir *redir, t_dlist **env_list,
 	close(fd);
 }
 
-void	ft_heredoc(t_cmd *cmd, t_redir *redir, t_dlist **env_list,
-		int exit_status)
+void	input_heredocs(t_cmd *cmd, t_dlist **env_list, int exit_status)
 {
-	int	fd;
+	t_dlist	*current;
+	t_redir	*redir;
+	int		fd;
 
-	ft_debug("----- ft_heredoc [%s]-----\n", redir->file);
-	input_hd(cmd, redir, env_list, exit_status);
-	fd = file_open(redir->file, O_RDONLY, 0);
-	dup2(fd, STDIN_FILENO);
-	close(fd);
+	current = cmd->input;
+	while (current != NULL)
+	{
+		redir = (t_redir *)current->cont;
+		if (redir->type == REDIR_HEREDOC)
+		{
+			input_hd(cmd, redir, env_list, exit_status);
+			fd = file_open(redir->file, O_RDONLY, 0);
+			dup2(fd, STDIN_FILENO);
+			close(fd);
+		}
+		current = current->nxt;
+	}
 }
