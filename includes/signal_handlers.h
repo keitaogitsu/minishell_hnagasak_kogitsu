@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/04 04:11:28 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/04/04 05:34:05 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/04/07 23:18:40 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,12 @@
 
 extern int	g_signum;
 
-// main.c
-// void		sigint_handler_in_input(int signum);
-// void	sigquit_handler_in_input(int signum);
-
-// heredoc_signal.c
+// srcs/utils/signal_handler_in_input.c
+void		sigint_handler_in_input(int signum);
+int			eof_handler_in_input(char *line);
+// srcs/exec/signal_handlers.c
 void		sigint_handler_in_heredoc(int signum);
 int			eof_handler_in_heredoc(void);
-// void	sigquit_handler_in_heredoc(int signum);
 void		sigint_handler_in_exec(int signum);
 void		sigquit_handler_in_exec(int signum);
 

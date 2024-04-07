@@ -24,7 +24,7 @@ PARSER_FILES := parser.c parser_utils.c
 PARSER_SRCS := $(addprefix $(PARSER_DIR)/, $(PARSER_FILES))
 
 UTILS_DIR := srcs/utils
-UTILS_FILES := envp.c free.c free2.c list.c malloc.c t_env.c path_validator.c
+UTILS_FILES := envp.c free.c free2.c list.c malloc.c path_validator.c signal_handler_in_input.c t_env.c 
 UTILS_SRCS := $(addprefix $(UTILS_DIR)/, $(UTILS_FILES))
 
 CC		:= cc
