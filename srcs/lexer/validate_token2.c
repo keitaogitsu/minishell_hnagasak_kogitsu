@@ -6,12 +6,13 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 22:21:27 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/28 20:57:00 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/04/07 12:38:41 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
 #include "utils.h"
+#include "free.h"
 
 int	is_arguments(t_token *tkn_list)
 {
@@ -68,6 +69,7 @@ int	is_cmd_line(t_token *tkn_list)
 		return (1);
 	else
 	{
+		free_tokens(tkn_list);
 		ft_errmsg("minishell: syntax error\n");
 		return (0);
 	}
