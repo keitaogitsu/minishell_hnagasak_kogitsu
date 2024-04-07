@@ -6,11 +6,21 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 17:52:02 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/28 08:52:59 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/04/07 15:30:37 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "expander.h"
+
+static size_t	get_keystrlen(char *str)
+{
+	size_t	len;
+
+	len = 0;
+	while (is_env_key_char(str[len]))
+		len++;
+	return (len);
+}
 
 /**
  * @brief Retrieves the value of an environment variable from a list.
@@ -20,28 +30,24 @@
  */
 char	*find_env_value(char *char_position, t_dlist *env_list)
 {
-	char	*start;
 	t_env	*env;
+	size_t	len;
 
-	if (*char_position == '$')
+	if (*char_position != '$')
+		return (NULL);
+	char_position++;
+	len = get_keystrlen(char_position);
+	if (len == 0)
+		return (NULL);
+	while (env_list != NULL)
 	{
-		char_position++;
-		start = char_position;
-		while (is_env_key_char(*char_position))
-			char_position++;
-		if (start == char_position)
-			return (NULL);
-		while (env_list != NULL)
-		{
-			env = (t_env *)env_list->cont;
-			if (ft_strncmp(env->key, start, ft_strlen(env->key)) == 0
-				&& !is_env_key_char(*char_position))
-				return (((t_env *)(env_list)->cont)->value);
-			env_list = (env_list)->nxt;
-		}
-		return ("");
+		env = (t_env *)env_list->cont;
+		if (ft_strlen(env->key) == len && ft_strncmp(env->key, char_position,
+				ft_strlen(env->key)) == 0)
+			return (env->value);
+		env_list = (env_list)->nxt;
 	}
-	return (NULL);
+	return ("");
 }
 
 static size_t	toggle_quote_state(size_t state, char *str)
