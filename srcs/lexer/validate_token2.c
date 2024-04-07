@@ -6,13 +6,13 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 22:21:27 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/04/07 12:38:41 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/04/07 13:52:38 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "free.h"
 #include "lexer.h"
 #include "utils.h"
-#include "free.h"
 
 int	is_arguments(t_token *tkn_list)
 {

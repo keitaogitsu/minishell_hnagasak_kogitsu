@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/22 07:43:45 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/04/07 14:05:29 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,17 +42,16 @@ static void	insert_between_tokens(t_token *expanded_tokens, t_token *current,
 static void	trim_and_change_state(char **str, char **quote_removed_str,
 		size_t *state)
 {
-	if (**str == '\\' && *(*str + 1) == '\'' && *state == NOT_IN_QUOTE)
+	if (**str == '\\' && *state == NOT_IN_QUOTE)
 	{
-		(*str)++;
-		**quote_removed_str = **str;
-		(*quote_removed_str)++;
-	}
-	else if (**str == '\\' && *(*str + 1) == '\"' && *state == NOT_IN_QUOTE)
-	{
-		(*str)++;
-		**quote_removed_str = **str;
-		(*quote_removed_str)++;
+		if (*(*str + 1) == '\''
+			|| *(*str + 1) == '\"'
+			|| ft_isprint(*(*str + 1)))
+		{
+			(*str)++;
+			**quote_removed_str = **str;
+			(*quote_removed_str)++;
+		}
 	}
 	else if (**str == '\'' && *state == NOT_IN_QUOTE)
 		*state = IN_QUOTE;

@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 21:00:13 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/30 12:43:54 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/04/07 13:57:37 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ void	esc_process(t_tokenizer *toker, char *line, t_token_type type)
 {
 	if (type == CHAR_ESCAPE && (line[toker->line_i + 1] != '\0'
 			&& line[toker->line_i + 1] != '\''
-			&& line[toker->line_i + 1] != '\"'))
+			&& line[toker->line_i + 1] != '\"'
+			&& !ft_isprint(line[toker->line_i + 1])))
 	{
 		toker->line_i++;
 		toker->tmp_token->str[toker->token_str_i++] = line[toker->line_i];
