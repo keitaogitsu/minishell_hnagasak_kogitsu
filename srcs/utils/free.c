@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 21:53:13 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/11 10:16:36 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/05/11 17:15:28 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ void	free_redir(t_dlist *redir_list)
 		redir = (t_redir *)redir_list->cont;
 		free(redir->file);
 		redir->file = NULL;
+		free(redir->delimiter);
+		redir->delimiter = NULL;
 		free(redir);
 		redir_list->cont = NULL;
 		redir_list = redir_list->nxt;
