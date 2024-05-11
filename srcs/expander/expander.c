@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/04/07 14:05:29 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/04/07 23:03:22 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,8 @@ static void	handle_expanded_tokens(t_token **expanded_tokens, t_token **current,
 			(*current)->prev->next = (*current)->next;
 		if ((*current)->next != NULL)
 			(*current)->next->prev = (*current)->prev;
+		free((*current)->str);
+		free(*current);
 	}
 }
 

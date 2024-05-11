@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/04/04 04:56:11 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/04/07 23:24:02 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,27 +17,18 @@
 #include "free.h"
 #include "lexer.h"
 #include "parser.h"
+#include "signal_handlers.h"
 #include "utils.h"
 #include <errno.h>
 #include <signal.h>
 #include <stdio.h>
 
-int		g_signum = 0;
+int			g_signum = 0;
 
-void	sigint_handler_in_input(int signum)
+static void	set_signal_handler(void)
 {
-	(void)signum;
-	ft_putstr_fd("\n", STDOUT_FILENO);
-	rl_on_new_line();
-	rl_replace_line("", 0);
-	rl_redisplay();
-}
-
-int	eof_handler_in_input(char *line)
-{
-	free(line);
-	printf("\033[A\033[2K\rminishell > exit\n");
-	return (1);
+	signal(SIGINT, sigint_handler_in_input);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 int	newline_process(char *line)
@@ -55,7 +46,7 @@ void	mainloop(char *line, t_dlist **env_list)
 	exit_status = 0;
 	while (1)
 	{
-		signal(SIGINT, sigint_handler_in_input);
+		set_signal_handler();
 		line = readline("minishell > ");
 		if (line == NULL && eof_handler_in_input(line))
 			break ;
@@ -82,7 +73,6 @@ int	main(int argc, char **argv, char **envp)
 
 	(void)argc;
 	(void)argv;
-	signal(SIGQUIT, SIG_IGN);
 	line = NULL;
 	env_list = init_env(envp);
 	mainloop(line, env_list);
