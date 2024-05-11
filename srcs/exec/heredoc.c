@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 02:00:02 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/04/05 06:24:23 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/05/11 15:45:43 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,11 @@ int	should_break(char *line, t_redir *redir, int *fd)
 		return (1);
 	delim = ft_strtrim(redir->delimiter, "\"\'");
 	if (ft_strncmp(line, delim, ft_strlen(delim) + 1) == 0)
+	{
+		ft_free(delim);
 		return (1);
+	}
+	ft_free(delim);
 	return (0);
 }
 
