@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd_list.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:56:44 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/04/04 05:40:07 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/05/16 20:08:34 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ int	exec_single_builtin(t_dlist *current, t_dlist **env_list, int exit_status)
 	store_stdio(current);
 	input_heredocs(cmd, env_list, exit_status);
 	if (dup_stdin(current) == EXIT_FAILURE)
-		exit(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	if (dup_stdout(current) == EXIT_FAILURE)
-		exit(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	signal(SIGINT, sigint_handler_in_exec);
 	signal(SIGQUIT, sigquit_handler_in_exec);
 	exit_status = exec_builtin(cmd, env_list);
