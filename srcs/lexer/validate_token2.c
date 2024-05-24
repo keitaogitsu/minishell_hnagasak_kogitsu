@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/28 22:21:27 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/04/07 13:52:38 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/05/24 20:45:56 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,8 @@ int	is_piped_commands(t_token *tkn_list)
 // | sequencial_commands "\n"
 int	is_cmd_line(t_token *tkn_list)
 {
+	if (tkn_list == NULL)
+		return (0);
 	if (is_piped_commands(tkn_list))
 		return (1);
 	else

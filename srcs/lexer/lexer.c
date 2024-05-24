@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 18:18:42 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/04/07 12:34:00 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/05/24 20:44:03 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ t_token	*tokenize(char *line)
 	if (tokenizer.state != STATE_GENERAL)
 	{
 		free_tokens(tokenizer.tokens_head);
-		ft_errmsg("unclosed quote\n");
+		ft_errmsg("minishell: unclosed quote\n");
 		return (NULL);
 	}
 	ft_debug("--- after tokenize ---\n");
