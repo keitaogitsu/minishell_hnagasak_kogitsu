@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:35 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/04/04 05:38:42 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/05/30 04:15:13 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int					errmsg_cmd_not_found(char *cmd);
 // forked_process_manage.c
 void				child_process(t_dlist *current, t_dlist **env_list);
 void				close_parent_pipe(t_dlist *current);
-void				fail_fork(void);
+void				fail_fork(t_dlist *current);
 int					wait_children(t_dlist **cmd_list);
 
 // heredoc.c

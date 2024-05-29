@@ -6,11 +6,12 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 02:00:02 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/04/04 05:44:49 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/05/30 04:25:48 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "signal_handlers.h"
+#include "exec.h"
 #include <signal.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -20,7 +21,7 @@ void	sigint_handler_in_heredoc(int signum)
 	(void)signum;
 	g_signum = SIGINT;
 	write(STDOUT_FILENO, "\n", 1);
-	close(STDIN_FILENO);
+	ft_close(STDIN_FILENO);
 }
 
 int	eof_handler_in_heredoc(void)

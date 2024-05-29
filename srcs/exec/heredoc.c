@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hnagasak <hnagasak@student.42.fr>          +#+  +:+       +#+        */
+/*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 02:00:02 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/05/11 15:45:43 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/05/30 04:25:01 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	should_break(char *line, t_redir *redir, int *fd)
 
 	if (g_signum == SIGINT)
 	{
-		close(*fd);
+		*fd = ft_close(*fd);
 		*fd = file_open(redir->file, O_WRONLY | O_CREAT | O_TRUNC,
 				S_IRUSR | S_IWUSR);
 		return (1);
@@ -101,7 +101,7 @@ void	input_hd(t_cmd *cmd, t_redir *redir, t_dlist **env_list,
 		ft_putendl_fd(line, fd);
 	}
 	ft_free(line);
-	close(fd);
+	fd = ft_close(fd);
 }
 
 void	input_heredocs(t_cmd *cmd, t_dlist **env_list, int exit_status)
@@ -119,7 +119,7 @@ void	input_heredocs(t_cmd *cmd, t_dlist **env_list, int exit_status)
 			input_hd(cmd, redir, env_list, exit_status);
 			fd = file_open(redir->file, O_RDONLY, 0);
 			dup2(fd, STDIN_FILENO);
-			close(fd);
+			fd = ft_close(fd);
 		}
 		current = current->nxt;
 	}
