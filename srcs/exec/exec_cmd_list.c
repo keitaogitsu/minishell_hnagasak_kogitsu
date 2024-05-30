@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:56:44 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/05/30 04:19:47 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/05/30 20:41:35 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	exec_single_builtin(t_dlist *current, t_dlist **env_list, int exit_status)
 		return (EXIT_FAILURE);
 	signal(SIGINT, sigint_handler_in_exec);
 	signal(SIGQUIT, sigquit_handler_in_exec);
-	exit_status = exec_builtin(cmd, env_list);
+	exit_status = exec_builtin(cmd, env_list, exit_status);
 	delete_tmp_files(cmd);
 	restore_stdio(current);
 	return (exit_status);

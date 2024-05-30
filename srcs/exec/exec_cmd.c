@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/31 16:07:17 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/28 20:18:48 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/05/30 21:13:54 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "utils.h"
 
 // 組み込みコマンド結果をreturnするように修正後、最後のreturnはEXIT_FAILUREにする
-int	exec_builtin(t_cmd *cmd, t_dlist **env_list)
+int	exec_builtin(t_cmd *cmd, t_dlist **env_list, int exit_status)
 {
 	ft_debug("[exec_builtin] %s\n", cmd->argv[0]);
 	if (ft_strncmp(cmd->argv[0], "echo", 4) == 0)
@@ -26,7 +26,7 @@ int	exec_builtin(t_cmd *cmd, t_dlist **env_list)
 	else if (ft_strncmp(cmd->argv[0], "pwd", 3) == 0)
 		ft_pwd();
 	else if (ft_strncmp(cmd->argv[0], "exit", 4) == 0)
-		return (ft_exit(cmd->argv));
+		return (ft_exit(cmd->argv, exit_status));
 	else if (ft_strncmp(cmd->argv[0], "env", 3) == 0)
 		ft_env(cmd->argv, env_list);
 	else if (ft_strncmp(cmd->argv[0], "export", 6) == 0)
@@ -143,7 +143,7 @@ void	exec_cmd(t_cmd *cmd, t_dlist **env_list)
 	exit_status = 0;
 	if (is_builtin_cmd(cmd))
 	{
-		exit_status = exec_builtin(cmd, cmd->envp);
+		exit_status = exec_builtin(cmd, cmd->envp, exit_status);
 		exit(exit_status);
 	}
 	else

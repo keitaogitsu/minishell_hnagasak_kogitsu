@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/19 18:23:23 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/05/30 20:36:09 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/05/30 21:14:16 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,11 @@ static int	is_invalid_arg(char **argv)
 	return (0);
 }
 
-int	ft_exit(char *argv[])
+int	ft_exit(char *argv[], int exit_status)
 {
-	int	exit_status;
-
 	printf("exit\n");
+	if (get_argc(argv) == 1)
+		exit(exit_status);
 	exit_status = is_invalid_arg(argv);
 	if (exit_status == STATUS_NO_NUMERIC_ARG)
 		exit(STATUS_NO_NUMERIC_ARG);
