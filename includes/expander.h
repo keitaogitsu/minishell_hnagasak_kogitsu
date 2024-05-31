@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:37 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/03/28 08:55:00 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/05/30 21:59:42 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,8 @@ char	*replace_env_var(char *str, t_dlist **env_list, int exit_status);
 // replace.c
 void	replace_env_value(char **str_head, char **start, char *env_value);
 void	replace_exit_status(char **str_head, char **start, int exit_status);
+
+// frree_tmp.c
+void	free_tmp(t_token *tmp, t_token *expanded_tokens);
 
 #endif

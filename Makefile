@@ -12,7 +12,7 @@ forked_process_helper.c heredoc.c set_tmp_file.c set_pipe_fork.c signal_handlers
 EXEC_SRCS := $(addprefix $(EXEC_DIR)/, $(EXEC_FILES))
 
 EXPANDER_DIR := srcs/expander
-EXPANDER_FILES := expander.c replace_env.c replace.c
+EXPANDER_FILES := expander.c replace_env.c replace.c free_tmp.c
 EXPANDER_SRCS := $(addprefix $(EXPANDER_DIR)/, $(EXPANDER_FILES))
 
 LEXER_DIR := srcs/lexer
