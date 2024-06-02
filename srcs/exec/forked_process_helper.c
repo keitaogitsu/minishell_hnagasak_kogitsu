@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 02:21:39 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/05/30 20:54:39 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/06/02 10:57:26 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,14 +70,16 @@ int	wait_children(t_dlist **cmd_list)
 	t_cmd	*cmd;
 	int		status;
 
+	status = 0;
 	current = *cmd_list;
 	while (current != NULL)
 	{
 		cmd = (t_cmd *)current->cont;
 		waitpid(cmd->pid, &status, 0);
-		ft_debug("[waitpid] %d: %d.%s\n", cmd->pid, current->i, cmd->argv[0]);
+		ft_debug("[waitpid][%d]:%d, cmd:%s, status:%d\n", current->i, cmd->pid,
+			cmd->argv[0], WEXITSTATUS(status));
 		delete_tmp_files(cmd);
 		current = current->nxt;
 	}
-	return (status % 255);
+	return (WEXITSTATUS(status));
 }
