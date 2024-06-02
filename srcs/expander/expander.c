@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:27:21 by kogitsu           #+#    #+#             */
-/*   Updated: 2024/04/07 23:03:22 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/05/30 21:57:26 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,8 +105,6 @@ static void	handle_expanded_tokens(t_token **expanded_tokens, t_token **current,
 			(*current)->prev->next = (*current)->next;
 		if ((*current)->next != NULL)
 			(*current)->next->prev = (*current)->prev;
-		free((*current)->str);
-		free(*current);
 	}
 }
 
@@ -115,6 +113,7 @@ t_token	*expand_env(t_token *tokens, t_dlist **env_list, int exit_status)
 	t_token	*current;
 	t_token	*expanded_tokens;
 	t_token	*new_tokens_head;
+	t_token	*tmp;
 
 	new_tokens_head = NULL;
 	current = tokens;
@@ -128,7 +127,9 @@ t_token	*expand_env(t_token *tokens, t_dlist **env_list, int exit_status)
 		current->str = replace_env_var(current->str, env_list, exit_status);
 		expanded_tokens = tokenize(current->str);
 		handle_expanded_tokens(&expanded_tokens, &current, &new_tokens_head);
+		tmp = current;
 		current = current->next;
+		free_tmp(tmp, expanded_tokens);
 	}
 	ft_debug("--- after expand_env ---\n");
 	if (new_tokens_head != NULL)

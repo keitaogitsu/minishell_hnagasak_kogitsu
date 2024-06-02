@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 14:40:15 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/04/07 23:24:02 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/05/30 21:03:06 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	mainloop(char *line, t_dlist **env_list)
 		set_signal_handler();
 		line = readline("minishell > ");
 		if (line == NULL && eof_handler_in_input(line))
-			break ;
+			exit(exit_status);
 		else if (ft_strlen(line) == 0 && newline_process(line))
 			continue ;
 		add_history(line);

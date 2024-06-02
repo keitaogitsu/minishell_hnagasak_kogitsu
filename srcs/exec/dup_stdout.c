@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:45:53 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/03/28 10:04:03 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/05/30 04:22:10 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ int	dup_output_redir(t_cmd *cmd)
 		return (EXIT_FAILURE);
 	dup2(fd, STDOUT_FILENO);
 	ft_debug("%d\n", fd);
+	fd = ft_close(fd);
 	return (EXIT_SUCCESS);
 }
 
@@ -56,7 +57,7 @@ int	redir_open(t_dlist *redirects)
 	fd = file_open(rdr->file, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
 	if (fd == -1)
 		return (-1);
-	close(fd);
+	fd = ft_close(fd);
 	return (0);
 }
 

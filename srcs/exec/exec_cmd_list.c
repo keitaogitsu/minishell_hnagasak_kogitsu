@@ -6,7 +6,7 @@
 /*   By: hnagasak <hnagasak@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 01:56:44 by hnagasak          #+#    #+#             */
-/*   Updated: 2024/04/04 05:40:07 by hnagasak         ###   ########.fr       */
+/*   Updated: 2024/05/30 20:41:35 by hnagasak         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ int	exec_single_builtin(t_dlist *current, t_dlist **env_list, int exit_status)
 	store_stdio(current);
 	input_heredocs(cmd, env_list, exit_status);
 	if (dup_stdin(current) == EXIT_FAILURE)
-		exit(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	if (dup_stdout(current) == EXIT_FAILURE)
-		exit(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	signal(SIGINT, sigint_handler_in_exec);
 	signal(SIGQUIT, sigquit_handler_in_exec);
-	exit_status = exec_builtin(cmd, env_list);
+	exit_status = exec_builtin(cmd, env_list, exit_status);
 	delete_tmp_files(cmd);
 	restore_stdio(current);
 	return (exit_status);
@@ -59,7 +59,6 @@ int	exec_external_or_piped_cmd(t_dlist **cmd_list, t_dlist **env_list,
 	t_cmd	*cmd;
 
 	current = *cmd_list;
-	ft_debug("--- exec_external_or_piped_cmd ---\n");
 	input_heredocuments(cmd_list, env_list, exit_status);
 	signal(SIGINT, sigint_handler_in_exec);
 	signal(SIGQUIT, sigquit_handler_in_exec);
@@ -74,7 +73,10 @@ int	exec_external_or_piped_cmd(t_dlist **cmd_list, t_dlist **env_list,
 		else if (cmd->pid > 0)
 			close_parent_pipe(current);
 		else
-			fail_fork();
+		{
+			fail_fork(current);
+			break ;
+		}
 		current = current->nxt;
 	}
 	return (wait_children(cmd_list));
@@ -90,6 +92,9 @@ void	exec_cmd_list(t_dlist **cmd_list, t_dlist **env_list, int *exit_status)
 	if (is_builtin_cmd((t_cmd *)current->cont) && current->nxt == NULL)
 		*exit_status = exec_single_builtin(current, env_list, *exit_status);
 	else
+	{
+		ft_debug("--- exec_external_or_piped_cmd ---\n");
 		*exit_status = exec_external_or_piped_cmd(cmd_list, env_list,
 				*exit_status);
+	}
 }
